@@ -57,3 +57,4 @@ target/
 *.aux
 *.blg
 *.bbl
+manuscript/*.out
