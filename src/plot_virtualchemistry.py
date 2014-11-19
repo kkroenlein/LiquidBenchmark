@@ -6,47 +6,85 @@ import pandas as pd
 import simtk.unit as u
 import polarizability
 
+sns.set_palette("bright")
+sns.set_style("whitegrid")
+
 metadata = pd.read_table("./virtualchemistry.tab").set_index("cas")
 
 data = pd.read_csv("./vchem.csv").set_index("cas")
+data["density"]["646-06-0"] = 1060.  # http://en.wikipedia.org/wiki/Dioxolane
+
 data["formula"] = metadata.formula
 data["polcorr"] = pd.Series(dict((cas, polarizability.dielectric_correction_from_formula(formula, density * u.grams / u.milliliter)) for cas, (formula, density) in data[["formula", "density"]].iterrows()))
-data["corrected"] = data.gaff + data.polcorr
-data["gaffdiff"] = data.expt - data.gaff
-result = sm.ols(formula="gaffdiff ~ polcorr", data=data[data.expt < 6]).fit()
-data["optcorr"] = result.params.Intercept + result.params.polcorr * data.polcorr
-data["optcorrected"] = data.gaff + data.optcorr
 
-
-
-g = sns.lmplot("gaff", "expt", data, fit_reg=False)
-plt.plot([1, 100], [1, 100], 'k')  # Guide
-g.set(xscale='log', xlim=(1, 100), ylim=(1, 100))
-g.set(yscale='log')
-
-
-g = sns.lmplot("corrected", "expt", data, fit_reg=False)
-plt.plot([1, 100], [1, 100], 'k')  # Guide
-g.set(xscale='log', xlim=(1, 100), ylim=(1, 100))
-g.set(yscale='log')
-
-g = sns.lmplot("optcorrected", "expt", data, fit_reg=False)
-plt.plot([1, 100], [1, 100], 'k')  # Guide
-g.set(xscale='log', xlim=(1, 100), ylim=(1, 100))
-g.set(yscale='log')
-
-"""
-figure()
-g = sns.residplot("gaff", "expt", data)
-g.set(xscale='log', xlim=(1, 100))
+data["gaff_corrected"] = data.gaff + data.polcorr
+data["opls_corrected"] = data.opls + data.polcorr
 
 
 figure()
-g = sns.residplot("gaff", "corrected", data)
-g.set(xscale='log', xlim=(1, 100))
+x, y = data["expt"], data["gaff"]
+ols_model = sm.OLS(y, x)
+ols_results = ols_model.fit()
+r2 = ols_results.rsquared
+plot(x, y, 'o', label="GAFF (R^2 = %.3f)" % r2)
+
+x, y = data["expt"], data["gaff_corrected"]
+ols_model = sm.OLS(y, x)
+ols_results = ols_model.fit()
+r2 = ols_results.rsquared
+plot(x, y, 'o', label="Corrected (R^2 = %.3f)" % r2)
+
+
+plt.plot([1, 100], [1, 100], 'k')  # Guide
+xscale('log')
+yscale('log')
+xlim((1, 100))
+ylim((1, 100))
+
+ticks = np.concatenate([np.arange(1, 10), 10 * np.arange(1, 10)])
+
+xticks(ticks)
+yticks(ticks)
+
+xlabel("Predicted")
+ylabel("Experiment")
+title("Static Dielectric (Virtual Chemistry Data)")
+
+legend(loc=0)
+
+savefig("./manuscript/figures/dielectric_virtual_chemistry_gaff.pdf", bbox_inches=None)
 
 
 figure()
-g = sns.residplot("gaff", "optcorrected", data)
-g.set(xscale='log', xlim=(1, 100))
-"""
+x, y = data["expt"], data["opls"]
+ols_model = sm.OLS(y, x)
+ols_results = ols_model.fit()
+r2 = ols_results.rsquared
+plot(x, y, 'o', label="OPLS (R^2 = %.3f)" % r2)
+
+x, y = data["expt"], data["opls_corrected"]
+ols_model = sm.OLS(y, x)
+ols_results = ols_model.fit()
+r2 = ols_results.rsquared
+plot(x, y, 'o', label="Corrected (R^2 = %.3f)" % r2)
+
+
+plt.plot([1, 100], [1, 100], 'k')  # Guide
+xscale('log')
+yscale('log')
+xlim((1, 100))
+ylim((1, 100))
+
+ticks = np.concatenate([np.arange(1, 10), 10 * np.arange(1, 10)])
+
+xticks(ticks)
+yticks(ticks)
+
+xlabel("Predicted")
+ylabel("Experiment")
+title("Static Dielectric (Virtual Chemistry Data)")
+
+legend(loc=0)
+
+savefig("./manuscript/figures/dielectric_virtual_chemistry_opls.pdf", bbox_inches=None)
+
