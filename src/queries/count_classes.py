@@ -13,8 +13,8 @@ bad_filenames = ["./10.1016/j.fluid.2013.12.014.xml"]
 data = data[~data.filename.isin(bad_filenames)]
 # SEE GOOGLE DOC!!!!!!# SEE GOOGLE DOC!!!!!!# SEE GOOGLE DOC!!!!!!# SEE GOOGLE DOC!!!!!!
 
-#experiments = ["Mass density, kg/m3", "Relative permittivity at zero frequency"]  # , "Isothermal compressibility, 1/kPa", "Isobaric coefficient of expansion, 1/K"]
-experiments = ["Mass density, kg/m3"]
+experiments = ["Mass density, kg/m3", "Relative permittivity at zero frequency"]  # , "Isothermal compressibility, 1/kPa", "Isobaric coefficient of expansion, 1/K"]
+#experiments = ["Mass density, kg/m3"]
 #experiments = ["Relative permittivity at zero frequency"]
 
 ind_list = [data[exp].dropna().index for exp in experiments]
