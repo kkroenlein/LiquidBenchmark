@@ -64,10 +64,10 @@
 %\title{Benchmarking Neat Liquid Simulations against the ThermoML Database}
 \title{Benchmarking Simulations against the ThermoML Database: Neat Liquid Densities and Static Dielectrics}
 
- \author{Kyle A. Beauchamp}
+ \author{Kyle A. Beauchamp$^*$}
  \affiliation{Memorial Sloan-Kettering Cancer Center, New York, NY, USA}
 
- \author{Julie M. Behr}
+ \author{Julie M. Behr$^*$}
  \affiliation{Memorial Sloan-Kettering Cancer Center, New York, NY, USA}
 
 \author{Patrick B. Grinaway }
@@ -108,26 +108,31 @@ To assess the feasibility of benchmarking organic molecule forcefields against T
 
 \begin{tabular}{lrr}
 \toprule
-{} &  Mass Density &  Static Dielectric \\
+Filter &  Mass Density &  Static Dielectric \\
 \midrule
-0.  Full                        &               308248 &                                     4170 \\
-1.  Druglike elements           &                37944 &                                      847 \\
-2.  $\le10$ heavy atoms, $\le100$ atoms &                27393 &                                      773 \\
-3.  Temperature                 &                16529 &                                      609 \\
-4.  Pressure                    &                 8160 &                                      399 \\
-5.  Aggregate T, P              &                 3443 &                                      382 \\
+Full                        &               308248 &                                     4170 \\
+Druglike elements           &                37944 &                                      847 \\
+$\le10$ heavy atoms, $\le100$ atoms &                27393 &                                      773 \\
+Temperature                 &                16529 &                                      609 \\
+Pressure                    &                 8160 &                                      399 \\
+Aggregate T, P              &                 3443 &                                      382 \\
 \bottomrule
 \end{tabular}
 
 
 \includegraphics[width=\columnwidth]{./figures/thermoml_density_histogram.pdf}
 
-\subsection{Benchmarking GAFF against ThermoML Measurements}
+\subsection{Benchmarking GAFF against ThermoML: Mass Density}
+
+
+\subsection{Benchmarking GAFF against ThermoML: Static Dielectric}
 
 \includegraphics[width=\columnwidth]{./figures/dielectric_virtual_chemistry_opls.pdf}
 \includegraphics[width=\columnwidth]{./figures/dielectric_virtual_chemistry_gaff.pdf}
 \includegraphics[width=\columnwidth]{./figures/densities_thermoml.pdf}
 \includegraphics[width=\columnwidth]{./figures/dielectrics_thermoml.pdf}
+
+\subsection{Benchmarking GAFF against ThermoML: Static Dielectric}
 
 
 \section{Discussion}
