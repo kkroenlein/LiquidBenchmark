@@ -20,6 +20,7 @@
 \usepackage{dcolumn}
 \usepackage{boxedminipage}
 \usepackage{verbatim}
+\usepackage{booktabs}
 
 \usepackage[colorlinks=true,citecolor=blue,linkcolor=blue]{hyperref}
 
@@ -60,7 +61,8 @@
 
 
 %\title{Benchmarking GAFF against Pure Liquid Properties in ThermoML}
-\title{Benchmarking Neat Liquid Simulations against the ThermoML Database}
+%\title{Benchmarking Neat Liquid Simulations against the ThermoML Database}
+\title{Benchmarking Simulations against the ThermoML Database: Neat Liquid Densities and Static Dielectrics}
 
  \author{Kyle A. Beauchamp}
  \affiliation{Memorial Sloan-Kettering Cancer Center, New York, NY, USA}
@@ -103,6 +105,20 @@ Intro
 \subsection{Neat Liquid Measurements in ThermoML}
 
 To assess the feasibility of benchmarking organic molecule forcefields against ThermoML, we performed a number of queries to summarize the data content of ThermoML.
+
+\begin{tabular}{lrr}
+\toprule
+{} &  Mass Density &  Static Dielectric \\
+\midrule
+0.  Full                        &               308248 &                                     4170 \\
+1.  Druglike elements           &                37944 &                                      847 \\
+2.  $\le10$ heavy atoms, $\le100$ atoms &                27393 &                                      773 \\
+3.  Temperature                 &                16529 &                                      609 \\
+4.  Pressure                    &                 8160 &                                      399 \\
+5.  Aggregate T, P              &                 3443 &                                      382 \\
+\bottomrule
+\end{tabular}
+
 
 \includegraphics[width=\columnwidth]{./figures/thermoml_density_histogram.pdf}
 
