@@ -104,18 +104,18 @@ Intro
 
 \subsection{Neat Liquid Measurements in ThermoML}
 
-To assess the feasibility of benchmarking organic molecule forcefields against ThermoML, we performed a number of queries to summarize the data content of ThermoML.
+To assess the feasibility of benchmarking organic molecule forcefields against ThermoML, we performed a number of queries to summarize the data content of ThermoML.  Our aim is to explore neat liquid data with functional groups relevant to drug-like molecules.  We therefore applied the following series of filters: Druglike elements (H, N, C, O, S, P, F, Cl, Br), Heavy Atom Count $(\le 10)$, Temperature [K] $(270 \le T \le 330)$, Pressure [kPA] $(100 \le P \le 102)$.  After applying these filters, we also assume that all pressures within this range are one atmosphere.  We also assume that temperatures can be rounded to one decimal place.  These assumptions are justified because of obvious inconsistencies in data input.
 
 \begin{tabular}{lrr}
 \toprule
 Filter &  Mass Density &  Static Dielectric \\
 \midrule
-Full                        &               308248 &                                     4170 \\
-Druglike elements           &                37944 &                                      847 \\
-$\le10$ heavy atoms, $\le100$ atoms &                27393 &                                      773 \\
-Temperature                 &                16529 &                                      609 \\
-Pressure                    &                 8160 &                                      399 \\
-Aggregate T, P              &                 3443 &                                      382 \\
+0.  Full              &               308248 &                                     4170 \\
+1.  Druglike Elements &                48909 &                                      847 \\
+2.  Heavy Atoms       &                35465 &                                      773 \\
+3.  Temperature       &                18374 &                                      609 \\
+4.  Pressure          &                 8247 &                                      399 \\
+5.  Aggregate T, P    &                 3396 &                                      382 \\
 \bottomrule
 \end{tabular}
 

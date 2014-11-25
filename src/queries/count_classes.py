@@ -29,7 +29,7 @@ name_to_formula = pd.read_hdf("./compound_name_to_formula.h5", 'data')
 name_to_formula = name_to_formula.dropna()
 
 
-which_atoms = ["H", "N", "C", "O", "S", "Cl", "Br"]
+which_atoms = ["H", "N", "C", "O", "S", "Cl", "Br", "F"]
 
 X_is_good = {}
 for k, row in X.iterrows():
@@ -49,19 +49,14 @@ X["n_components"] = X.components.apply(lambda x: len(x.split("__")))
 X = X[X.n_components == 1]
 X.dropna(axis=1, how='all', inplace=True)
 
-counts_data["1.  Druglike elements"] = X.count()[experiments]
+counts_data["1.  Druglike Elements"] = X.count()[experiments]
 
 X["n_heavy_atoms"] = X.components.apply(lambda x: thermoml_lib.count_atoms(name_to_formula[x]))
 X = X[X.n_heavy_atoms <= 10]
 X.dropna(axis=1, how='all', inplace=True)
 
 
-X["n_atoms"] = X.components.apply(lambda x: thermoml_lib.count_atoms(name_to_formula[x], which_atoms=which_atoms))
-X = X[X.n_atoms <= 100]
-X.dropna(axis=1, how='all', inplace=True)
-
-
-counts_data["2.  10 heavy atoms, 100 atoms"] = X.count()[experiments]
+counts_data["2.  Heavy Atoms"] = X.count()[experiments]
 
 
 X["smiles"] = X.components.apply(lambda x: cirpy.resolve(x, "smiles"))  # This should be cached via sklearn.
@@ -86,7 +81,9 @@ counts_data["4.  Pressure"] = X.count()[experiments]
 
 X.dropna(axis=1, how='all', inplace=True)
 
+
 X["Pressure, kPa"] = 101.325  # Assume everything within range is comparable.  
+X["Temperature, K"] = X["Temperature, K"].apply(lambda x: x.round(1))  # Round at the 0.1 digit.  
 
 
 mu = X.groupby(["components", "smiles", "cas", "Temperature, K", "Pressure, kPa"])[experiments].mean()
