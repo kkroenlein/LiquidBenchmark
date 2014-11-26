@@ -30,8 +30,10 @@ x, y = pred["density"], pred["expt_density"]
 plt.plot(x, y, 'o')
 
 plt.title("Density [kg / m^3]")
-plt.xlabel("Predicted")
-plt.ylabel("Experiment")
+plt.xlim((600, 1400))
+plt.ylim((600, 1400))
+plt.xlabel("Predicted (GAFF)")
+plt.ylabel("Experiment (ThermoML)")
 plt.savefig("./manuscript/figures/densities_thermoml.pdf", bbox_inches=None)
 
 
@@ -60,7 +62,7 @@ ticks = np.concatenate([np.arange(1, 10), 10 * np.arange(1, 10)])
 xticks(ticks)
 yticks(ticks)
 
-xlabel("Predicted")
-ylabel("Experiment")
+plt.xlabel("Predicted (GAFF)")
+plt.ylabel("Experiment (ThermoML)")
 title("Static Dielectric Constant")
 plt.savefig("./manuscript/figures/dielectrics_thermoml.pdf", bbox_inches=None)

@@ -22,13 +22,13 @@ data["opls_corrected"] = data.opls + data.polcorr
 
 
 figure()
-x, y = data["expt"], data["gaff"]
+x, y = data["gaff"], data["expt"]
 ols_model = sm.OLS(y, x)
 ols_results = ols_model.fit()
 r2 = ols_results.rsquared
 plot(x, y, 'o', label="GAFF (R^2 = %.3f)" % r2)
 
-x, y = data["expt"], data["gaff_corrected"]
+x, y = data["gaff_corrected"], data["expt"]
 ols_model = sm.OLS(y, x)
 ols_results = ols_model.fit()
 r2 = ols_results.rsquared
@@ -48,7 +48,7 @@ yticks(ticks)
 
 xlabel("Predicted")
 ylabel("Experiment")
-title("Static Dielectric (Virtual Chemistry Data)")
+title("Static Dielectric (Virtual Chemistry Data; GAFF)")
 
 legend(loc=0)
 
@@ -56,13 +56,13 @@ savefig("./manuscript/figures/dielectric_virtual_chemistry_gaff.pdf", bbox_inche
 
 
 figure()
-x, y = data["expt"], data["opls"]
+x, y = data["opls"], data["expt"]
 ols_model = sm.OLS(y, x)
 ols_results = ols_model.fit()
 r2 = ols_results.rsquared
 plot(x, y, 'o', label="OPLS (R^2 = %.3f)" % r2)
 
-x, y = data["expt"], data["opls_corrected"]
+x, y = data["opls_corrected"], data["expt"]
 ols_model = sm.OLS(y, x)
 ols_results = ols_model.fit()
 r2 = ols_results.rsquared
@@ -82,7 +82,7 @@ yticks(ticks)
 
 xlabel("Predicted")
 ylabel("Experiment")
-title("Static Dielectric (Virtual Chemistry Data)")
+title("Static Dielectric (Virtual Chemistry Data; OPLS)")
 
 legend(loc=0)
 

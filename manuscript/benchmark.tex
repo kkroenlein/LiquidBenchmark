@@ -104,8 +104,9 @@ Intro
 
 \subsection{Neat Liquid Measurements in ThermoML}
 
-To assess the feasibility of benchmarking organic molecule forcefields against ThermoML, we performed a number of queries to summarize the data content of ThermoML.  Our aim is to explore neat liquid data with functional groups relevant to drug-like molecules.  We therefore applied the following series of filters: Druglike elements (H, N, C, O, S, P, F, Cl, Br), Heavy Atom Count $(\le 10)$, Temperature [K] $(270 \le T \le 330)$, Pressure [kPA] $(100 \le P \le 102)$.  After applying these filters, we also assume that all pressures within this range are one atmosphere.  We also assume that temperatures can be rounded to one decimal place.  These assumptions are justified because of obvious inconsistencies in data input.
+To assess the feasibility of benchmarking organic molecule forcefields against ThermoML, we performed a number of queries to summarize the data content of ThermoML.  Our aim is to explore neat liquid data with functional groups relevant to drug-like molecules.  We therefore applied the following series of filters: Druglike elements (H, N, C, O, S, P, F, Cl, Br), Heavy Atom Count $(\le 10)$, Temperature [K] $(270 \le T \le 330)$, and Pressure [kPA] $(100 \le P \le 102)$.  After applying these filters, we also assume that all pressures within this range are one atmosphere.  We also assume that temperatures can be rounded to one decimal place.  These approximations are motived by common data entry errors; for example, an experiment performed at water's freezing point at ambient pressure might be entered as either 101.325 kPA or 100 kPA, with a temperature of either 273 K or 273.15 K.
 
+\begin{table}
 \begin{tabular}{lrr}
 \toprule
 Filter &  Mass Density &  Static Dielectric \\
@@ -118,7 +119,9 @@ Filter &  Mass Density &  Static Dielectric \\
 5.  Aggregate T, P    &                 3396 &                                      382 \\
 \bottomrule
 \end{tabular}
-
+\label{Table:Measurements}
+\caption{ThermoML Statistics}
+\end{table}
 
 \includegraphics[width=\columnwidth]{./figures/thermoml_density_histogram.pdf}
 
@@ -140,5 +143,10 @@ Filter &  Mass Density &  Static Dielectric \\
 \subsection{Fitting Forcefields to Dielectric Constants}
 
 Cite work by Chris Fennell on CCl4.  How to get a internally consistent model.  Static dielectric constant includes electronic polarization, need to subtract it out.  Cite TIP4PEW paper.  Could use frequency-dependent dielectric, but empirical polarizability models are highly accurate.  Cite LPW CCL4 paper.  Use idea of a molecular series CCL0 -> CCL1 ... CCL4 as example of internally inconcistent model when directly fitting dielectric constant.
+
+\subsection{ThermoML as a Data Source}
+
+Pro: Automated, Curated, Growing, Free, Paper trail
+Cons: Requires Parsing, Data Entry Errors
 
 \end{document}
