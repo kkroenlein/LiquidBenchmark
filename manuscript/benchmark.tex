@@ -150,6 +150,12 @@ As a measure of the electronic medium, the static dielectric constant of neat li
 
 \subsection{Forcefield Accuracy Depends on Functional Group}
 
+\includegraphics[width=\columnwidth]{./figures/functional_group_logerr_density.pdf}
+
+\includegraphics[width=\columnwidth]{./figures/functional_group_logerr_dielectric.pdf}
+
+\includegraphics[width=\columnwidth]{./figures/functional_group_logerr_dielectric_raw.pdf}
+
 \subsection{Fitting Forcefields to Dielectric Constants}
 
 Recent forcefield development has seen a resurgence of papers fitting dielectric constants as primary data \cite{leeping, mobley}.  However, a number of authors have pointed out potential challenges in constructing self-consistent fixed-charge force fields \cite{davisguy}.  Interestingly, a recent work by Dill \cite{fennell2012simple} pointed out that, for CCL4, reasonable choices of point charges are incapable of recapitulating the observed dielectric of 2.X, instead producing dielectric constants in the range of $1.0 \le \epsilon \le 1.05$.  Suppose, for example, that one attempts to directly fit the static dielectric constants of CH4, CClH3, CCl2H2, CCl3H, CCl4.  In moving from the tetrahedrally-symmetric CCL4 to CCl3H, it suddenly becomes possible to achieve the observed dielectric constant of 2.X.  However, in the model for CCl3H, the fixed point charges are overpolarized and account for two sources of dielectric: the net dipole moment and the (electronic) polarizability.  We hypothesize that this inconsistency in parameterization may lead to strange mismatches, where symmetric molecules (e.g. benzene, CCL4) have qualitatively different properties than closely related assymetric molecules (e.g. toluene, CHCl3).  As a first-order fix, we suggest using empirical polarization corrections before directly comparing measured static dielectric constants to fixed-charge models--particularly when examining low-dielectric solvents.
