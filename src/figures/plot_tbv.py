@@ -29,6 +29,7 @@ pred["expt_dielectric"] = expt["Relative permittivity at zero frequency"]
 x, y = pred["density"], pred["expt_density"]
 plt.plot(x, y, 'o')
 
+plt.plot([600, 1400], [600, 1400], 'k')
 plt.title("Density [kg / m^3]")
 plt.xlim((600, 1400))
 plt.ylim((600, 1400))
