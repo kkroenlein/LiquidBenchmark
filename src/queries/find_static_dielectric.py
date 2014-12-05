@@ -8,25 +8,22 @@ import thermoml_lib
 
 data = pd.read_hdf("./data.h5", 'data')
 
-#experiments = ["Relative permittivity at zero frequency"]
-#experiments = ["Isobaric coefficient of expansion, 1/K"]  # Essentially None
-#experiments = ["Isothermal compressibility, 1/kPa"]  # Essentially None
-experiments = ["Mass density, kg/m3", "Relative permittivity at zero frequency"]
+# SEE GOOGLE DOC!!!!!!# SEE GOOGLE DOC!!!!!!# SEE GOOGLE DOC!!!!!!# SEE GOOGLE DOC!!!!!!
+bad_filenames = ["./10.1016/j.fluid.2013.12.014.xml"]
+data = data[~data.filename.isin(bad_filenames)]
+# SEE GOOGLE DOC!!!!!!# SEE GOOGLE DOC!!!!!!# SEE GOOGLE DOC!!!!!!# SEE GOOGLE DOC!!!!!!
 
-ind_list = [data[exp].dropna() for exp in experiments]
-ind = reduce(lambda x,y: x.index.union(y.index), ind_list)
+experiments = ["Mass density, kg/m3", "Relative permittivity at zero frequency"]  # , "Isothermal compressibility, 1/kPa", "Isobaric coefficient of expansion, 1/K"]
+
+ind_list = [data[exp].dropna().index for exp in experiments]
+ind = reduce(lambda x,y: x.union(y), ind_list)
 X = data.ix[ind]
 
 name_to_formula = pd.read_hdf("./compound_name_to_formula.h5", 'data')
 name_to_formula = name_to_formula.dropna()
 
 
-which_atoms = ["H","N","C","O","S","Cl","Br"]
-X = X[X["Temperature, K"] > 270]
-X = X[X["Temperature, K"] < 330]
-X = X[X["Pressure, kPa"] > 100.]
-X = X[X["Pressure, kPa"] < 102.]
-X.dropna(axis=1, how='all', inplace=True)
+which_atoms = ["H", "N", "C", "O", "S", "Cl", "Br", "F"]
 
 X_is_good = {}
 for k, row in X.iterrows():
@@ -50,38 +47,32 @@ X["n_heavy_atoms"] = X.components.apply(lambda x: thermoml_lib.count_atoms(name_
 X = X[X.n_heavy_atoms <= 10]
 X.dropna(axis=1, how='all', inplace=True)
 
-X["n_atoms"] = X.components.apply(lambda x: thermoml_lib.count_atoms(name_to_formula[x], which_atoms=which_atoms))
-X = X[X.n_atoms <= 100]
-X.dropna(axis=1, how='all', inplace=True)
 
 X["smiles"] = X.components.apply(lambda x: cirpy.resolve(x, "smiles"))  # This should be cached via sklearn.
 X = X[X.smiles != None]
 X = X.ix[X.smiles.dropna().index]
-
     
 X["cas"] = X.components.apply(lambda x: thermoml_lib.get_first_entry(cirpy.resolve(x, "cas")))  # This should be cached via sklearn.
 X = X[X.cas != None]
 X = X.ix[X.cas.dropna().index]
 
-X["Pressure, kPa"] = 101.325  # Assume everything within range is comparable.  
 
-# SEE GOOGLE DOC!!!!!!# SEE GOOGLE DOC!!!!!!# SEE GOOGLE DOC!!!!!!# SEE GOOGLE DOC!!!!!!
-bad_filenames = ["./10.1016/j.fluid.2013.12.014.xml"]
-X = X[~X.filename.isin(bad_filenames)]
-# SEE GOOGLE DOC!!!!!!# SEE GOOGLE DOC!!!!!!# SEE GOOGLE DOC!!!!!!# SEE GOOGLE DOC!!!!!!
+
+X = X[X["Temperature, K"] > 270]
+X = X[X["Temperature, K"] < 330]
+
+X = X[X["Pressure, kPa"] > 100.]
+X = X[X["Pressure, kPa"] < 102.]
+
+X.dropna(axis=1, how='all', inplace=True)
+
+X["Pressure, kPa"] = 101.325  # Assume everything within range is comparable.  
+X["Temperature, K"] = X["Temperature, K"].apply(lambda x: x.round(1))  # Round at the 0.1 digit.  
+
 
 mu = X.groupby(["components", "smiles", "cas", "Temperature, K", "Pressure, kPa"])[experiments].mean()
 sigma = X.groupby(["components", "smiles", "cas", "Temperature, K", "Pressure, kPa"])[experiments].std().dropna()
 
-mu = mu.dropna()
-
 q = mu.reset_index()
-len(q.components.unique())
-
-# 400 measurements, 48 components.
-
+q = q.ix[q[experiments].dropna().index]
 q.to_csv("./data_dielectric.csv")
-
-
-#Y = X[X.components == u'2-propanol'].groupby(["components", "smiles", "cas", "Temperature, K", "Pressure, kPa", "filename"])[experiments].mean().dropna()
-#Y = X[X.components == u'2-propanol'][experiments[1:]].dropna()
