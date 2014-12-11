@@ -65,4 +65,4 @@ sigma = X.groupby(["components", "smiles", "cas", "Temperature, K", "Pressure, k
 
 q = mu.reset_index()
 q = q.ix[q[experiments].dropna().index]
-q.to_csv("./data_dielectric.csv")
+q.to_csv("./tables/data_dielectric.csv")
