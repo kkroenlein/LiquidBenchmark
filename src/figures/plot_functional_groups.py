@@ -11,10 +11,8 @@ sns.set_style("whitegrid")
 
 d = pd.read_table("/home/kyleb/src/choderalab/oeante/oeante/gaff/gaffsmarts.txt", names=["smarts", "atype"], sep=r"\s*", comment='"""', engine="python", index_col=0)
 
-expt = pd.read_csv("./data_dielectric.csv")
+expt = pd.read_csv("./tables/data_dielectric.csv")
 expt["temperature"] = expt["Temperature, K"]
-
-m = Chem.MolFromSmiles('c1ccccc1O')
 
 results = {}
 for smiles in expt.smiles.unique():
@@ -33,7 +31,7 @@ results.dropna(axis=1, how='all', inplace=True)
 results.replace(np.nan, 0, inplace=True)
 results[results > 0] = 1  # Binarize
 
-pred = pd.read_csv("./predictions.csv")
+pred = pd.read_csv("./tables/predictions.csv")
 pred["polcorr"] = pd.Series(dict((cas, polarizability.dielectric_correction_from_formula(formula, density * u.grams / u.milliliter)) for cas, (formula, density) in pred[["formula", "density"]].iterrows()))
 pred["corrected_dielectric"] = pred["polcorr"] + pred["dielectric"]
 
