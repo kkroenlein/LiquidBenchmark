@@ -56,6 +56,13 @@ X["cas"] = X.components.apply(lambda x: thermoml_lib.get_first_entry(cirpy.resol
 X = X[X.cas != None]
 X = X.ix[X.cas.dropna().index]
 
+# Neither names (components) nor smiles are unique.  Use CAS to ensure consistency.
+cannonical_smiles_lookup = X.groupby("cas").smiles.first()
+cannonical_components_lookup = X.groupby("cas").components.first()
+
+X["smiles"] = X.cas.apply(lambda x: cannonical_smiles_lookup[x])
+X["components"] = X.cas.apply(lambda x: cannonical_components_lookup[x])
+
 X = X[X["Temperature, K"] > 270]
 X = X[X["Temperature, K"] < 330]
 
