@@ -9,11 +9,11 @@ sns.set_palette("bright")
 sns.set_style("whitegrid")
 
 
-expt = pd.read_csv("./data_dielectric.csv")
+expt = pd.read_csv("./tables/data_dielectric.csv")
 expt["temperature"] = expt["Temperature, K"]
 
 
-pred = pd.read_csv("./predictions.csv")
+pred = pd.read_csv("./tables/predictions.csv")
 pred["polcorr"] = pd.Series(dict((cas, polarizability.dielectric_correction_from_formula(formula, density * u.grams / u.milliliter)) for cas, (formula, density) in pred[["formula", "density"]].iterrows()))
 pred["corrected_dielectric"] = pred["polcorr"] + pred["dielectric"]
 

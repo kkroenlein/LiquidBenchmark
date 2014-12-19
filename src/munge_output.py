@@ -1,4 +1,4 @@
-import cirpy
+from thermopyl import cirpy
 from simtk.openmm import app
 import builder
 import mdtraj as md
@@ -10,7 +10,7 @@ import glob
 
 filenames = glob.glob("./data/equil/*.pdb")
 filename_munger = lambda filename: os.path.splitext(os.path.split(filename)[1])[0].split("_")
-cirpy.resolve("71-23-8", "formula")
+#cirpy.resolve("71-23-8", "formula")
 data = []
 for pdb_filename in filenames:
     cas, n_molecules, temperature, stage = filename_munger(pdb_filename)
@@ -35,5 +35,5 @@ for pdb_filename in filenames:
 
 data = pd.DataFrame(data)
 
-data.to_csv("./predictions.csv")
+data.to_csv("./tables/predictions.csv")
 # pred["formula"] = pred.cas.map(lambda x: cirpy.resolve(x, 'formula'))
