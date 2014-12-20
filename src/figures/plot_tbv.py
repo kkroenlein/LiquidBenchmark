@@ -17,17 +17,19 @@ pred = pd.read_csv("./tables/predictions.csv")
 pred["polcorr"] = pd.Series(dict((cas, polarizability.dielectric_correction_from_formula(formula, density * u.grams / u.milliliter)) for cas, (formula, density) in pred[["formula", "density"]].iterrows()))
 pred["corrected_dielectric"] = pred["polcorr"] + pred["dielectric"]
 
-#expt = expt.set_index(["cas", "temperature"])  # Can't do this because of duplicates
-expt = expt.groupby(["cas", "temperature"]).mean()  # Fix a couple of duplicates, not sure how they got there.
+expt = expt.set_index(["cas", "temperature"])  # Can't do this because of duplicates  # Should be fixed now, probably due to the CAS / name duplication issue found by Julie.
+#expt = expt.groupby(["cas", "temperature"]).mean()  # Fix a couple of duplicates, not sure how they got there.
 pred = pred.set_index(["cas", "temperature"])
 
 pred["expt_density"] = expt["Mass density, kg/m3"]
 pred["expt_dielectric"] = expt["Relative permittivity at zero frequency"]
 
 
-
-x, y = pred["density"], pred["expt_density"]
-plt.plot(x, y, 'o')
+for (formula, grp) in pred.groupby("formula"):
+    x, y = grp["density"], grp["expt_density"]
+    xerr = grp["density_sigma"]
+    yerr = y * 0.0 + 1E1  # FILL THIS IN LATER!!!
+    plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='.', label=formula)
 
 plt.plot([600, 1400], [600, 1400], 'k')
 plt.title("Density [kg / m^3]")
