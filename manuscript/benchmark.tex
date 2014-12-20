@@ -65,27 +65,27 @@
 \title{Benchmarking Simulations against the ThermoML Database: Neat Liquid Densities and Static Dielectrics}
 
  \author{Kyle A. Beauchamp$^*$}
- \affiliation{Memorial Sloan-Kettering Cancer Center, New York, NY, USA}
+ \affiliation{Memorial Sloan-Kettering Cancer Center, New York, NY}
 
  \author{Julie M. Behr$^*$}
- \affiliation{Memorial Sloan-Kettering Cancer Center, New York, NY, USA}
+ \affiliation{Memorial Sloan-Kettering Cancer Center, New York, NY}
 
 \author{Patrick B. Grinaway }
- \affiliation{Memorial Sloan-Kettering Cancer Center, New York, NY, USA}
+ \affiliation{Memorial Sloan-Kettering Cancer Center, New York, NY}
 
 \author{Bas}
- \affiliation{Memorial Sloan-Kettering Cancer Center, New York, NY, USA}
+ \affiliation{Memorial Sloan-Kettering Cancer Center, New York, NY}
 
- \author{Kenneth Kronlein}
- \affiliation{NIST}
+ \author{Kenneth Kroenlein}
+ \affiliation{NIST Thermodynamics Research Center, Boulder, CO}
  
  \author{Michael R. Shirts}
   \email{michael.shirts@virgina.edu}
- \affiliation{Department of Chemical Engineering, University of Virginia, Charlottesville, VA 22094-0471}
+ \affiliation{Department of Chemical Engineering, University of Virginia, Charlottesville, VA}
 
  \author{John D. Chodera}
  \email{jchodera@mskcc.org}
- \affiliation{Memorial Sloan-Kettering Cancer Center, New York, NY, USA}
+ \affiliation{Memorial Sloan-Kettering Cancer Center, New York, NY}
 
  
 \date{\today}
@@ -104,7 +104,7 @@ Intro
 
 \subsection{Neat Liquid Measurements in ThermoML}
 
-To assess the feasibility of benchmarking organic molecule forcefields against ThermoML, we performed a number of queries to summarize the data content of ThermoML.  Our aim is to explore neat liquid data with functional groups relevant to drug-like molecules.  We therefore applied the following series of filters: Druglike elements (H, N, C, O, S, P, F, Cl, Br), Heavy Atom Count $(\le 10)$, Temperature [K] $(270 \le T \le 330)$, and Pressure [kPA] $(100 \le P \le 102)$.  After applying these filters, we also assume that all pressures within this range are one atmosphere.  We also assume that temperatures can be rounded to one decimal place.  These approximations are motived by common data entry errors; for example, an experiment performed at water's freezing point at ambient pressure might be entered as either 101.325 kPA or 100 kPA, with a temperature of either 273 K or 273.15 K.
+To assess the feasibility of benchmarking organic molecule forcefields against ThermoML, we performed a number of queries to summarize the data content of ThermoML.  Our aim is to explore neat liquid data with functional groups relevant to drug-like molecules.  We therefore applied the following sequence of filters: Druglike elements (H, N, C, O, S, P, F, Cl, Br), Heavy Atom Count $(\le 10)$, Temperature [K] $(270 \le T \le 330)$, and Pressure [kPA] $(100 \le P \le 102)$.  After applying these filters, we also assume that all pressures within this range are one atmosphere.  We also assume that temperatures can be rounded to one decimal place.  These approximations are motived by common data entry errors; for example, an experiment performed at water's freezing point at ambient pressure might be entered as either 101.325 kPA or 100 kPA, with a temperature of either 273 K or 273.15 K.
 
 \begin{table}
 \begin{tabular}{lrr}
@@ -124,7 +124,7 @@ Filter &  Mass Density &  Static Dielectric \\
 \caption{ThermoML Statistics}
 \end{table}
 
-\includegraphics[width=\columnwidth]{./figures/thermoml_density_histogram.pdf}
+%\includegraphics[width=\columnwidth]{./figures/thermoml_density_histogram.pdf}
 
 \subsection{Benchmarking GAFF against ThermoML: Mass Density}
 
@@ -132,7 +132,8 @@ Mass density has been widely used as a critical ingrediant for parameterizing an
 
 \begin{figure}
 \includegraphics[width=\columnwidth]{./figures/densities_thermoml.pdf}
-\caption{Density Benchmark, ThermoML+GAFF} 
+\caption{Measured (ThermoML) versus predicted (GAFF) densities.  Color groupings represent identical chemical formulas.  Simulation error bars represent one standard error of the mean, with the number of effective (uncorrelated) samples estimated using pymbar.  Experimental error bars indicate SO AND SO.
+}
 \end{figure}
 
 
@@ -159,20 +160,24 @@ As a measure of the electronic medium, the static dielectric constant of neat li
 
 \subsection{Fitting Forcefields to Dielectric Constants}
 
-Recent forcefield development has seen a resurgence of papers fitting dielectric constants as primary data \cite{leeping, mobley}.  However, a number of authors have pointed out potential challenges in constructing self-consistent fixed-charge force fields \cite{davisguy}.  Interestingly, a recent work by Dill \cite{fennell2012simple} pointed out that, for CCL4, reasonable choices of point charges are incapable of recapitulating the observed dielectric of 2.X, instead producing dielectric constants in the range of $1.0 \le \epsilon \le 1.05$.  Suppose, for example, that one attempts to directly fit the static dielectric constants of CH4, CClH3, CCl2H2, CCl3H, CCl4.  In moving from the tetrahedrally-symmetric CCL4 to CCl3H, it suddenly becomes possible to achieve the observed dielectric constant of 2.X.  However, in the model for CCl3H, the fixed point charges are overpolarized and account for two sources of dielectric: the net dipole moment and the (electronic) polarizability.  We hypothesize that this inconsistency in parameterization may lead to strange mismatches, where symmetric molecules (e.g. benzene, CCL4) have qualitatively different properties than closely related assymetric molecules (e.g. toluene, CHCl3).  As a first-order fix, we suggest using empirical polarization corrections before directly comparing measured static dielectric constants to fixed-charge models--particularly when examining low-dielectric solvents.
+Recent forcefield development has seen a resurgence of papers fitting dielectric constants as primary data \cite{wang2014building, fennell2014fixed}.  However, a number of authors have pointed out potential challenges in constructing self-consistent fixed-charge force fields \cite{fennell2012simple, davisguy}.  Interestingly, a recent work by Dill \cite{fennell2012simple} pointed out that, for $\mathrm{CCl_4}$, reasonable choices of point charges are incapable of recapitulating the observed dielectric of 2.X, instead producing dielectric constants in the range of $1.0 \le \epsilon \le 1.05$.  Suppose, for example, that one attempts to directly fit the static dielectric constants of $\mathrm{CCl_4}$, $\mathrm{CHCl_3}$, $\mathrm{CH_2Cl_2}$, $\mathrm{CH_3Cl_1}$, $\mathrm{CH_4}$.  In moving from the tetrahedrally-symmetric $\mathrm{CCl_4}$ to $\mathrm{CHCl_3}$, it suddenly becomes possible to achieve the observed dielectric constant of 4.8.  However, the model for $\mathrm{CHCl_3}$ uses fixed point charges to account for \emph{both} the net dipole moment and the (electronic) polarizability, whereas the $\mathrm{CCl_4}$ model contains no treatment of polarizability.  We hypothesize that this inconsistency in parameterization may lead to strange mismatches, where symmetric molecules (e.g. benzene, $\mathrm{CCl_4}$) have qualitatively different properties than closely related asymmetric molecules (e.g. toluene, $\mathrm{CHCl_3}$).  As a first-order fix, we suggest using empirical polarization corrections before directly comparing measured static dielectric constants to fixed-charge models---particularly when examining low-dielectric solvents.  Separating the contributions of fixed charges and polarization may also lead to the development of improved models of electrostatics that account for the missing polarization physics.
 
 
 \subsection{ThermoML as a Data Source}
 
-Pro: Automated, Curated, Growing, Free, Paper trail
-Cons: Requires Parsing, Data Entry Errors
+The present work has focused on the neat liquid density and dielectric measurements present in ThermoML as a target for molecular dynamics forcefield validation.  While densities and dielectric constants have been widely in forcefield work, several aspects of ThermoML make it a unique resource for the forcefield community.  First, the curation, support, and dissemination of ThermoML is supported by NIST, whose mission makes these tasks a long-term priority.  Second, ThermoML is actively growing, through partnerships with journals such as J. Chem. Thermo--new experimental measurements published in these journals are critically examined by the TRC and included in the archive.  Finally, the files in ThermoML are machine readable via a formal XML schema, allowing facile access to thousands of measurements.  In the future, we hope to examine additional measurement classes, including both mixture and two-phase data.
+
 
 \section{Methods}
 
-\subsection{Simulation}
-Boxes of 1000 molecules were constructed using PackMol \cite{}.  AM1-BCC charges were generated using the OpenEye toolkit, using the XYZ module with parameter ZYX.  The selected conformer was then processed using antechamber in AmberTools 14.  The resulting AMBER files were converted to OpenMM \cite{} XML files.  Simulation code used libraries gaff2xml (rev), trustbutverify (rev), openmm 6.2, and MDTraj \cite{} 1.2.  
+\subsection{ThermoML Processing}
 
-Molecular dynamics simulations were performed in the NPT ensemble using a Langevin itegrator (friction 1 / picosecond?) and a Monte Carlo barostat.  Particle mesh ewald \cite{} was used with a long-range cutoff of 1.0??? nanometers.  Simulations were continued until density standard errors reached N decimals of precision, as estimated using the equilibration detection module in pymbar 2.1 \cite{}.  Trajectory analysis was performed using OpenMM \cite{} and MDTraj \cite{}.  
+ThermoML XML files were obtained from the the NIST TRC.  To explore their content, we created a python (version 2.7.9) tool (ThermoPyl: \url{https://github.com/choderalab/ThermoPyL}) that munges the XML content into spreadsheet-like format accessible within the python Pandas (version 0.15.2) tool.  Here we describe its operation.  First, we obtained the XML schema (\url{http://media.iupac.org/namespaces/ThermoML/ThermoML.xsd}) defining the layout of the data.  This scheme was converted into a Python object via PyXB 1.2.4 (\url{http://pyxb.sourceforge.net/}).  Finally, the scheme was used to extract the data.  
+
+\subsection{Simulation}
+Boxes of 1000 molecules were constructed using PackMol \cite{martinez2009packmol}.  AM1-BCC charges were generated using OpenEye toolkit 2014-6-6 \cite{openeye}, using the XYZ module with parameter ZYX.  The selected conformer was then processed using antechamber in AmberTools 14.  The resulting AMBER files were converted to OpenMM \cite{eastman2012openmm} XML files.  Simulation code used libraries gaff2xml 0.1, TrustButVerify 0.1, openmm 6.2, and MDTraj \cite{mcgibbon2014mdtraj} 1.2.  
+
+Molecular dynamics simulations were performed using OpenMM 6.2 using a Langevin integrator (friction $1 ps^{-1}$) and a 1 fs timestep; interestingly, we found that a 2 fs timestep led to insufficient accuracy in equilibrium densities (Fig. S1).  Pressure coupling was achieved with a Monte Carlo barostat applied every 25 steps.  Particle mesh Ewald \cite{Darden1993} was used with a long-range cutoff of 0.95 nm and an isotropic dispersion correction.  Simulations were continued until density standard errors were less than $2 \times 10^{-4}$ g / mL, as estimated using the equilibration detection module in pymbar 2.1 \cite{shirts2008statistically}.  Trajectory analysis was performed using OpenMM \cite{eastman2012openmm} and MDTraj \cite{mcgibbon2014mdtraj}.  
 
 \section{Conclusions}
 
@@ -180,6 +185,10 @@ Molecular dynamics simulations were performed in the NPT ensemble using a Langev
 2.  We have curated a subset of ThermoML for neat liquids with druglike atoms, with thousands of densities and hundreds of dielectrics
 3.  Empirical polarization models correct a systematic bias in comparing fixed-charge forcefields to static dielectric constants
 
+
+\section{Acknowledgements}
+
+We thank Vijay Pande, Lee-Ping Wang, David Mobley, Christopher Bayly, and members of Chodera lab for helpful discussions.  
 
 \bibliography{benchmark}
 

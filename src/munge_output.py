@@ -10,18 +10,19 @@ import glob
 
 filenames = glob.glob("./data/equil/*.pdb")
 filename_munger = lambda filename: os.path.splitext(os.path.split(filename)[1])[0].split("_")
-#cirpy.resolve("71-23-8", "formula")
 data = []
 for pdb_filename in filenames:
     cas, n_molecules, temperature, stage = filename_munger(pdb_filename)
     print(cas, temperature)
     dcd_filename = "./data/production/%s_%s_%s_production.dcd" % (cas, n_molecules, temperature)
+    csv_filename = "./data/production/%s_%s_%s_production.csv" % (cas, n_molecules, temperature)
     try:
         traj = md.load(dcd_filename, top=pdb_filename)
     except IOError:
         continue
     if traj.unitcell_lengths is None: continue
-    rho = md.geometry.density(traj)
+    rho = pd.read_csv(csv_filename)["Density (g/mL)"].values
+    #rho = md.geometry.density(traj)
     [t0, g, Neff] = pymbar.timeseries.detectEquilibration(rho)
     mu = rho[t0:].mean()
     sigma = rho[t0:].std() * Neff ** -0.5
@@ -36,4 +37,3 @@ for pdb_filename in filenames:
 data = pd.DataFrame(data)
 
 data.to_csv("./tables/predictions.csv")
-# pred["formula"] = pred.cas.map(lambda x: cirpy.resolve(x, 'formula'))
