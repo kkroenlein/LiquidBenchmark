@@ -2,8 +2,10 @@
 % DOCUMENT CLASS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\documentclass[journal=jacsat,manuscript=article]{achemso}
+
 % Single-spaced, two-column with PRL look and style (easy on the eyes)
-\documentclass[aps,pre,twocolumn,superscriptaddress]{revtex4-1}
+%\documentclass[aps,pre,twocolumn,superscriptaddress]{revtex4-1}
 %\documentclass[aps,pre,twocolumn,superscriptaddress]{revtex4}
 
 % Double-spaced, one-column style (for submission/review/editing)
@@ -56,12 +58,7 @@
 \newcommand{\Eptk}[2] {{\mathrm E}_{#1}\left[ #2\right]}
 \newcommand{\T}{\mathrm{T}}                                % T used in matrix transpose
 
-\begin{document}
 
-
-
-%\title{Benchmarking GAFF against Pure Liquid Properties in ThermoML}
-%\title{Benchmarking Neat Liquid Simulations against the ThermoML Database}
 \title{Benchmarking Simulations against the ThermoML Database: Neat Liquid Densities and Static Dielectrics}
 
  \author{Kyle A. Beauchamp$^*$}
@@ -75,17 +72,21 @@
 
 \author{Bas}
  \affiliation{Memorial Sloan-Kettering Cancer Center, New York, NY}
+ 
+ \author{Michael R. Shirts}
+ \affiliation{Department of Chemical Engineering, University of Virginia, Charlottesville, VA}
 
  \author{Kenneth Kroenlein}
  \affiliation{NIST Thermodynamics Research Center, Boulder, CO}
  
- \author{Michael R. Shirts}
-  \email{michael.shirts@virgina.edu}
- \affiliation{Department of Chemical Engineering, University of Virginia, Charlottesville, VA}
-
  \author{John D. Chodera}
  \email{jchodera@mskcc.org}
  \affiliation{Memorial Sloan-Kettering Cancer Center, New York, NY}
+
+
+
+\begin{document}
+
 
  
 \date{\today}
@@ -139,7 +140,7 @@ Mass density has been widely used as a critical ingrediant for parameterizing an
 
 \subsection{Benchmarking GAFF against ThermoML: Static Dielectric}
 
-As a measure of the electronic medium, the static dielectric constant of neat liquids provides a critical benchmark that is orthogonal to density and thermodynamic quantities.  We therefore compare our GAFF simulations against the measurements in our ThermoML compilation.  Overall, we find the dielectric constants to be qualitatively reasonable, but with clear deviations from experiment.  In particular, the nonpolar organics show a clear discrepency, with the MD predictions of 1.0 being substantially less polar than the measurements near 2.0.  Because this deviation likely stems from the lack of electronic polarization, we added a simple empirical correction for polarization \cite{bosque2002polarizabilities}, which leads to better agreement with experiment.  A similar polarization correct was used in the developemnt of the TIP4PEW water model; however, the need is much greater for the nonpolar organics, as the missing polarizability is the domimant term in the static dielectric constant.  For comparison, we also applied the same empirical correction to the VirtualChemistry dataset and saw similarly improved agreement with experiment for both the GAFF and OPLS forcefields.
+As a measure of the electronic medium, the static dielectric constant of neat liquids provides a critical benchmark that is orthogonal to density and thermodynamic quantities.  We therefore compare our GAFF simulations against the measurements in our ThermoML compilation.  Overall, we find the dielectric constants to be qualitatively reasonable, but with clear deviations from experiment.  In particular, the nonpolar organics show a clear discrepency, with the MD predictions of 1.0 being substantially less polar than the measurements near 2.0.  Because this deviation likely stems from the lack of electronic polarization, we added a simple empirical correction for polarization \cite{bosque2002polarizabilities}, which leads to better agreement with experiment.  A similar polarization correct was used in the developemnt of the TIP4P-EW water model \cite{horn2004}; however, the need is much greater for the nonpolar organics, as the missing polarizability is the domimant contribution to the static dielectric constant.  For comparison, we also applied the same empirical correction to the VirtualChemistry dataset and saw similarly improved agreement with experiment for both the GAFF and OPLS forcefields.
 
 
 \includegraphics[width=\columnwidth]{./figures/dielectrics_thermoml.pdf}
@@ -160,12 +161,12 @@ As a measure of the electronic medium, the static dielectric constant of neat li
 
 \subsection{Fitting Forcefields to Dielectric Constants}
 
-Recent forcefield development has seen a resurgence of papers fitting dielectric constants as primary data \cite{wang2014building, fennell2014fixed}.  However, a number of authors have pointed out potential challenges in constructing self-consistent fixed-charge force fields \cite{fennell2012simple, davisguy}.  Interestingly, a recent work by Dill \cite{fennell2012simple} pointed out that, for $\mathrm{CCl_4}$, reasonable choices of point charges are incapable of recapitulating the observed dielectric of 2.X, instead producing dielectric constants in the range of $1.0 \le \epsilon \le 1.05$.  Suppose, for example, that one attempts to directly fit the static dielectric constants of $\mathrm{CCl_4}$, $\mathrm{CHCl_3}$, $\mathrm{CH_2Cl_2}$, $\mathrm{CH_3Cl_1}$, $\mathrm{CH_4}$.  In moving from the tetrahedrally-symmetric $\mathrm{CCl_4}$ to $\mathrm{CHCl_3}$, it suddenly becomes possible to achieve the observed dielectric constant of 4.8.  However, the model for $\mathrm{CHCl_3}$ uses fixed point charges to account for \emph{both} the net dipole moment and the (electronic) polarizability, whereas the $\mathrm{CCl_4}$ model contains no treatment of polarizability.  We hypothesize that this inconsistency in parameterization may lead to strange mismatches, where symmetric molecules (e.g. benzene, $\mathrm{CCl_4}$) have qualitatively different properties than closely related asymmetric molecules (e.g. toluene, $\mathrm{CHCl_3}$).  As a first-order fix, we suggest using empirical polarization corrections before directly comparing measured static dielectric constants to fixed-charge models---particularly when examining low-dielectric solvents.  Separating the contributions of fixed charges and polarization may also lead to the development of improved models of electrostatics that account for the missing polarization physics.
+Recent forcefield development has seen a resurgence of papers fitting dielectric constants as primary data \cite{wang2014building, fennell2014fixed}.  However, a number of authors have pointed out potential challenges in constructing self-consistent fixed-charge force fields \cite{fennell2012simple, leontyev2014polarizable}.  Interestingly, a recent work by Dill \cite{fennell2012simple} pointed out that, for $\mathrm{CCl_4}$, reasonable choices of point charges are incapable of recapitulating the observed dielectric of 2.X, instead producing dielectric constants in the range of $1.0 \le \epsilon \le 1.05$.  Suppose, for example, that one attempts to directly fit the static dielectric constants of $\mathrm{CCl_4}$, $\mathrm{CHCl_3}$, $\mathrm{CH_2Cl_2}$, $\mathrm{CH_3Cl_1}$, $\mathrm{CH_4}$.  In moving from the tetrahedrally-symmetric $\mathrm{CCl_4}$ to $\mathrm{CHCl_3}$, it suddenly becomes possible to achieve the observed dielectric constant of 4.8.  However, the model for $\mathrm{CHCl_3}$ uses fixed point charges to account for \emph{both} the net dipole moment and the (electronic) polarizability, whereas the $\mathrm{CCl_4}$ model contains no treatment of polarizability.  We hypothesize that this inconsistency in parameterization may lead to strange mismatches, where symmetric molecules (e.g. benzene, $\mathrm{CCl_4}$) have qualitatively different properties than closely related asymmetric molecules (e.g. toluene, $\mathrm{CHCl_3}$).  As a first-order fix, we suggest using empirical polarization corrections before directly comparing measured static dielectric constants to fixed-charge models---particularly when examining low-dielectric solvents.  Separating the contributions of fixed charges and polarization may also lead to the development of improved models of electrostatics that account for the missing polarization physics.
 
 
 \subsection{ThermoML as a Data Source}
 
-The present work has focused on the neat liquid density and dielectric measurements present in ThermoML as a target for molecular dynamics forcefield validation.  While densities and dielectric constants have been widely in forcefield work, several aspects of ThermoML make it a unique resource for the forcefield community.  First, the curation, support, and dissemination of ThermoML is supported by NIST, whose mission makes these tasks a long-term priority.  Second, ThermoML is actively growing, through partnerships with journals such as J. Chem. Thermo--new experimental measurements published in these journals are critically examined by the TRC and included in the archive.  Finally, the files in ThermoML are machine readable via a formal XML schema, allowing facile access to thousands of measurements.  In the future, we hope to examine additional measurement classes, including both mixture and two-phase data.
+The present work has focused on the neat liquid density and dielectric measurements present in ThermoML \cite{frenkel2006xml, frenkel2003thermoml, chirico2003thermoml} as a target for molecular dynamics forcefield validation.  While densities and dielectric constants have been widely in forcefield work, several aspects of ThermoML make it a unique resource for the forcefield community.  First, the curation, support, and dissemination of ThermoML is supported by NIST, whose mission makes these tasks a long-term priority.  Second, ThermoML is actively growing, through partnerships with journals such as J. Chem. Thermo--new experimental measurements published in these journals are critically examined by the TRC and included in the archive.  Finally, the files in ThermoML are machine readable via a formal XML schema, allowing facile access to thousands of measurements.  In the future, we hope to examine additional measurement classes, including both mixture and two-phase data.
 
 
 \section{Methods}

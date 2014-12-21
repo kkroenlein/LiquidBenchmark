@@ -21,7 +21,7 @@ for pdb_filename in filenames:
     except IOError:
         continue
     if traj.unitcell_lengths is None: continue
-    rho = pd.read_csv(csv_filename)["Density (g/mL)"].values
+    rho = pd.read_csv(csv_filename)["Density (g/mL)"].values * 1000.  # g / mL -> kg /m3
     #rho = md.geometry.density(traj)
     [t0, g, Neff] = pymbar.timeseries.detectEquilibration(rho)
     mu = rho[t0:].mean()
