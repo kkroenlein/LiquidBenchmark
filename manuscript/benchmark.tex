@@ -80,7 +80,7 @@
  \affiliation{NIST Thermodynamics Research Center, Boulder, CO}
  
  \author{John D. Chodera}
- \email{jchodera@mskcc.org}
+ \email{john.chodera@choderalab.org}
  \affiliation{Memorial Sloan-Kettering Cancer Center, New York, NY}
 
 
@@ -88,14 +88,12 @@
 \begin{document}
 
 
- 
-\date{\today}
 \maketitle
 
 
 \section{Abstract}
 
-Useful atomistic simulations require accurate depictions of solvent.  Simple experimental observables, such as density and static dielectric constants, offer straightforward targets for evaluating forcefield quality.  Here we examine the possibilty of benchmarking atomistic models against the NIST ThermoML database of physicochemical measurements, which curates thousands of density, dielectric, and other measurements.  We present a detailed benchmark of the GAFF forcefield against measurements extracted from ThermoML and discuss the extent of available data for neat liquids.  We show that empirical polarizability models correct systematic biases inherent in predicting dielectric constants with fixed-charged forcefields.  Combining our dataset with the Virtual Chemistry benchmark set provides an extensive benchmark suite for liquid properties.  
+Useful atomistic simulations require accurate depictions of solvent.  Simple experimental observables, such as density and static dielectric constants, offer straightforward targets for evaluating forcefield quality.  Here we examine the possibility of benchmarking atomistic models against the NIST ThermoML database of physicochemical measurements, which curates thousands of density, dielectric, and other measurements.  We present a detailed benchmark of the GAFF forcefield against measurements extracted from ThermoML and discuss the extent of available data for neat liquids.  We show that empirical polarizability models correct systematic biases inherent in predicting dielectric constants with fixed-charged forcefields.  Combining our dataset with the Virtual Chemistry benchmark set provides an extensive benchmark suite for liquid properties.  
 
 \section{Introduction}
 
@@ -105,7 +103,7 @@ Intro
 
 \subsection{Neat Liquid Measurements in ThermoML}
 
-To assess the feasibility of benchmarking organic molecule forcefields against ThermoML, we performed a number of queries to summarize the data content of ThermoML.  Our aim is to explore neat liquid data with functional groups relevant to drug-like molecules.  We therefore applied the following sequence of filters: Druglike elements (H, N, C, O, S, P, F, Cl, Br), Heavy Atom Count $(\le 10)$, Temperature [K] $(270 \le T \le 330)$, and Pressure [kPA] $(100 \le P \le 102)$.  After applying these filters, we also assume that all pressures within this range are one atmosphere.  We also assume that temperatures can be rounded to one decimal place.  These approximations are motived by common data entry errors; for example, an experiment performed at water's freezing point at ambient pressure might be entered as either 101.325 kPA or 100 kPA, with a temperature of either 273 K or 273.15 K.
+We performed a number of queries to summarize the ThermoML content relevant for benchmarking organic molecule forcefields.  Our aim is to explore neat liquid data with functional groups relevant to drug-like molecules.  We therefore applied the following sequence of filters: has either density or static dielectric measurements, contains a single component, contains only druglike elements (H, N, C, O, S, P, F, Cl, Br), has low heavy atom count $(\le 10)$, has ambient temperature [K] $(270 \le T \le 330)$, and has ambient pressure [kPA] $(100 \le P \le 102)$.  After applying these filters, we also assume that all pressures within this range are one atmosphere.  We also assume that temperatures can be rounded to one decimal place.  These approximations are motived by common data entry errors; for example, an experiment performed at water's freezing point at ambient pressure might be entered as either 101.325 kPA or 100 kPA, with a temperature of either 273 K or 273.15 K.  After the application of these filters (Table \ref{table:ThermoMLSummary}), we are left with 3591 densities and 432 static dielectrics--or 245 measurements for which both density and dielectric data are available.  
 
 \begin{table}
 \begin{tabular}{lrr}
@@ -117,19 +115,19 @@ Filter &  Mass Density &  Static Dielectric \\
 2.  Heavy Atoms        &                67897 &                                     1567 \\
 3.  Temperature        &                36827 &                                      962 \\
 4.  Pressure           &                13598 &                                      461 \\
-5.  Aggregate T, P     &                 3591 &                                      432 \\
-6.  Density+Dielectric &                  245 &                                      245 \\
+5.  Aggregate T, P     &            \bf{3591} &                                 \bf{432} \\
+6.  Density+Dielectric &             \bf{245} &                                 \bf{245} \\
 \bottomrule
 \end{tabular}
-\label{Table:Measurements}
 \caption{ThermoML Statistics}
+\label{table:ThermoMLSummary}
 \end{table}
 
 %\includegraphics[width=\columnwidth]{./figures/thermoml_density_histogram.pdf}
 
 \subsection{Benchmarking GAFF against ThermoML: Mass Density}
 
-Mass density has been widely used as a critical ingrediant for parameterizing and testing forcefields, particularly the Lennard Jones parameters.  We therefore used the present ThermoML compilation as a benchmark of the Generalized Amber Force Field.  
+Mass density has been widely used as a critical ingredient for parameterizing and testing forcefields, particularly the Lennard Jones parameters.  We therefore used the present ThermoML compilation as a benchmark of the Generalized Amber Force Field.  
 
 \begin{figure}
 \includegraphics[width=\columnwidth]{./figures/densities_thermoml.pdf}
@@ -140,7 +138,7 @@ Mass density has been widely used as a critical ingrediant for parameterizing an
 
 \subsection{Benchmarking GAFF against ThermoML: Static Dielectric}
 
-As a measure of the electronic medium, the static dielectric constant of neat liquids provides a critical benchmark that is orthogonal to density and thermodynamic quantities.  We therefore compare our GAFF simulations against the measurements in our ThermoML compilation.  Overall, we find the dielectric constants to be qualitatively reasonable, but with clear deviations from experiment.  In particular, the nonpolar organics show a clear discrepency, with the MD predictions of 1.0 being substantially less polar than the measurements near 2.0.  Because this deviation likely stems from the lack of electronic polarization, we added a simple empirical correction for polarization \cite{bosque2002polarizabilities}, which leads to better agreement with experiment.  A similar polarization correct was used in the developemnt of the TIP4P-EW water model \cite{horn2004}; however, the need is much greater for the nonpolar organics, as the missing polarizability is the domimant contribution to the static dielectric constant.  For comparison, we also applied the same empirical correction to the VirtualChemistry dataset and saw similarly improved agreement with experiment for both the GAFF and OPLS forcefields.
+As a measure of the electronic medium, the static dielectric constant of neat liquids provides a critical benchmark that is orthogonal to density and thermodynamic quantities.  We therefore compare our GAFF simulations against the measurements in our ThermoML compilation.  Overall, we find the dielectric constants to be qualitatively reasonable, but with clear deviations from experiment.  In particular, the nonpolar organics show a clear discrepancy, with the GAFF predictions of 1.0 being substantially less polar than the measurements near 2.0.  Because this deviation likely stems from the lack of electronic polarization, we added a simple empirical correction for polarization \cite{bosque2002polarizabilities}, which leads to better agreement with experiment.  A similar polarization correction was used in the development of the TIP4P-EW water model \cite{horn2004}; however, the need is much greater for the nonpolar organics, as the missing polarizability is the dominant contribution to the static dielectric constant.  For comparison, we also applied the same empirical correction to the VirtualChemistry dataset \cite{caleman2011force, van2012gromacs} and saw similarly improved agreement with experiment for both the GAFF and OPLS forcefields.
 
 
 \includegraphics[width=\columnwidth]{./figures/dielectrics_thermoml.pdf}
@@ -161,19 +159,19 @@ As a measure of the electronic medium, the static dielectric constant of neat li
 
 \subsection{Fitting Forcefields to Dielectric Constants}
 
-Recent forcefield development has seen a resurgence of papers fitting dielectric constants as primary data \cite{wang2014building, fennell2014fixed}.  However, a number of authors have pointed out potential challenges in constructing self-consistent fixed-charge force fields \cite{fennell2012simple, leontyev2014polarizable}.  Interestingly, a recent work by Dill \cite{fennell2012simple} pointed out that, for $\mathrm{CCl_4}$, reasonable choices of point charges are incapable of recapitulating the observed dielectric of 2.X, instead producing dielectric constants in the range of $1.0 \le \epsilon \le 1.05$.  Suppose, for example, that one attempts to directly fit the static dielectric constants of $\mathrm{CCl_4}$, $\mathrm{CHCl_3}$, $\mathrm{CH_2Cl_2}$, $\mathrm{CH_3Cl_1}$, $\mathrm{CH_4}$.  In moving from the tetrahedrally-symmetric $\mathrm{CCl_4}$ to $\mathrm{CHCl_3}$, it suddenly becomes possible to achieve the observed dielectric constant of 4.8.  However, the model for $\mathrm{CHCl_3}$ uses fixed point charges to account for \emph{both} the net dipole moment and the (electronic) polarizability, whereas the $\mathrm{CCl_4}$ model contains no treatment of polarizability.  We hypothesize that this inconsistency in parameterization may lead to strange mismatches, where symmetric molecules (e.g. benzene, $\mathrm{CCl_4}$) have qualitatively different properties than closely related asymmetric molecules (e.g. toluene, $\mathrm{CHCl_3}$).  As a first-order fix, we suggest using empirical polarization corrections before directly comparing measured static dielectric constants to fixed-charge models---particularly when examining low-dielectric solvents.  Separating the contributions of fixed charges and polarization may also lead to the development of improved models of electrostatics that account for the missing polarization physics.
+Recent forcefield development has seen a resurgence of papers fitting dielectric constants as primary data \cite{wang2014building, fennell2014fixed}.  However, a number of authors have pointed out potential challenges in constructing self-consistent fixed-charge force fields \cite{fennell2012simple, leontyev2014polarizable}.  Interestingly, a recent work by Dill \cite{fennell2012simple} pointed out that, for $\mathrm{CCl_4}$, reasonable choices of point charges are incapable of recapitulating the observed dielectric of 2.2, instead producing dielectric constants in the range of $1.0 \le \epsilon \le 1.05$.  Suppose, for example, that one attempts to directly fit the static dielectric constants of $\mathrm{CCl_4}$, $\mathrm{CHCl_3}$, $\mathrm{CH_2Cl_2}$, $\mathrm{CH_3Cl_1}$, $\mathrm{CH_4}$.  In moving from the tetrahedrally-symmetric $\mathrm{CCl_4}$ to $\mathrm{CHCl_3}$, it suddenly becomes possible to achieve the observed dielectric constant of 4.8.  However, the model for $\mathrm{CHCl_3}$ uses fixed point charges to account for \emph{both} the net dipole moment and the (electronic) polarizability, whereas the $\mathrm{CCl_4}$ model contains no treatment of polarizability.  We hypothesize that this inconsistency in parameterization may lead to strange mismatches, where symmetric molecules (e.g. benzene, $\mathrm{CCl_4}$) have qualitatively different properties than closely related asymmetric molecules (e.g. toluene, $\mathrm{CHCl_3}$).  As a first-order fix, we suggest using empirical polarization corrections before directly comparing measured static dielectric constants to fixed-charge models---particularly when examining low-dielectric solvents.  Separating the contributions of fixed charges and polarization may also lead to the development of improved models of electrostatics that account for the missing polarization physics.
 
 
 \subsection{ThermoML as a Data Source}
 
-The present work has focused on the neat liquid density and dielectric measurements present in ThermoML \cite{frenkel2006xml, frenkel2003thermoml, chirico2003thermoml} as a target for molecular dynamics forcefield validation.  While densities and dielectric constants have been widely in forcefield work, several aspects of ThermoML make it a unique resource for the forcefield community.  First, the curation, support, and dissemination of ThermoML is supported by NIST, whose mission makes these tasks a long-term priority.  Second, ThermoML is actively growing, through partnerships with journals such as J. Chem. Thermo--new experimental measurements published in these journals are critically examined by the TRC and included in the archive.  Finally, the files in ThermoML are machine readable via a formal XML schema, allowing facile access to thousands of measurements.  In the future, we hope to examine additional measurement classes, including both mixture and two-phase data.
+The present work has focused on the neat liquid density and dielectric measurements present in ThermoML \cite{frenkel2006xml, frenkel2003thermoml, chirico2003thermoml} as a target for molecular dynamics forcefield validation.  While densities and dielectric constants have been widely used in forcefield work, several aspects of ThermoML make it a unique resource for the forcefield community.  First, the curation, support, and dissemination of ThermoML is supported by NIST, whose mission makes these tasks a long-term priority.  Second, ThermoML is actively growing, through partnerships with journals such as J. Chem. Thermo--new experimental measurements published in these journals are critically examined by the TRC and included in the archive.  Finally, the files in ThermoML are machine readable via a formal XML schema, allowing facile access to thousands of measurements.  In the future, we hope to examine additional measurement classes, including both mixture and two-phase data.
 
 
 \section{Methods}
 
 \subsection{ThermoML Processing}
 
-ThermoML XML files were obtained from the the NIST TRC.  To explore their content, we created a python (version 2.7.9) tool (ThermoPyl: \url{https://github.com/choderalab/ThermoPyL}) that munges the XML content into spreadsheet-like format accessible within the python Pandas (version 0.15.2) tool.  Here we describe its operation.  First, we obtained the XML schema (\url{http://media.iupac.org/namespaces/ThermoML/ThermoML.xsd}) defining the layout of the data.  This scheme was converted into a Python object via PyXB 1.2.4 (\url{http://pyxb.sourceforge.net/}).  Finally, the scheme was used to extract the data.  
+ThermoML XML files were obtained from the the NIST TRC.  To explore their content, we created a python (version 2.7.9) tool (ThermoPyl: \url{https://github.com/choderalab/ThermoPyL}) that munges the XML content into spreadsheet-like format accessible via the  Pandas (version 0.15.2) library.  First, we obtained the XML schema (\url{http://media.iupac.org/namespaces/ThermoML/ThermoML.xsd}) defining the layout of the data.  This scheme was converted into a Python object via PyXB 1.2.4 (\url{http://pyxb.sourceforge.net/}).  Finally, the scheme was used to extract the data.  
 
 \subsection{Simulation}
 Boxes of 1000 molecules were constructed using PackMol \cite{martinez2009packmol}.  AM1-BCC charges were generated using OpenEye toolkit 2014-6-6 \cite{openeye}, using the XYZ module with parameter ZYX.  The selected conformer was then processed using antechamber in AmberTools 14.  The resulting AMBER files were converted to OpenMM \cite{eastman2012openmm} XML files.  Simulation code used libraries gaff2xml 0.1, TrustButVerify 0.1, openmm 6.2, and MDTraj \cite{mcgibbon2014mdtraj} 1.2.  
@@ -189,7 +187,7 @@ Molecular dynamics simulations were performed using OpenMM 6.2 using a Langevin 
 
 \section{Acknowledgements}
 
-We thank Vijay Pande, Lee-Ping Wang, David Mobley, Christopher Bayly, and members of Chodera lab for helpful discussions.  
+We thank Vijay Pande, Lee-Ping Wang, Robert McGibbon, Jason Swails, David Mobley, Christopher Bayly, and members of Chodera lab for helpful discussions.  
 
 \bibliography{benchmark}
 
