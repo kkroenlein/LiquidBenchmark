@@ -68,7 +68,16 @@ X["Temperature, K"] = X["Temperature, K"].apply(lambda x: x.round(1))  # Round a
 
 
 mu = X.groupby(["components", "smiles", "cas", "Temperature, K", "Pressure, kPa"])[experiments].mean()
-sigma = X.groupby(["components", "smiles", "cas", "Temperature, K", "Pressure, kPa"])[experiments].std().dropna()
+sigma_std = X.groupby(["components", "smiles", "cas", "Temperature, K", "Pressure, kPa"])[experiments].std().dropna()
+sigma_est = X.groupby(["components", "smiles", "cas", "Temperature, K", "Pressure, kPa"])[[e + "_std" for e in experiments]].mean().dropna()
+sigma = pd.concat((sigma_std, sigma_est))
+
+sigma["index"] = sigma.index
+sigma.drop_duplicates(cols='index', take_last=True, inplace=True)
+del sigma["index"]
+
+for e in experiments:
+    mu[e + "_std"] = sigma[e + "_std"]
 
 q = mu.reset_index()
 q = q.ix[q[experiments].dropna().index]

@@ -23,12 +23,14 @@ pred = pred.set_index(["cas", "temperature"])
 
 pred["expt_density"] = expt["Mass density, kg/m3"]
 pred["expt_dielectric"] = expt["Relative permittivity at zero frequency"]
+pred["expt_density_std"] = expt["Mass density, kg/m3_std"]
+pred["expt_dielectric_std"] = expt["Relative permittivity at zero frequency_std"]
 
 
 for (formula, grp) in pred.groupby("formula"):
     x, y = grp["density"], grp["expt_density"]
     xerr = grp["density_sigma"]
-    yerr = y * 0.0 + 1E1  # FILL THIS IN LATER!!!
+    yerr = grp["expt_density_std"].replace(np.nan, 0.0)
     plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='.', label=formula)
 
 plt.plot([600, 1400], [600, 1400], 'k')
@@ -40,18 +42,19 @@ plt.ylabel("Experiment (ThermoML)")
 plt.savefig("./manuscript/figures/densities_thermoml.pdf", bbox_inches=None)
 
 
+yerr = pred["expt_dielectric_std"].replace(np.nan, 0.0)
 plt.figure()
 x, y = pred["dielectric"], pred["expt_dielectric"]
 ols_model = sm.OLS(y, x)
 ols_results = ols_model.fit()
 r2 = ols_results.rsquared
-plot(x, y, 'o', label="GAFF (R^2 = %.3f)" % r2)
+plt.errorbar(x, y, yerr=yerr, fmt='.', label="GAFF (R^2 = %.3f)" % r2)
 
 x, y = pred["corrected_dielectric"], pred["expt_dielectric"]
 ols_model = sm.OLS(y, x)
 ols_results = ols_model.fit()
 r2 = ols_results.rsquared
-plot(x, y, 'o', label="Corrected (R^2 = %.3f)" % r2)
+plt.errorbar(x, y, yerr=yerr, fmt='.', label="Corrected (R^2 = %.3f)" % r2)
 
 plt.plot([1, 100], [1, 100], 'k')  # Guide
 xscale('log')
