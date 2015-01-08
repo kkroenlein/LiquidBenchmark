@@ -1,22 +1,16 @@
 from simtk.openmm import app
 import simtk.openmm as mm
 from simtk import unit as u
-import openmmtools
 
 cas = "126492-54-4"
 
-#integrator_type = "langevin"
-#integrator_type = "langevin1fs"
-#integrator_type = "ghmc"
-integrator_type = "hmc"
+timestep_factor = 1.
 
-steps_per_hmc = 10
+base_filename = "langevin%0.3fs" % 2.0 / timestep_factor
 
-#output_frequency = 250
-output_frequency = 500 if integrator_type != "hmc" else 500 / steps_per_hmc
+output_frequency = 500 * timestep_factor
 dcd_frequency = output_frequency * 20
 
-timestep = 2.0 * u.femtoseconds
 friction = 1.0 / u.picoseconds
 temperature = 300. * u.kelvin
 pressure = 1.0 * u.atmospheres
@@ -27,8 +21,8 @@ cutoff = 1.0 * u.nanometers
 ffxml_filename = "%s.xml" % cas
 ff = app.ForceField(ffxml_filename)
 
-dcd_filename = "./production/production_%s.dcd" % integrator_type
-log_filename = "./production/production_%s.log" % integrator_type
+dcd_filename = "./production/production_%s.dcd" % base_filename
+log_filename = "./production/production_%s.log" % base_filename
 
 pdb = app.PDBFile("./equil/equil_final_step.pdb")
 
@@ -37,13 +31,7 @@ positions = pdb.positions
 
 system = ff.createSystem(topology, nonbondedMethod=app.PME, nonbondedCutoff=cutoff, constraints=app.HBonds)
 
-integrators = {"langevin":mm.LangevinIntegrator(temperature, friction, timestep), 
-"ghmc":openmmtools.integrators.GHMCIntegrator(temperature, friction, timestep),
-"hmc":openmmtools.integrators.HMCIntegrator(temperature, steps_per_hmc, timestep),
-"langevin1fs":mm.LangevinIntegrator(temperature, friction, timestep / 2.),
-}
-
-integrator = integrators[integrator_type]
+integrator mm.LangevinIntegrator(temperature, friction, 2.0 * u.femtoseconds / timestep_factor)
 
 system.addForce(mm.MonteCarloBarostat(pressure, temperature, barostat_frequency))
 

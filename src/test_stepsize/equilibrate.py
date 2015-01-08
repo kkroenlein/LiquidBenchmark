@@ -3,7 +3,6 @@ import mdtraj as md
 from simtk.openmm import app
 import simtk.openmm as mm
 from simtk import unit as u
-import openmmtools
 
 temperature = 300. * u.kelvin
 equil_friction = 5 / u.picoseconds
