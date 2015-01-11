@@ -1,22 +1,20 @@
 import pandas as pd
 import pymbar
 
-data1 = pd.read_csv("./production_langevin1fs.log")["Density (g/mL)"].values
-data2 = pd.read_csv("./production_langevin.log")["Density (g/mL)"].values
+table = {}
+for timestep in [0.5, 1.0, 2.0]:
+    max_n = int(5000000 / timestep)
+    data = pd.read_csv("./production_langevin%0.1fs.log" % timestep)["Density (g/mL)"].values[0:max_n]
+    n = len(data)
+    g = pymbar.timeseries.statisticalInefficiency(data)
+    neff = len(data) / g
+    mu = data.mean()
+    sigma = data.std()
+    stderr = sigma * neff ** -0.5
+    table[timestep] = dict(n=n, neff=neff, mu=mu, sigma=sigma, stderr=stderr)
 
-g1 = pymbar.timeseries.statisticalInefficiency(data1)
-neff1 = len(data1) / g1
-g2 = pymbar.timeseries.statisticalInefficiency(data2)
-neff2 = len(data2) / g2
-
-mu1 = data1.mean()
-mu2 = data2.mean()
-
-sigma1 = data1.std()
-sigma2 = data2.std()
-
-err1 = sigma1 * neff1 ** -0.5
-err2 = sigma2 * neff2 ** -0.5
-
-(mu1 - mu2)
-(mu1 - mu2) / err1
+table = pd.DataFrame(table).T
+table["error"] = table.mu - table.mu[0.5]
+table["relerr"] = (table.mu - table.mu[0.5]) / table.mu[0.5]
+table
+print table.to_latex()

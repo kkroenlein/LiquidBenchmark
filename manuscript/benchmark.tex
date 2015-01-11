@@ -189,6 +189,24 @@ Molecular dynamics simulations were performed using OpenMM 6.2 using a Langevin 
 
 We thank Vijay Pande, Lee-Ping Wang, Peter Eastman, Robert McGibbon, Jason Swails, David Mobley, Christopher Bayly, and members of Chodera lab for helpful discussions.  
 
+\section{Supplementary Information}
+
+\begin{table}
+\begin{tabular}{lrrrrrrr}
+\toprule
+{} &        mu &       n &          neff &     sigma &    stderr &     error &    relerr \\
+\midrule
+0.5 &  0.903701 &  145510 &  20357.973571 &  0.007362 &  0.000052 &  0.000000 &  0.000000 \\
+1.0 &  0.903114 &  159515 &  21988.457281 &  0.007415 &  0.000050 & -0.000588 & -0.000650 \\
+2.0 &  0.901811 &  108346 &  15964.072327 &  0.007494 &  0.000059 & -0.001891 & -0.002092 \\
+\bottomrule
+\end{tabular}
+\caption{To probe the systematic error from finite time-step integration, we examined the timestep dependence of butyl acrylate density.  The number of effective samples was estimated using pymbar's statistical inefficiency routine \cite{shirts2008statistically}.  To approximate the timestep bias, we compare the density expectation ($\langle \rho \rangle$) to values calculated with a 0.5fs timestep.  We find a 2fs timestep leads to systematic biases in the density on the order of 0.2\%, while 1fs reduces the systematic bias to less than 0.1\%---we therefore selected a 1fs timestep for the present work, where we aimed to achieve three digits of accuracy in density predictions.
+}
+\label{table:TimestepDependence}
+\end{table}
+
+
 \bibliography{benchmark}
 
 \end{document}

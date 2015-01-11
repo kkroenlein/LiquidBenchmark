@@ -4,9 +4,10 @@ from simtk import unit as u
 
 cas = "126492-54-4"
 
-timestep_factor = 2.
+timestep_factor = 1.
 
 base_filename = "langevin%0.1fs" % (2.0 / timestep_factor)
+timestep = 2.0 * u.femtoseconds / timestep_factor
 
 output_frequency = int(500 * timestep_factor)
 dcd_frequency = int(output_frequency * 20)
@@ -32,7 +33,7 @@ positions = pdb.positions
 
 system = ff.createSystem(topology, nonbondedMethod=app.PME, nonbondedCutoff=cutoff, constraints=app.HBonds)
 
-integrator = mm.LangevinIntegrator(temperature, friction, 2.0 * u.femtoseconds / timestep_factor)
+integrator = mm.LangevinIntegrator(temperature, friction, timestep)
 
 system.addForce(mm.MonteCarloBarostat(pressure, temperature, barostat_frequency))
 
