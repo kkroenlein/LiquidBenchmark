@@ -131,7 +131,7 @@ Mass density has been widely used as a critical ingredient for parameterizing an
 
 \begin{figure}
 \includegraphics[width=\columnwidth]{./figures/densities_thermoml.pdf}
-\caption{Measured (ThermoML) versus predicted (GAFF) densities.  Color groupings represent identical chemical formulas.  Simulation error bars represent one standard error of the mean, with the number of effective (uncorrelated) samples estimated using pymbar.  Experimental error bars indicate the standard deviation between independently reported measurements, when available, or the authors reported standard deviations; for some measurements, neither uncertainty estimate is available.  
+\caption{Measured (ThermoML) versus predicted (GAFF) densities.  Color groupings represent identical chemical formulas.  Simulation error bars represent one standard error of the mean, with the number of effective (uncorrelated) samples estimated using pymbar.  Experimental error bars indicate the standard deviation between independently reported measurements, when available, or the authors reported standard deviations; for some measurements, neither uncertainty estimate is available.  See section S2 for further discussion of error.
 }
 \end{figure}
 
@@ -174,7 +174,7 @@ The present work has focused on the neat liquid density and dielectric measureme
 ThermoML XML files were obtained from the the NIST TRC.  To explore their content, we created a python (version 2.7.9) tool (ThermoPyl: \url{https://github.com/choderalab/ThermoPyL}) that munges the XML content into spreadsheet-like format accessible via the  Pandas (version 0.15.2) library.  First, we obtained the XML schema (\url{http://media.iupac.org/namespaces/ThermoML/ThermoML.xsd}) defining the layout of the data.  This scheme was converted into a Python object via PyXB 1.2.4 (\url{http://pyxb.sourceforge.net/}).  Finally, the scheme was used to extract the data.  
 
 \subsection{Simulation}
-Boxes of 1000 molecules were constructed using PackMol \cite{martinez2009packmol}.  AM1-BCC charges were generated using OpenEye toolkit 2014-6-6 \cite{openeye}, using the XYZ module with parameter ZYX.  The selected conformer was then processed using antechamber in AmberTools 14.  The resulting AMBER files were converted to OpenMM \cite{eastman2012openmm} XML files.  Simulation code used libraries gaff2xml 0.6, TrustButVerify 0.1, openmm 6.2, and MDTraj \cite{mcgibbon2014mdtraj} 1.2.  
+Boxes of 1000 molecules were constructed using PackMol \cite{martinez2009packmol}.  AM1-BCC charges were generated using OpenEye toolkit 2014-6-6 \cite{openeye}, using the oequacpac.OEAssignPartialCharges module with parameter set OECharges\_AM1BCCSym.  The selected conformer was then processed using antechamber in AmberTools 14.  The resulting AMBER files were converted to OpenMM \cite{eastman2012openmm} XML files.  Simulation code used libraries gaff2xml 0.6, TrustButVerify 0.1, openmm 6.2, and MDTraj \cite{mcgibbon2014mdtraj} 1.2.  
 
 Molecular dynamics simulations were performed using OpenMM 6.2 using a Langevin integrator (friction $1 ps^{-1}$) and a 1 fs timestep; interestingly, we found that a 2 fs timestep led to insufficient accuracy in equilibrium densities (Fig. S1).  Pressure coupling was achieved with a Monte Carlo barostat applied every 25 steps.  Particle mesh Ewald \cite{Darden1993} was used with a long-range cutoff of 0.95 nm and an isotropic dispersion correction.  Simulations were continued until density standard errors were less than $2 \times 10^{-4}$ g / mL, as estimated using the equilibration detection module in pymbar 2.1 \cite{shirts2008statistically}.  Trajectory analysis was performed using OpenMM \cite{eastman2012openmm} and MDTraj \cite{mcgibbon2014mdtraj}.  
 
@@ -191,6 +191,13 @@ We thank Vijay Pande, Lee-Ping Wang, Peter Eastman, Robert McGibbon, Jason Swail
 
 \section{Supplementary Information}
 
+\begin{itemize}
+ \item Table: Timestep-dependence of density
+ \item Figure: Error analysis for ThermoML dataset
+ \item Table (CSV File): ThermoML Dataset used in present analysis.
+\end{itemize}
+
+
 \begin{table}
 \begin{tabular}{lrrrrrrr}
 \toprule
@@ -205,6 +212,43 @@ We thank Vijay Pande, Lee-Ping Wang, Peter Eastman, Robert McGibbon, Jason Swail
 }
 \label{table:TimestepDependence}
 \end{table}
+
+
+\begin{figure}
+
+\includegraphics[width=8cm]{./figures/error_analysis_density.pdf}
+\includegraphics[width=8cm]{./figures/error_analysis_dielectric.pdf}
+
+\includegraphics[width=8cm]{./figures/error_analysis_density_index.pdf}
+\includegraphics[width=8cm]{./figures/error_analysis_dielectric_index.pdf}
+
+\caption{To assess the experimental error in our benchmark set, we consider two orthogonal error measurements.  The first is the mean of the uncertainties reported by the measurement authors.  The second is the standard deviation of measurements in ThermoML.   We see that author-reported uncertainties appear to be overly optimistic for densities (a, c), but author-reported uncertainties of dielectrics (b, d) appear consistent with the standard deviations.  A simple psychological explanation might be that because density measurements are more routine, the authors simply report the accuracy limit of their hardware (e.g. 0.0001 g / mL for a Mettler Toledo DM40 \cite{mettlertoledo}).  However, this hardware limit is not achieved due to inconsistencies in sample preparation.  Note that in panels (c, d) show the same information as (a, b) but as a function of the measurement index, rather than as a scatter plot---because not all measurements have author-supplied uncertainties, panels (c, d) contains slightly more data points than (a, b).  
+}
+\label{figure:ErrorAnalysis}
+
+\end{figure}
+
+
+\begin{figure}
+
+\includegraphics[width=\columnwidth]{./figures/densities_versus_temperature_all.pdf}
+
+\caption{Measured (blue) and simulated (green) densities [kg / m3] for all compounds.
+}
+\label{figure:AllDensities}
+
+\end{figure}
+
+\begin{figure}
+
+\includegraphics[width=\columnwidth]{./figures/dielectric_versus_temperature_all.pdf}
+
+\caption{Measured (blue) and simulated (green) dielectric for all compounds.
+}
+\label{figure:AllDielectrics}
+
+\end{figure}
+
 
 
 \bibliography{benchmark}

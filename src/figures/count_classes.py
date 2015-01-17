@@ -1,18 +1,15 @@
-import re
-from rdkit import Chem
-from rdkit.Chem import AllChem
+"""Extract druglike liquid density and dielectric data from ThermoML.
+Also counts the number of measurements remaining 
+"""
 import pandas as pd
-import glob
 from thermopyl import thermoml_lib, cirpy
 
 data = pd.read_hdf("./data.h5", 'data')
 
-# SEE GOOGLE DOC!!!!!!# SEE GOOGLE DOC!!!!!!# SEE GOOGLE DOC!!!!!!# SEE GOOGLE DOC!!!!!!
-bad_filenames = ["./10.1016/j.fluid.2013.12.014.xml"]
+bad_filenames = ["./10.1016/j.fluid.2013.12.014.xml"]  # This file confirmed to have possible data entry errors.
 data = data[~data.filename.isin(bad_filenames)]
-# SEE GOOGLE DOC!!!!!!# SEE GOOGLE DOC!!!!!!# SEE GOOGLE DOC!!!!!!# SEE GOOGLE DOC!!!!!!
 
-experiments = ["Mass density, kg/m3", "Relative permittivity at zero frequency"]  # , "Isothermal compressibility, 1/kPa", "Isobaric coefficient of expansion, 1/K"]
+experiments = ["Mass density, kg/m3", "Relative permittivity at zero frequency"]
 
 ind_list = [data[exp].dropna().index for exp in experiments]
 ind = reduce(lambda x,y: x.union(y), ind_list)
@@ -78,9 +75,10 @@ X.dropna(axis=1, how='all', inplace=True)
 X["Pressure, kPa"] = 101.325  # Assume everything within range is comparable.  
 X["Temperature, K"] = X["Temperature, K"].apply(lambda x: x.round(1))  # Round at the 0.1 digit.  
 
+X.to_csv("./tables/full_filtered_data.csv")
+
 
 mu = X.groupby(["components", "smiles", "cas", "Temperature, K", "Pressure, kPa"])[experiments].mean()
-sigma = X.groupby(["components", "smiles", "cas", "Temperature, K", "Pressure, kPa"])[experiments].std().dropna()
 
 counts_data["5.  Aggregate T, P"] = mu.count()[experiments]
 
@@ -88,14 +86,8 @@ counts_data = pd.DataFrame(counts_data).T
 
 q = mu.reset_index()
 q = q.ix[q[experiments].dropna().index]
+q.to_csv("./tables/data_dielectric.csv")
+
 counts_data.ix["6.  Density+Dielectric"] = len(q)
 
 print counts_data.to_latex()
-
-plt.figure()
-X["Temperature, K"].hist()
-plt.title("ThermoML Density Data")
-plt.ylabel("Number of Measurements")
-plt.xlabel("Temperature [K]")
-
-plt.savefig("/home/kyleb/src/kyleabeauchamp/LiquidBenchmark/manuscript/figures/thermoml_density_histogram.pdf", bbox_inches=None)
