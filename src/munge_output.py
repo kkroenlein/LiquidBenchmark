@@ -7,6 +7,9 @@ import scipy.interpolate
 import os
 import pandas as pd
 import glob
+import dipole_errorbars
+
+block_length = 20  # 200 ps blocks for dielectric error bar block averaging.
 
 filenames = glob.glob("./data/equil/*.pdb")
 filename_munger = lambda filename: os.path.splitext(os.path.split(filename)[1])[0].split("_")
@@ -29,9 +32,15 @@ for pdb_filename in filenames:
     forcefield = app.ForceField("./data/ffxml/%s.xml" % cas)
     system, charges = builder.build_simulation(traj, forcefield)
     temperature = float(temperature)
+    traj = traj[t0 * len(traj) / len(rho):]
+    n = len(traj)
     dielectric = md.geometry.static_dielectric(traj, charges, temperature)
+    #dielectric0 = md.geometry.static_dielectric(traj[0:n/2], charges, temperature)
+    #dielectric1 = md.geometry.static_dielectric(traj[n/2:], charges, temperature)
+    #dielectric_sigma = np.std([dielectric0, dielectric1])
+    dielectric_sigma = dipole_errorbars.bootstrap(traj, charges, temperature, block_length)[1]
     formula = cirpy.resolve(cas, "formula")
-    data.append(dict(cas=cas, temperature=temperature, density=mu, density_sigma=sigma, Neff=Neff, dielectric=dielectric, formula=formula))
+    data.append(dict(cas=cas, temperature=temperature, density=mu, density_sigma=sigma, Neff=Neff, n_frames=traj.n_frames, dielectric=dielectric, dielectric_sigma=dielectric_sigma, formula=formula))
     print(data[-1])
 
 data = pd.DataFrame(data)

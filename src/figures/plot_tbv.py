@@ -43,32 +43,43 @@ plt.savefig("./manuscript/figures/densities_thermoml.pdf", bbox_inches=None)
 
 
 yerr = pred["expt_dielectric_std"].replace(np.nan, 0.0)
+xerr = pred["dielectric_sigma"].replace(np.nan, 0.0)
+
 plt.figure()
-x, y = pred["dielectric"], pred["expt_dielectric"]
-ols_model = sm.OLS(y, x)
-ols_results = ols_model.fit()
-r2 = ols_results.rsquared
-plt.errorbar(x, y, yerr=yerr, fmt='.', label="GAFF (R^2 = %.3f)" % r2)
 
-x, y = pred["corrected_dielectric"], pred["expt_dielectric"]
-ols_model = sm.OLS(y, x)
-ols_results = ols_model.fit()
-r2 = ols_results.rsquared
-plt.errorbar(x, y, yerr=yerr, fmt='.', label="Corrected (R^2 = %.3f)" % r2)
-
-plt.plot([1, 100], [1, 100], 'k')  # Guide
-xscale('log')
-yscale('log')
-xlim((1, 100))
-ylim((1, 100))
-plt.legend(loc=0)
+plt.xlabel("Predicted (GAFF)")
+plt.ylabel("Experiment (ThermoML)")
+title("Static Dielectric Constant")
 
 ticks = np.concatenate([np.arange(1, 10), 10 * np.arange(1, 10)])
 
 xticks(ticks)
 yticks(ticks)
 
-plt.xlabel("Predicted (GAFF)")
-plt.ylabel("Experiment (ThermoML)")
-title("Static Dielectric Constant")
+plt.plot([1, 100], [1, 100], 'k')  # Guide
+xscale('log')
+yscale('log')
+
+
+x, y = pred["dielectric"], pred["expt_dielectric"]
+ols_model = sm.OLS(y, x)
+ols_results = ols_model.fit()
+r2 = ols_results.rsquared
+plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='.', label="GAFF (R^2 = %.3f)" % r2)
+
+xlim((1, 100))
+ylim((1, 100))
+plt.legend(loc=0)
+plt.savefig("./manuscript/figures/dielectrics_thermoml_nocorr.pdf", bbox_inches=None)
+
+
+x, y = pred["corrected_dielectric"], pred["expt_dielectric"]
+ols_model = sm.OLS(y, x)
+ols_results = ols_model.fit()
+r2 = ols_results.rsquared
+plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='.', label="Corrected (R^2 = %.3f)" % r2)
+
+xlim((1, 100))
+ylim((1, 100))
+plt.legend(loc=0)
 plt.savefig("./manuscript/figures/dielectrics_thermoml.pdf", bbox_inches=None)

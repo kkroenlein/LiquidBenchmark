@@ -45,8 +45,9 @@ plt.savefig("./manuscript/figures/densities_versus_temperature_all.pdf", bbox_in
 # HACK TO PLOT DATA THAT LACKS ERRORBARS!
 pred.expt_dielectric_std = pred.expt_dielectric_std.fillna(0.0)
 # NEED TO DO ERROR ESTIMATES ON EPSILON
-pred["corrected_dielectric_sigma"] = 0.0
-pred["dielectric_sigma"] = 0.0
+pred["corrected_dielectric_sigma"] = pred.dielectric_sigma
+#pred["corrected_dielectric_sigma"] = 0.0
+#pred["dielectric_sigma"] = 0.0
 # End HACKERY
 
 g = sns.FacetGrid(pred, col="name", col_wrap=6, size=3.5)
