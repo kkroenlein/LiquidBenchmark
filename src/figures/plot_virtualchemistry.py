@@ -26,13 +26,15 @@ x, y = data["gaff"], data["expt"]
 ols_model = sm.OLS(y, x)
 ols_results = ols_model.fit()
 r2 = ols_results.rsquared
-plot(x, y, 'o', label="GAFF (R^2 = %.3f)" % r2)
+#plot(x, y, 'o', label="GAFF (R^2 = %.3f)" % r2)
+plot(x, y, 'o', label="GAFF")
 
 x, y = data["gaff_corrected"], data["expt"]
 ols_model = sm.OLS(y, x)
 ols_results = ols_model.fit()
 r2 = ols_results.rsquared
-plot(x, y, 'o', label="Corrected (R^2 = %.3f)" % r2)
+#plot(x, y, 'o', label="Corrected (R^2 = %.3f)" % r2)
+plot(x, y, 'o', label="Corrected")
 
 
 plt.plot([1, 100], [1, 100], 'k')  # Guide
@@ -60,13 +62,15 @@ x, y = data["opls"], data["expt"]
 ols_model = sm.OLS(y, x)
 ols_results = ols_model.fit()
 r2 = ols_results.rsquared
-plot(x, y, 'o', label="OPLS (R^2 = %.3f)" % r2)
+#plot(x, y, 'o', label="OPLS (R^2 = %.3f)" % r2)
+plot(x, y, 'o', label="OPLS")
 
 x, y = data["opls_corrected"], data["expt"]
 ols_model = sm.OLS(y, x)
 ols_results = ols_model.fit()
 r2 = ols_results.rsquared
-plot(x, y, 'o', label="Corrected (R^2 = %.3f)" % r2)
+#plot(x, y, 'o', label="Corrected (R^2 = %.3f)" % r2)
+plot(x, y, 'o', label="Corrected")
 
 
 plt.plot([1, 100], [1, 100], 'k')  # Guide

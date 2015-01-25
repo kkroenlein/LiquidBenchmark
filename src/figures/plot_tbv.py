@@ -65,7 +65,8 @@ x, y = pred["dielectric"], pred["expt_dielectric"]
 ols_model = sm.OLS(y, x)
 ols_results = ols_model.fit()
 r2 = ols_results.rsquared
-plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='.', label="GAFF (R^2 = %.3f)" % r2)
+#plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='.', label="GAFF (R^2 = %.3f)" % r2)
+plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='.', label="GAFF")
 
 xlim((1, 100))
 ylim((1, 100))
@@ -77,7 +78,8 @@ x, y = pred["corrected_dielectric"], pred["expt_dielectric"]
 ols_model = sm.OLS(y, x)
 ols_results = ols_model.fit()
 r2 = ols_results.rsquared
-plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='.', label="Corrected (R^2 = %.3f)" % r2)
+#plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='.', label="Corrected (R^2 = %.3f)" % r2)
+plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='.', label="Corrected")
 
 xlim((1, 100))
 ylim((1, 100))
