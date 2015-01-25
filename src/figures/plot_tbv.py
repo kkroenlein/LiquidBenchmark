@@ -49,16 +49,16 @@ plt.figure()
 
 plt.xlabel("Predicted (GAFF)")
 plt.ylabel("Experiment (ThermoML)")
-title("Static Dielectric Constant")
+title("Inverse Static Dielectric Constant")
 
-ticks = np.concatenate([np.arange(1, 10), 10 * np.arange(1, 10)])
+#ticks = np.concatenate([np.arange(1, 10), 10 * np.arange(1, 10)])
 
-xticks(ticks)
-yticks(ticks)
+#xticks(ticks)
+#yticks(ticks)
 
-plt.plot([1, 100], [1, 100], 'k')  # Guide
-xscale('log')
-yscale('log')
+plt.plot([0.01, 1], [0.01, 1], 'k')  # Guide
+#xscale('log')
+#yscale('log')
 
 
 x, y = pred["dielectric"], pred["expt_dielectric"]
@@ -66,10 +66,11 @@ ols_model = sm.OLS(y, x)
 ols_results = ols_model.fit()
 r2 = ols_results.rsquared
 #plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='.', label="GAFF (R^2 = %.3f)" % r2)
-plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='.', label="GAFF")
+#plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='.', label="GAFF")
+plt.errorbar(x ** -1, y ** -1, xerr=xerr * x ** -2, yerr=yerr * y ** -2, fmt='.', label="GAFF")  # Transform xerr and yerr for 1 / epsilon plot
 
-xlim((1, 100))
-ylim((1, 100))
+xlim((0.01, 1))
+ylim((0.01, 1))
 plt.legend(loc=0)
 plt.savefig("./manuscript/figures/dielectrics_thermoml_nocorr.pdf", bbox_inches=None)
 
@@ -79,9 +80,10 @@ ols_model = sm.OLS(y, x)
 ols_results = ols_model.fit()
 r2 = ols_results.rsquared
 #plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='.', label="Corrected (R^2 = %.3f)" % r2)
-plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='.', label="Corrected")
+#plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='.', label="Corrected")
+plt.errorbar(x ** -1, y ** -1, xerr=xerr * x ** -2, yerr=yerr * y ** -2, fmt='.', label="Corrected")  # Transform xerr and yerr for 1 / epsilon plot
 
-xlim((1, 100))
-ylim((1, 100))
+xlim((0.01, 1))
+ylim((0.01, 1))
 plt.legend(loc=0)
 plt.savefig("./manuscript/figures/dielectrics_thermoml.pdf", bbox_inches=None)

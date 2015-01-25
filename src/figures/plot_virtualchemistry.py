@@ -27,30 +27,24 @@ ols_model = sm.OLS(y, x)
 ols_results = ols_model.fit()
 r2 = ols_results.rsquared
 #plot(x, y, 'o', label="GAFF (R^2 = %.3f)" % r2)
-plot(x, y, 'o', label="GAFF")
+plot(x ** -1, y ** -1, 'o', label="GAFF")
 
 x, y = data["gaff_corrected"], data["expt"]
 ols_model = sm.OLS(y, x)
 ols_results = ols_model.fit()
 r2 = ols_results.rsquared
 #plot(x, y, 'o', label="Corrected (R^2 = %.3f)" % r2)
-plot(x, y, 'o', label="Corrected")
+plot(x ** -1, y ** -1, 'o', label="Corrected")
 
 
-plt.plot([1, 100], [1, 100], 'k')  # Guide
-xscale('log')
-yscale('log')
-xlim((1, 100))
-ylim((1, 100))
+plt.plot([0.01, 1], [0.01, 1], 'k')  # Guide
+xlim((0.01, 1))
+ylim((0.01, 1))
 
-ticks = np.concatenate([np.arange(1, 10), 10 * np.arange(1, 10)])
-
-xticks(ticks)
-yticks(ticks)
 
 xlabel("Predicted")
 ylabel("Experiment")
-title("Static Dielectric (Virtual Chemistry Data; GAFF)")
+title("Inverse Static Dielectric (Virtual Chemistry Data; GAFF)")
 
 legend(loc=0)
 
@@ -63,30 +57,24 @@ ols_model = sm.OLS(y, x)
 ols_results = ols_model.fit()
 r2 = ols_results.rsquared
 #plot(x, y, 'o', label="OPLS (R^2 = %.3f)" % r2)
-plot(x, y, 'o', label="OPLS")
+plot(x ** -1, y ** -1, 'o', label="OPLS")
 
 x, y = data["opls_corrected"], data["expt"]
 ols_model = sm.OLS(y, x)
 ols_results = ols_model.fit()
 r2 = ols_results.rsquared
 #plot(x, y, 'o', label="Corrected (R^2 = %.3f)" % r2)
-plot(x, y, 'o', label="Corrected")
+plot(x ** -1, y ** -1, 'o', label="Corrected")
 
 
-plt.plot([1, 100], [1, 100], 'k')  # Guide
-xscale('log')
-yscale('log')
-xlim((1, 100))
-ylim((1, 100))
+plt.plot([0.01, 1], [0.01, 1], 'k')  # Guide
+xlim((0.01, 1))
+ylim((0.01, 1))
 
-ticks = np.concatenate([np.arange(1, 10), 10 * np.arange(1, 10)])
-
-xticks(ticks)
-yticks(ticks)
 
 xlabel("Predicted")
 ylabel("Experiment")
-title("Static Dielectric (Virtual Chemistry Data; OPLS)")
+title("Inverse Static Dielectric (Virtual Chemistry Data; OPLS)")
 
 legend(loc=0)
 
