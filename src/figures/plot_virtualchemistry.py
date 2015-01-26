@@ -37,6 +37,8 @@ plot(x ** -1, y ** -1, 'o', label="GAFF")
 
 xlim((0.01, 1))
 ylim((0.01, 1))
+plt.gca().set_aspect('equal', adjustable='box')
+plt.draw()
 savefig("./manuscript/figures/dielectric_virtual_chemistry_gaff_nocorr.pdf", bbox_inches=None)
 
 
@@ -52,6 +54,8 @@ plot(x ** -1, y ** -1, 'o', label="Corrected")
 xlim((0.01, 1))
 ylim((0.01, 1))
 legend(loc=0)
+plt.gca().set_aspect('equal', adjustable='box')
+plt.draw()
 savefig("./manuscript/figures/dielectric_virtual_chemistry_gaff.pdf", bbox_inches=None)
 
 
@@ -72,6 +76,8 @@ plot(x ** -1, y ** -1, 'o', label="OPLS")
 xlim((0.01, 1))
 ylim((0.01, 1))
 legend(loc=0)
+plt.gca().set_aspect('equal', adjustable='box')
+plt.draw()
 savefig("./manuscript/figures/dielectric_virtual_chemistry_opls_nocorr.pdf", bbox_inches=None)
 
 
@@ -87,5 +93,9 @@ plot(x ** -1, y ** -1, 'o', label="Corrected")
 xlim((0.01, 1))
 ylim((0.01, 1))
 legend(loc=0)
+plt.gca().set_aspect('equal', adjustable='box')
+plt.draw()
 savefig("./manuscript/figures/dielectric_virtual_chemistry_opls.pdf", bbox_inches=None)
+
+
 

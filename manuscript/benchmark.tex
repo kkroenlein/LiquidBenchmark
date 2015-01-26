@@ -90,17 +90,19 @@
 
 \section{Abstract}
 
-Useful atomistic simulations require accurate depictions of solvent.  Simple experimental observables, such as density and static dielectric constants, offer straightforward targets for evaluating forcefield quality.  Here we examine the possibility of benchmarking atomistic models against the NIST ThermoML database of physicochemical measurements, which curates thousands of density, dielectric, and other measurements.  We present a detailed benchmark of the GAFF forcefield against measurements extracted from ThermoML and discuss the extent of available data for neat liquids.  We show that empirical polarizability models correct systematic biases inherent in predicting dielectric constants with fixed-charged forcefields.  Combining our dataset with the Virtual Chemistry benchmark set provides an extensive benchmark suite for liquid properties.  
+Useful atomistic simulations require accurate depictions of solvent.  Simple experimental observables, such as density and static dielectric constants, offer straightforward targets for evaluating forcefield quality.  Here we examine the possibility of benchmarking atomistic models against the NIST ThermoML database of physicochemical measurements, which curates thousands of density, dielectric, and other measurements.  We present a detailed benchmark of the GAFF forcefield against measurements extracted from ThermoML and discuss the extent of available data for neat liquids.  We show that empirical polarizability models correct systematic biases inherent in predicting dielectric constants with fixed-charged forcefields.  
 
 \section{Introduction}
 
-Intro
+Recent advances in hardware and molecular dynamics software have provided routine access to $\approx 100$ ns atomistic simulations.  At the same time, impressive use of GPU clusters, distributed computing, or custom hardware have brought the microsecond and milliseconds within reach.  These dramatic advances in sampling, however, have revealed forcefields as a critical barrier for truly predictive simulation.  
+
+Protein and water forcefields have been the subject of numerous benchmarks \cite{} and enhancements \cite{}.  
 
 \section{Results}
 
 \subsection{Neat Liquid Measurements in ThermoML}
 
-We performed a number of queries to summarize the ThermoML content relevant for benchmarking organic molecule forcefields.  Our aim is to explore neat liquid data with functional groups relevant to drug-like molecules.  We therefore applied the following sequence of filters: has either density or static dielectric measurements, contains a single component, contains only druglike elements (H, N, C, O, S, P, F, Cl, Br), has low heavy atom count $(\le 10)$, has ambient temperature [K] $(270 \le T \le 330)$, and has ambient pressure [kPA] $(100 \le P \le 102)$.  After applying these filters, we also assume that all pressures within this range are one atmosphere.  We also assume that temperatures can be rounded to one decimal place.  These approximations are motived by common data entry errors; for example, an experiment performed at water's freezing point at ambient pressure might be entered as either 101.325 kPA or 100 kPA, with a temperature of either 273 K or 273.15 K.  After the application of these filters (Table \ref{table:ThermoMLSummary}), we are left with 3591 densities and 432 static dielectrics--or 245 measurements for which both density and dielectric data are available.  The 245 point dataset will be the subject of the present work.  
+We performed a number of queries to summarize the ThermoML content relevant for benchmarking organic molecule forcefields.  Our aim is to explore neat liquid data with functional groups relevant to drug-like molecules.  We therefore applied the following sequence of filters: has either density or static dielectric measurements, contains a single component, contains only druglike elements (H, N, C, O, S, P, F, Cl, Br), has low heavy atom count $(\le 10)$, has ambient temperature [K] $(270 \le T \le 330)$, and has ambient pressure [kPA] $(100 \le P \le 102)$.  After applying these filters, we also assume that all pressures within this range are one atmosphere.  We also assume that temperatures can be rounded to one decimal place.  These approximations are motived by common data entry errors; for example, an experiment performed at water's freezing point at ambient pressure might be entered as either 101.325 kPA or 100 kPA, with a temperature of either 273 K or 273.15 K.  After the application of these filters (Table \ref{table:ThermoMLSummary}), we are left with 245 conditions for which both density and dielectric data are available.  
 
 \begin{table}
 \begin{tabular}{lrr}
@@ -136,15 +138,10 @@ Mass density has been widely used as a critical ingredient for parameterizing an
 
 \subsection{Benchmarking GAFF against ThermoML: Static Dielectric}
 
-As a measure of the electronic medium, the static dielectric constant of neat liquids provides a critical benchmark that is orthogonal to density and thermodynamic quantities.  We therefore compare our GAFF simulations against the measurements in our ThermoML compilation.  Overall, we find the dielectric constants to be qualitatively reasonable, but with clear deviations from experiment.  In particular, the nonpolar organics show a clear discrepancy, with the GAFF predictions of 1.0 being substantially less polar than the measurements near 2.0.  Because this deviation likely stems from the lack of electronic polarization, we added a simple empirical correction for polarization \cite{bosque2002polarizabilities}, which leads to better agreement with experiment.  A similar polarization correction was used in the development of the TIP4P-EW water model \cite{horn2004}; however, the need is much greater for the nonpolar organics, as the missing polarizability is the dominant contribution to the static dielectric constant.  In the case of water, the Sales polarizability model predicts a dielectric correction of 0.52, while 0.79 was used for the TIP4P-EW model.  For comparison, we also applied the same empirical correction to the VirtualChemistry dataset \cite{caleman2011force, van2012gromacs} and saw similarly improved agreement with experiment for both the GAFF and OPLS forcefields.
+As a measure of the electronic medium, the static dielectric constant of neat liquids provides a critical benchmark that is orthogonal to density and thermodynamic quantities.  We therefore compare our GAFF simulations against the measurements in our ThermoML compilation.  Overall, we find the dielectric constants to be qualitatively reasonable, but with clear deviations from experiment.  In particular, the nonpolar organics show a clear discrepancy, with the GAFF predictions of 1.0 being substantially less polar than the measurements near 2.0.  Because this deviation likely stems from the lack of electronic polarization, we added a simple empirical correction for polarization \cite{bosque2002polarizabilities}, which leads to better agreement with experiment.  A similar polarization correction was used in the development of the TIP4P-EW water model \cite{horn2004}; however, the need is much greater for the nonpolar organics, as the missing polarizability is the dominant contribution to the static dielectric constant.  In the case of water, the Sales polarizability model predicts a dielectric correction of 0.52, while 0.79 was used for the TIP4P-EW model.  For comparison, we also applied the same empirical correction to the VirtualChemistry dataset \cite{caleman2011force, van2012gromacs} and saw similarly improved agreement with experiment for both the GAFF and OPLS forcefields (Fig. S7).
 
 \begin{figure}
 \includegraphics[width=\columnwidth]{./figures/dielectrics_thermoml.pdf}
-
-\includegraphics[width=\columnwidth]{./figures/dielectric_virtual_chemistry_gaff.pdf}
-
-\includegraphics[width=\columnwidth]{./figures/dielectric_virtual_chemistry_opls.pdf}
-
 
 \caption{Measured (ThermoML) versus predicted (GAFF) static dielectrics (a).  Color groupings represent identical chemical formulas.  Simulation error bars represent one standard error of the mean estimated via block averaging with block sizes of 200 ps \cite{flyvbjerg1989error}.  Experimental error bars indicate the larger of standard deviation between independently reported measurements and the authors reported standard deviations; for some measurements, neither uncertainty estimate is available.  See section S2 for further discussion of error.
 }
@@ -251,6 +248,19 @@ We thank Vijay Pande, Lee-Ping Wang, Peter Eastman, Robert McGibbon, Jason Swail
 }
 \label{figure:AllDielectrics}
 
+\end{figure}
+
+
+\begin{figure}
+
+\includegraphics[width=\columnwidth]{./figures/dielectric_virtual_chemistry_gaff.pdf}
+
+\includegraphics[width=\columnwidth]{./figures/dielectric_virtual_chemistry_opls.pdf}
+
+
+\caption{Measured (blue), MD (green), and MD + polarizability-corrected (red) dielectrics for the virtualchemistry dataset \cite{caleman2011force, van2012gromacs}.
+}
+\label{figure:VirtualChemistry}
 \end{figure}
 
 

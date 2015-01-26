@@ -39,6 +39,8 @@ plt.xlim((600, 1400))
 plt.ylim((600, 1400))
 plt.xlabel("Predicted (GAFF)")
 plt.ylabel("Experiment (ThermoML)")
+plt.gca().set_aspect('equal', adjustable='box')
+plt.draw()
 plt.savefig("./manuscript/figures/densities_thermoml.pdf", bbox_inches=None)
 
 
@@ -72,6 +74,8 @@ plt.errorbar(x ** -1, y ** -1, xerr=xerr * x ** -2, yerr=yerr * y ** -2, fmt='.'
 xlim((0.01, 1))
 ylim((0.01, 1))
 plt.legend(loc=0)
+plt.gca().set_aspect('equal', adjustable='box')
+plt.draw()
 plt.savefig("./manuscript/figures/dielectrics_thermoml_nocorr.pdf", bbox_inches=None)
 
 
@@ -86,4 +90,6 @@ plt.errorbar(x ** -1, y ** -1, xerr=xerr * x ** -2, yerr=yerr * y ** -2, fmt='.'
 xlim((0.01, 1))
 ylim((0.01, 1))
 plt.legend(loc=0)
+plt.gca().set_aspect('equal', adjustable='box')
+plt.draw()
 plt.savefig("./manuscript/figures/dielectrics_thermoml.pdf", bbox_inches=None)
