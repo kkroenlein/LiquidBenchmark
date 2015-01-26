@@ -22,12 +22,23 @@ data["opls_corrected"] = data.opls + data.polcorr
 
 
 figure()
+
+plt.plot([0.01, 1], [0.01, 1], 'k')  # Guide
+title("Inverse Static Dielectric (Virtual Chemistry Data; GAFF)")
+xlabel("Predicted")
+ylabel("Experiment")
+
 x, y = data["gaff"], data["expt"]
 ols_model = sm.OLS(y, x)
 ols_results = ols_model.fit()
 r2 = ols_results.rsquared
 #plot(x, y, 'o', label="GAFF (R^2 = %.3f)" % r2)
 plot(x ** -1, y ** -1, 'o', label="GAFF")
+
+xlim((0.01, 1))
+ylim((0.01, 1))
+savefig("./manuscript/figures/dielectric_virtual_chemistry_gaff_nocorr.pdf", bbox_inches=None)
+
 
 x, y = data["gaff_corrected"], data["expt"]
 ols_model = sm.OLS(y, x)
@@ -37,27 +48,33 @@ r2 = ols_results.rsquared
 plot(x ** -1, y ** -1, 'o', label="Corrected")
 
 
-plt.plot([0.01, 1], [0.01, 1], 'k')  # Guide
+
 xlim((0.01, 1))
 ylim((0.01, 1))
-
-
-xlabel("Predicted")
-ylabel("Experiment")
-title("Inverse Static Dielectric (Virtual Chemistry Data; GAFF)")
-
 legend(loc=0)
-
 savefig("./manuscript/figures/dielectric_virtual_chemistry_gaff.pdf", bbox_inches=None)
 
 
 figure()
+
+plt.plot([0.01, 1], [0.01, 1], 'k')  # Guide
+xlabel("Predicted")
+ylabel("Experiment")
+title("Inverse Static Dielectric (Virtual Chemistry Data; OPLS)")
+
 x, y = data["opls"], data["expt"]
 ols_model = sm.OLS(y, x)
 ols_results = ols_model.fit()
 r2 = ols_results.rsquared
 #plot(x, y, 'o', label="OPLS (R^2 = %.3f)" % r2)
 plot(x ** -1, y ** -1, 'o', label="OPLS")
+
+xlim((0.01, 1))
+ylim((0.01, 1))
+legend(loc=0)
+savefig("./manuscript/figures/dielectric_virtual_chemistry_opls_nocorr.pdf", bbox_inches=None)
+
+
 
 x, y = data["opls_corrected"], data["expt"]
 ols_model = sm.OLS(y, x)
@@ -67,16 +84,8 @@ r2 = ols_results.rsquared
 plot(x ** -1, y ** -1, 'o', label="Corrected")
 
 
-plt.plot([0.01, 1], [0.01, 1], 'k')  # Guide
 xlim((0.01, 1))
 ylim((0.01, 1))
-
-
-xlabel("Predicted")
-ylabel("Experiment")
-title("Inverse Static Dielectric (Virtual Chemistry Data; OPLS)")
-
 legend(loc=0)
-
 savefig("./manuscript/figures/dielectric_virtual_chemistry_opls.pdf", bbox_inches=None)
 
