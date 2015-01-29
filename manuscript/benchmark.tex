@@ -106,7 +106,7 @@ Here we examine the ThermoML archive as a potential source for neat liquid densi
 
 \subsection{Neat Liquid Measurements in ThermoML}
 
-We performed a number of queries to summarize the ThermoML content relevant for benchmarking organic molecule forcefields.  Our aim is to explore neat liquid data with functional groups relevant to drug-like molecules.  We therefore applied the following sequence of filters: has either density or static dielectric measurements, contains a single component, contains only druglike elements (H, N, C, O, S, P, F, Cl, Br), has low heavy atom count $(\le 10)$, has ambient temperature [K] $(270 \le T \le 330)$, and has ambient pressure [kPA] $(100 \le P \le 102)$.  After applying these filters, we also round all pressures within this range to exactly one atmosphere.  We also round temperatures to one decimal place.  These approximations are motived by common data entry errors; for example, an experiment performed at water's freezing point at ambient pressure might be entered as either 101.325 kPA or 100 kPA, with a temperature of either 273 K or 273.15 K.  After the application of these filters (Table \ref{table:ThermoMLSummary}), we are left with 245 conditions for which both density and dielectric data are available.  
+We performed a number of queries to summarize the ThermoML content relevant for benchmarking organic molecule forcefields.  Our aim is to explore neat liquid data with functional groups relevant to drug-like molecules.  We therefore applied the following sequence of filters: has either density or static dielectric measurements, contains a single component, contains only druglike elements (H, N, C, O, S, P, F, Cl, Br), has low heavy atom count $(\le 10)$, has ambient temperature [K] $(270 \le T \le 330)$, has ambient pressure [kPA] $(100 \le P \le 102)$, and has density greater than 300 kg $m^{-3}$ (a proxy for liquid state).  After applying these filters, we also round all pressures within this range to exactly one atmosphere.  We also round temperatures to one decimal place.  These approximations are motived by common data entry errors; for example, an experiment performed at water's freezing point at ambient pressure might be entered as either 101.325 kPA or 100 kPA, with a temperature of either 273 K or 273.15 K.  After the application of these filters (Table \ref{table:ThermoMLSummary}), we are left with 245 conditions for which both density and dielectric data are available.  The functional groups present are summarized in Table \ref{table:ThermoMLSummary}.  
 
 \begin{table}
 \begin{tabular}{lrr}
@@ -118,15 +118,48 @@ Filter &  Mass Density &  Static Dielectric \\
 2.  Heavy Atoms        &                67897 &                                     1567 \\
 3.  Temperature        &                36827 &                                      962 \\
 4.  Pressure           &                13598 &                                      461 \\
-5.  Aggregate T, P     &            \bf{3591} &                                 \bf{432} \\
-6.  Density+Dielectric &             \bf{245} &                                 \bf{245} \\
+5.  Liquid state       &                13573 &                                      461 \\
+6.  Aggregate T, P     &                 3573 &                                      432 \\
+7.  Density+Dielectric &                  245 &                                      245 \\
 \bottomrule
 \end{tabular}
 \caption{ThermoML Statistics}
 \label{table:ThermoMLSummary}
 \end{table}
 
-%\includegraphics[width=\columnwidth]{./figures/thermoml_density_histogram.pdf}
+\begin{table}
+\begin{tabular}{lr}
+\toprule
+Functional Group &    Counts \\
+\midrule
+1,2-aminoalcohol                                    &   4 \\
+1,2-diol                                            &   3 \\
+alkene                                              &   3 \\
+aromatic compound                                   &   1 \\
+carbonic acid diester                               &   2 \\
+carboxylic acid ester                               &   4 \\
+dialkyl ether                                       &   7 \\
+heterocyclic compound                               &   3 \\
+ketone                                              &   2 \\
+lactone                                             &   1 \\
+primary alcohol                                     &  19 \\
+primary aliphatic amine (alkylamine)                &   2 \\
+primary amine                                       &   2 \\
+secondary alcohol                                   &   4 \\
+secondary aliphatic amine (dialkylamine)            &   2 \\
+secondary aliphatic/aromatic amine (alkylarylamine) &   1 \\
+secondary amine                                     &   3 \\
+sulfone                                             &   1 \\
+sulfoxide                                           &   1 \\
+tertiary aliphatic amine (trialkylamine)            &   3 \\
+tertiary amine                                      &   3 \\
+\bottomrule
+\end{tabular}
+\caption{Functional group counts present in the dataset.  The number of unique compounds is 44.  Functional group classification was performed using checkmol version 0.5 \cite{haider2010functionality}.}
+\label{table:FunctionalGroups}
+\end{table}
+
+
 
 \subsection{Benchmarking GAFF against ThermoML: Mass Density}
 
