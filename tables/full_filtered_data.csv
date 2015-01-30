@@ -1212,7 +1212,6 @@
 120595,816.92,,101.325,,,283.2,1-butanol,/home/kyleb/dat/thermo/10.1021/je0498457.xml,1,C4H10O,15,5,15,0,C(CCC)O,107569-51-7
 120596,805.73,,101.325,,,298.2,1-butanol,/home/kyleb/dat/thermo/10.1021/je0498457.xml,1,C4H10O,15,5,15,0,C(CCC)O,107569-51-7
 120597,794.38,,101.325,,,313.2,1-butanol,/home/kyleb/dat/thermo/10.1021/je0498457.xml,1,C4H10O,15,5,15,0,C(CCC)O,107569-51-7
-121663,1.999,0.001999,101.325,,,273.2,n-propane,/home/kyleb/dat/thermo/10.1021/je101178u.xml,1,C3H8,11,3,11,0,CCC,69430-33-7
 123319,1027.6,,101.325,,,298.2,"1,4-dioxane",/home/kyleb/dat/thermo/10.1021/je030107c.xml,1,C4H8O2,14,6,14,0,O1CCOCC1,28347-88-8
 123320,1021.9,,101.325,,,303.2,"1,4-dioxane",/home/kyleb/dat/thermo/10.1021/je030107c.xml,1,C4H8O2,14,6,14,0,O1CCOCC1,28347-88-8
 123321,1016.2,,101.325,,,308.2,"1,4-dioxane",/home/kyleb/dat/thermo/10.1021/je030107c.xml,1,C4H8O2,14,6,14,0,O1CCOCC1,28347-88-8
@@ -2259,8 +2258,6 @@
 252327,799.6,0.2,101.325,,,298.2,propan-1-ol,/home/kyleb/dat/thermo/10.1021/je700099w.xml,1,C3H8O,12,4,12,0,C(CC)O,71-23-8
 252329,805.6,0.2,101.325,,,298.2,1-butanol,/home/kyleb/dat/thermo/10.1021/je700099w.xml,1,C4H10O,15,5,15,0,C(CCC)O,107569-51-7
 252331,810.8,0.2,101.325,,,298.2,1-pentanol,/home/kyleb/dat/thermo/10.1021/je700099w.xml,1,C5H12O,18,6,18,0,C(CCCC)O,71-41-0
-254793,4.12,,101.325,,,300.0,"methane, trifluoromethoxy-",/home/kyleb/dat/thermo/10.1021/je025657+.xml,1,C2H3F3O,9,6,9,0,FC(OC)(F)F,421-14-7
-254810,3.89,,101.325,,,320.0,"methane, trifluoromethoxy-",/home/kyleb/dat/thermo/10.1021/je025657+.xml,1,C2H3F3O,9,6,9,0,FC(OC)(F)F,421-14-7
 255759,932.344,0.05,101.325,,,278.2,hexylene glycol,/home/kyleb/dat/thermo/10.1021/je800244q.xml,1,C6H14O2,22,8,22,0,C(CCCCCO)O,140434-69-1
 255760,928.795,0.05,101.325,,,283.2,hexylene glycol,/home/kyleb/dat/thermo/10.1021/je800244q.xml,1,C6H14O2,22,8,22,0,C(CCCCCO)O,140434-69-1
 255761,925.238,0.05,101.325,,,288.2,hexylene glycol,/home/kyleb/dat/thermo/10.1021/je800244q.xml,1,C6H14O2,22,8,22,0,C(CCCCCO)O,140434-69-1
@@ -3056,22 +3053,6 @@
 322629,833.9,0.05,101.325,,,328.2,toluene,/home/kyleb/dat/thermo/10.1021/je7000182.xml,1,C7H8,15,7,15,0,C1(=CC=CC=C1)C,3101-08-4
 325080,994.0,0.1,101.325,,,308.2,water,/home/kyleb/dat/thermo/10.1021/je2000099.xml,1,H2O,3,1,3,0,O,14314-42-2
 325081,990.2,0.1,101.325,,,318.2,water,/home/kyleb/dat/thermo/10.1021/je2000099.xml,1,H2O,3,1,3,0,O,14314-42-2
-325757,1.95635,0.0002543255,101.325,,,273.6,carbon dioxide,/home/kyleb/dat/thermo/10.1021/je0497496.xml,1,CO2,3,3,3,0,C(=O)=O,18923-20-1
-325758,1.94808,0.0002532504,101.325,,,273.6,carbon dioxide,/home/kyleb/dat/thermo/10.1021/je0497496.xml,1,CO2,3,3,3,0,C(=O)=O,18923-20-1
-325766,1.8788,0.000244244,101.325,,,283.5,carbon dioxide,/home/kyleb/dat/thermo/10.1021/je0497496.xml,1,CO2,3,3,3,0,C(=O)=O,18923-20-1
-325772,1.81243,0.0002356159,101.325,,,293.1,carbon dioxide,/home/kyleb/dat/thermo/10.1021/je0497496.xml,1,CO2,3,3,3,0,C(=O)=O,18923-20-1
-325773,1.8183,0.000236379,101.325,,,293.1,carbon dioxide,/home/kyleb/dat/thermo/10.1021/je0497496.xml,1,CO2,3,3,3,0,C(=O)=O,18923-20-1
-325837,4.6218,0.000600834,101.325,,,273.3,"ethane, 1,1,1,2-tetrafluoro-",/home/kyleb/dat/thermo/10.1021/je0497496.xml,1,C2H2F4,8,6,8,0,FC(CF)(F)F,811-97-2
-325841,4.4428,0.000577564,101.325,,,283.2,"ethane, 1,1,1,2-tetrafluoro-",/home/kyleb/dat/thermo/10.1021/je0497496.xml,1,C2H2F4,8,6,8,0,FC(CF)(F)F,811-97-2
-325842,4.44579,0.0005779527,101.325,,,283.2,"ethane, 1,1,1,2-tetrafluoro-",/home/kyleb/dat/thermo/10.1021/je0497496.xml,1,C2H2F4,8,6,8,0,FC(CF)(F)F,811-97-2
-325846,4.27519,0.0005557747,101.325,,,293.2,"ethane, 1,1,1,2-tetrafluoro-",/home/kyleb/dat/thermo/10.1021/je0497496.xml,1,C2H2F4,8,6,8,0,FC(CF)(F)F,811-97-2
-325847,4.27783,0.0005561179,101.325,,,293.2,"ethane, 1,1,1,2-tetrafluoro-",/home/kyleb/dat/thermo/10.1021/je0497496.xml,1,C2H2F4,8,6,8,0,FC(CF)(F)F,811-97-2
-325853,4.1211,0.000535743,101.325,,,303.3,"ethane, 1,1,1,2-tetrafluoro-",/home/kyleb/dat/thermo/10.1021/je0497496.xml,1,C2H2F4,8,6,8,0,FC(CF)(F)F,811-97-2
-325854,4.12406,0.0005361278,101.325,,,303.3,"ethane, 1,1,1,2-tetrafluoro-",/home/kyleb/dat/thermo/10.1021/je0497496.xml,1,C2H2F4,8,6,8,0,FC(CF)(F)F,811-97-2
-325858,3.98345,0.0005178485,101.325,,,313.2,"ethane, 1,1,1,2-tetrafluoro-",/home/kyleb/dat/thermo/10.1021/je0497496.xml,1,C2H2F4,8,6,8,0,FC(CF)(F)F,811-97-2
-325859,3.98495,0.0005180435,101.325,,,313.2,"ethane, 1,1,1,2-tetrafluoro-",/home/kyleb/dat/thermo/10.1021/je0497496.xml,1,C2H2F4,8,6,8,0,FC(CF)(F)F,811-97-2
-325865,3.85767,0.0005014971,101.325,,,323.2,"ethane, 1,1,1,2-tetrafluoro-",/home/kyleb/dat/thermo/10.1021/je0497496.xml,1,C2H2F4,8,6,8,0,FC(CF)(F)F,811-97-2
-325866,3.85694,0.0005014022,101.325,,,323.2,"ethane, 1,1,1,2-tetrafluoro-",/home/kyleb/dat/thermo/10.1021/je0497496.xml,1,C2H2F4,8,6,8,0,FC(CF)(F)F,811-97-2
 326189,1063.898,0.005,101.325,,,283.2,"ethanol, 2-(2-aminoethoxy)-",/home/kyleb/dat/thermo/10.1021/je3013205.xml,1,C4H11NO2,18,7,18,0,NCCOCCO,929-06-6
 326190,1055.858,0.005,101.325,,,293.2,"ethanol, 2-(2-aminoethoxy)-",/home/kyleb/dat/thermo/10.1021/je3013205.xml,1,C4H11NO2,18,7,18,0,NCCOCCO,929-06-6
 326191,1047.8,0.005,101.325,,,303.2,"ethanol, 2-(2-aminoethoxy)-",/home/kyleb/dat/thermo/10.1021/je3013205.xml,1,C4H11NO2,18,7,18,0,NCCOCCO,929-06-6
@@ -5614,8 +5595,6 @@
 604398,798.1,,101.325,,,298.2,ethyl methyl ketone,/home/kyleb/dat/thermo/10.1021/je0504109.xml,1,C4H8O,13,5,13,0,CC(=O)CC,78-93-3
 606896,782.0,,101.325,,,298.2,methanol,/home/kyleb/dat/thermo/10.1021/je800568m.xml,1,CH4O,6,2,6,0,CO,54841-71-3
 606898,1221.0,,101.325,,,298.2,methanoic acid,/home/kyleb/dat/thermo/10.1021/je800568m.xml,1,CH2O2,5,3,5,0,C(=O)O,15907-03-6
-609104,6.09,0.003045,101.325,,,303.3,"1,1,2,3,3,3-hexafluoro-1-propene",/home/kyleb/dat/thermo/10.1021/je900596d.xml,1,C3F6,9,9,9,0,FC(=C(C(F)(F)F)F)F,116-15-4
-609268,5.74,0.00287,101.325,,,323.2,"1,1,2,3,3,3-hexafluoro-1-propene",/home/kyleb/dat/thermo/10.1021/je900596d.xml,1,C3F6,9,9,9,0,FC(=C(C(F)(F)F)F)F,116-15-4
 613463,944.5,,101.325,,,298.2,"N,N-dimethylformamide",/home/kyleb/dat/thermo/10.1021/je030130y.xml,1,C3H7NO,12,5,12,0,CN(C=O)C,68-12-2
 613464,939.8,,101.325,,,303.2,"N,N-dimethylformamide",/home/kyleb/dat/thermo/10.1021/je030130y.xml,1,C3H7NO,12,5,12,0,CN(C=O)C,68-12-2
 613465,935.1,,101.325,,,308.2,"N,N-dimethylformamide",/home/kyleb/dat/thermo/10.1021/je030130y.xml,1,C3H7NO,12,5,12,0,CN(C=O)C,68-12-2
@@ -6150,10 +6129,6 @@
 666788,741.0,,101.325,,,293.2,1-decene,/home/kyleb/dat/thermo/10.1021/je700445y.xml,1,C10H20,30,10,30,0,C=CCCCCCCCC,68037-01-4
 666791,708.0,,101.325,,,293.2,n-octane,/home/kyleb/dat/thermo/10.1021/je700445y.xml,1,C8H18,26,8,26,0,CCCCCCCC,31372-91-5
 666794,660.0,,101.325,,,293.2,hexane,/home/kyleb/dat/thermo/10.1021/je700445y.xml,1,C6H14,20,6,20,0,CCCCCC,92112-69-1
-667396,1.178,0.03534,101.325,,,298.2,nitrogen,/home/kyleb/dat/thermo/10.1021/je8009545.xml,1,N2,2,2,2,0,[NH2],13770-40-6
-667397,0.858,0.02574,101.325,,,323.2,nitrogen,/home/kyleb/dat/thermo/10.1021/je8009545.xml,1,N2,2,2,2,0,[NH2],13770-40-6
-667459,1.91,0.0573,101.325,,,298.2,methoxymethane,/home/kyleb/dat/thermo/10.1021/je8009545.xml,1,C2H6O,9,3,9,0,COC,115-10-6
-667468,1.652,0.04956,101.325,,,323.2,methoxymethane,/home/kyleb/dat/thermo/10.1021/je8009545.xml,1,C2H6O,9,3,9,0,COC,115-10-6
 667885,786.55,,101.325,,,298.2,methanol,/home/kyleb/dat/thermo/10.1021/je400004j.xml,1,CH4O,6,2,6,0,CO,54841-71-3
 667887,785.83,,101.325,,,298.2,ethanol,/home/kyleb/dat/thermo/10.1021/je400004j.xml,1,C2H6O,9,3,9,0,C(C)O,121182-78-3
 668248,926.8,,101.325,,,298.2,methyl ethanoate,/home/kyleb/dat/thermo/10.1021/je0340248.xml,1,C3H6O2,11,5,11,0,C(C)(=O)OC,79-20-9

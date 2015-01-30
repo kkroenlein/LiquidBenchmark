@@ -60,6 +60,7 @@ cannonical_components_lookup = X.groupby("cas").components.first()
 X["smiles"] = X.cas.apply(lambda x: cannonical_smiles_lookup[x])
 X["components"] = X.cas.apply(lambda x: cannonical_components_lookup[x])
 
+
 X = X[X["Temperature, K"] > 270]
 X = X[X["Temperature, K"] < 330]
 
@@ -70,7 +71,14 @@ X = X[X["Pressure, kPa"] < 102.]
 
 counts_data["4.  Pressure"] = X.count()[experiments]
 
+X = X[~(X["Mass density, kg/m3"] <= 300)]  # Any density cutoff between 200 and 400 Kg / m3 gives same results.
+
+counts_data["5.  Liquid state"] = X.count()[experiments]
+
+
 X.dropna(axis=1, how='all', inplace=True)
+
+
 
 X["Pressure, kPa"] = 101.325  # Assume everything within range is comparable.  
 X["Temperature, K"] = X["Temperature, K"].apply(lambda x: x.round(1))  # Round at the 0.1 digit.  
@@ -80,7 +88,7 @@ X.to_csv("./tables/full_filtered_data.csv")
 
 mu = X.groupby(["components", "smiles", "cas", "Temperature, K", "Pressure, kPa"])[experiments].mean()
 
-counts_data["5.  Aggregate T, P"] = mu.count()[experiments]
+counts_data["6.  Aggregate T, P"] = mu.count()[experiments]
 
 counts_data = pd.DataFrame(counts_data).T
 
@@ -88,6 +96,6 @@ q = mu.reset_index()
 q = q.ix[q[experiments].dropna().index]
 q.to_csv("./tables/data_dielectric.csv")
 
-counts_data.ix["6.  Density+Dielectric"] = len(q)
+counts_data.ix["7.  Density+Dielectric"] = len(q)
 
 print counts_data.to_latex()
