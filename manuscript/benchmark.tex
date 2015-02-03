@@ -75,19 +75,19 @@ Neat Liquid Densities and Static Dielectrics}
 
 \author{Kyle A. Beauchamp$^+$}
 \email{kyle.beauchamp@choderalab.org}
-\affiliation{Memorial Sloan Kettering Cancer Center, New York, NY}
+\affiliation{Computational Biology Program, Memorial Sloan Kettering Cancer Center, New York, NY}
 
 \author{Julie M. Behr$^+$}
 \email{julie.behr@choderalab.org}
-\affiliation{Memorial Sloan Kettering Cancer Center, New York, NY}
+\affiliation{Tri-Institutional Program in Computational Biology and Medicine, Weill Cornell Medical College, New York, NY}
 
 \author{Patrick B. Grinaway }
 \email{patrick.grinaway@choderalab.org}
-\affiliation{Memorial Sloan Kettering Cancer Center, New York, NY}
+\affiliation{Graduate Program in Physiology, Biophysics, and Systems Biology, Weill Cornell Medical College, New York, NY}
 
 \author{Arien S. Rustenburg}
 \email{bas.rustenburg@choderalab.org}
-\affiliation{Memorial Sloan Kettering Cancer Center, New York, NY}
+\affiliation{Graduate Program in Physiology, Biophysics, and Systems Biology, Weill Cornell Medical College, New York, NY}
  
  \author{Kenneth Kroenlein}
  \email{kenneth.kroenlein@nist.gov}
@@ -96,7 +96,7 @@ Neat Liquid Densities and Static Dielectrics}
  \author{John D. Chodera}
  \thanks{Corresponding author}
  \email{john.chodera@choderalab.org}
- \affiliation{Memorial Sloan Kettering Cancer Center, New York, NY}
+ \affiliation{Computational Biology Program, Memorial Sloan Kettering Cancer Center, New York, NY}
 
 \date{\today}
 
@@ -229,13 +229,19 @@ Mass density has been widely used as a critical ingredient for parameterizing an
 We therefore used the present ThermoML compilation as a benchmark of the GAFF AM1-BCC forcefield (Fig. \ref{figure:Density}).  
 Overall, the densities show reasonable accuracy (R2 + errobars), consistent with previous studies \cite{caleman2011force} reporting agreement of XYZ on a different benchmark set.  
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FIGURE: DENSITY COMPARISON
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{figure}
 \includegraphics[width=\columnwidth]{./figures/densities_thermoml.pdf}
-\caption{Measured (ThermoML) versus predicted (GAFF) densities.  
+\caption{{\bf Comparison of liquid densities between experiment and simulation.}
+Liquid density measurements at ambient (1 atm) pressure extracted from ThermoML are compared against simulated densities at ambient pressure using the GAFF/AM1-BCC small molecule fixed-charge forcefield.
 Color groupings represent identical chemical formulas.  
+{\color{red}[JDC: Chemical \emph{species}?]}
 Simulation error bars represent one standard error of the mean, with the number of effective (uncorrelated) samples estimated using pymbar.  
-Experimental error bars indicate the standard deviation between independently reported measurements, when available, or the authors reported standard deviations; for some measurements, neither uncertainty estimate is available.  
-See section S2 for further discussion of error.
+Experimental error bars indicate the standard deviation between independently reported measurements, when available, or author-reported standard deviations in ThermoML entries; for some measurements, neither uncertainty estimate is available.  
+See {\bf Section~\ref{section:experimental-error}} for further discussion of error.
 }
 \label{figure:Density}
 \end{figure}
@@ -255,10 +261,14 @@ A similar polarization correction was used in the development of the TIP4P-EW wa
 In the case of water, the Sales polarizability model predicts a dielectric correction of 0.52, while 0.79 was used for the TIP4P-EW model.  
 For comparison, we also applied the same empirical correction to the VirtualChemistry dataset \cite{caleman2011force, van2012gromacs} and saw similarly improved agreement with experiment for both the GAFF and OPLS forcefields (Fig. \ref{figure:VirtualChemistry}).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FIGURE: DIELECTRIC COMPARISON
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{figure}
 \includegraphics[width=\columnwidth]{./figures/dielectrics_thermoml.pdf}
 
-\caption{Measured (ThermoML) versus predicted (GAFF) inverse static dielectrics (a).  
+\caption{{\bf Measured (ThermoML) versus predicted (GAFF) inverse static dielectrics (a).}
 Color groupings represent identical chemical formulas.  Simulation error bars represent one standard error of the mean estimated via block averaging with block sizes of 200 ps \cite{flyvbjerg1989error}.  
 Experimental error bars indicate the larger of standard deviation between independently reported measurements and the authors reported standard deviations; for some measurements, neither uncertainty estimate is available.  
 See section S2 for further discussion of error.  
@@ -344,9 +354,11 @@ Density data was output every 250 fs, while trajectory data was stored every 10 
 
 \section{Conclusions}
 
-1.  ThermoML is a potentially useful resource for the forcefield community
-2.  We have curated a subset of ThermoML for neat liquids with druglike atoms, with thousands of densities and hundreds of dielectrics
-3.  Empirical polarization models correct a systematic bias in comparing fixed-charge forcefields to static dielectric constants
+\begin{itemize}
+\item  ThermoML is a potentially useful resource for the forcefield community
+\item  We have curated a subset of ThermoML for neat liquids with druglike atoms, with thousands of densities and hundreds of dielectrics
+\item  Empirical polarization models correct a systematic bias in comparing fixed-charge forcefields to static dielectric constants
+\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ACKNOWLEDGMENTS
@@ -354,7 +366,8 @@ Density data was output every 250 fs, while trajectory data was stored every 10 
 
 \section{Acknowledgements}
 
-We thank Vijay Pande, Lee-Ping Wang, Peter Eastman, Robert McGibbon, Jason Swails, David Mobley, Christopher Bayly, Michael Shirts, and members of Chodera lab for helpful discussions.  
+We thank Vijay S.~Pande (Stanford University), Lee-Ping Wang (Stanford University), Peter Eastman (Stanford University), Robert McGibbon (Stanford University), Jason Swails (Rutgers University), David L.~Mobley (University of California, Irvine), Christopher I.~Bayly (OpenEye Software), Michael R~.Shirts (University of Virginia), and members of Chodera lab for helpful discussions.  
+Support for JMB was provided by the Tri-Institutional Training Program in Computational Biology and Medicine (via NIH training grant 1T32GM083937).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DISCLAIMERS
@@ -370,6 +383,7 @@ Products or companies named here are cited only in the interest of complete tech
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % SUPPLEMENTARY INFORMATION
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix 
 
 \section{Supplementary Information}
 
@@ -473,6 +487,9 @@ Note that in panels (c, d) show the same information as (a, b) but as a function
 %$$ = \frac{4\pi}{3k_B}(\frac{M}{TV})^2[(\frac{\delta(V)^2}{V^2} + \frac{\delta(T)^2}{T^2} + \frac{\delta(M)^2}{M^2}]$$
 
 %$$\delta(M)^2 = \delta(\langle M_x^2 \rangle)^2 + \delta(\langle M_y^2 \rangle)^2 + \delta(\langle M_z^2 \rangle)^2 + \delta(\langle M_x \rangle)^2 + \delta(\langle M_y \rangle)^2 + \delta(\langle M_z \rangle)^2 $$
+
+\section{Uncertainty in experimental measurements}
+\label{section:experimental-error}
 
 
 \clearpage
