@@ -73,25 +73,30 @@
 \title{Benchmarking Simulations against the ThermoML Database:\\
 Neat Liquid Densities and Static Dielectrics}
 
- \author{Kyle A. Beauchamp$^+$}
- \affiliation{Memorial Sloan-Kettering Cancer Center, New York, NY}
+\author{Kyle A. Beauchamp$^+$}
+\email{kyle.beauchamp@choderalab.org}
+\affiliation{Memorial Sloan Kettering Cancer Center, New York, NY}
 
- \author{Julie M. Behr$^+$}
- \affiliation{Memorial Sloan-Kettering Cancer Center, New York, NY}
+\author{Julie M. Behr$^+$}
+\email{julie.behr@choderalab.org}
+\affiliation{Memorial Sloan Kettering Cancer Center, New York, NY}
 
 \author{Patrick B. Grinaway }
- \affiliation{Memorial Sloan-Kettering Cancer Center, New York, NY}
+\email{patrick.grinaway@choderalab.org}
+\affiliation{Memorial Sloan Kettering Cancer Center, New York, NY}
 
 \author{Arien S. Rustenburg}
- \affiliation{Memorial Sloan-Kettering Cancer Center, New York, NY}
+\email{bas.rustenburg@choderalab.org}
+\affiliation{Memorial Sloan Kettering Cancer Center, New York, NY}
  
  \author{Kenneth Kroenlein}
+ \email{kenneth.kroenlein@nist.gov}
  \affiliation{NIST Thermodynamics Research Center, Boulder, CO}
  
  \author{John D. Chodera}
  \thanks{Corresponding author}
  \email{john.chodera@choderalab.org}
- \affiliation{Memorial Sloan-Kettering Cancer Center, New York, NY}
+ \affiliation{Memorial Sloan Kettering Cancer Center, New York, NY}
 
 \date{\today}
 
@@ -102,11 +107,11 @@ Neat Liquid Densities and Static Dielectrics}
 %\section{Abstract}
 \begin{abstract}
 
-Useful atomistic simulations require accurate depictions of solvent.  
-Simple experimental observables, such as density and static dielectric constants, offer straightforward targets for evaluating forcefield quality.  
-Here we examine the feasibility of benchmarking atomistic forcefields against the NIST ThermoML database of physicochemical measurements, which aggregates thousands of density, dielectric, and other measurements.  
-We present a detailed benchmark of the GAFF AM1-BCC forcefield against measurements extracted from ThermoML and discuss the extent of available data for neat liquids.  
-We show that empirical polarizability models correct systematic biases inherent in predicting dielectric constants with fixed-charged forcefields.  
+Useful atomistic simulations in the condensed phase require accurate depictions of solvent.  
+While accurate experimental measurements of fundamental physical properties offer a straightforward approach for evaluating forcefield quality, the bulk of this information has been tied up in non-machine-readable formats that pose many risks to the automated evaluation of forcefield accuracy.
+Here we examine the feasibility of benchmarking atomistic forcefields against the NIST ThermoML database of physicochemical measurements, which aggregates thousands off experimental measurements in a portable machine-readable self-annotating format. 
+We present a detailed benchmark of the generalized Amber small molecule forcefield (GAFF) using the AM1-BCC charge model against measurements (specifically liquid densities and static dielectric constants at ambient pressure) extracted from ThermoML, and discuss the extent of available data for neat liquids.  
+{\color{red} We show that empirical polarizability models correct systematic biases inherent in predicting dielectric constants with fixed-charged forcefields.  [JDC: Will need to be convinced!]}
 
 \emph{Keywords: molecular mechanics forcefields; forcefield parameterization; forcefield accuracy; forcefield validation; mass density; static dielectric constant}
 
