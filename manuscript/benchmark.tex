@@ -129,22 +129,22 @@ Recent advances in hardware and molecular dynamics software have provided routin
 Leveraging these advances in combination with GPU clusters, distributed computing, or custom hardware has brought the microsecond and milliseconds within reach.  
 These dramatic advances in sampling, however, have revealed forcefields as a critical barrier for truly predictive simulation.  
 
-Protein and water forcefields have been the subject of numerous benchmarks \cite{} and enhancements \cite{}, with key outcomes including the ability to fold fast-folding proteins, improved fidelity of water thermodynamic properties, and improved prediction of NMR observables.  
-Although small molecule forcefields have also been the subject of benchmarks \cite{} and improvements \cite{}, such work has focused on small perturbations to specific functional groups.  
+Protein and water forcefields have been the subject of numerous benchmarks~\cite{} and enhancements~\cite{}, with key outcomes including the ability to fold fast-folding proteins, improved fidelity of water thermodynamic properties, and improved prediction of NMR observables.  
+Although small molecule forcefields have also been the subject of benchmarks~\cite{} and improvements~\cite{}, such work has focused on small perturbations to specific functional groups.  
 For example, a recent study found that modified hydroxyl nonbonded parameters led to improved prediction of static dielectrics and hydration free energies.  
-Other studies have found XYZ.  
+%Other studies have found XYZ.  
 There are also outstanding questions of generalizability of parameters.  
 Will changes to a specific chemical moiety be compatible with seemingly unrelated improvements?  
 Addressing these questions requires agreement on shared benchmarks that can be easily replicated with proposed forcefield enhancements.
 
-A key barrier in forcefield development is that many experimental datasets are heterogeneous, paywalled, and unavailable in machine-readable formats (although notable counterexamples exist, e.g. RSCB \cite{}, FreeSolv \cite{} and BMRB \cite{}).  
+A key barrier in forcefield development is that many experimental datasets are heterogeneous, paywalled, and unavailable in machine-readable formats (although notable counterexamples exist, e.g. RSCB~\cite{}, FreeSolv~\cite{freesolv} and BMRB~\cite{}).  
 While this inconvenience is relatively minor for benchmarking a single target (e.g. water), it becomes prohibitive for studies spanning chemical space.  
 To ameliorate problems of data archival, the NIST Thermodynamics Research Center has developed a IUPAC standard XML-based format---ThermoML \cite{}---for storing physicochemical measurements, uncertainties, and metadata.
- Experimental researchers publishing measurements in several journals (J. Chem. Eng. Data, J. Chem. Therm., Fluid Phase Equil., Therm. Acta, and Int. J. Therm.) are now guided through a data archival process that involves sanity checks and eventual archival at the TRC (\url{http://trc.nist.gov/ThermoML.html}).  
+ Experimental researchers publishing measurements in several journals (J.~Chem.~Eng.~Data, J.~Chem.~Therm., Fluid Phase Equil., Therm.~Acta, and Int.~J.~Therm.) are now guided through a data archival process that involves sanity checks and eventual archival at the TRC (\url{http://trc.nist.gov/ThermoML.html}).  
 
 Here we examine the ThermoML archive as a potential source for neat liquid density and static dielectric measurements, with the goal of developing a standard benchmark for validating these properties in fixed-charge forcefields of drug-like molecules.  
 These two observables provide sensitive tests of forcefield accuracy that are nonetheless straightforward to calculate.  
-Using the ThermoML data, we evaluate the AM1-BCC GAFF forcefield \cite{gaff} and identify systematic biases that might be improved upon.
+Using the ThermoML data, we evaluate the generalized Amber small molecule forcefield (GAFF)~\cite{gaff} with the AM1-BCC charge model~\cite{am1bcc1,am1bcc2} and identify systematic biases that might be improved upon.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % RESULTS
@@ -169,7 +169,7 @@ The functional groups present are summarized in Table \ref{table:ThermoMLSummary
 \begin{table}
 \begin{tabular}{lrr}
 \toprule
-Filter &  Mass Density &  Static Dielectric \\
+Filter &  Mass Density &  Static Dielectric \\ 
 \midrule
 0.  Single Component   &               130074 &                                     1649 \\
 1.  Druglike Elements  &               120410 &                                     1649 \\
@@ -181,7 +181,7 @@ Filter &  Mass Density &  Static Dielectric \\
 7.  Density+Dielectric &                  245 &                                      245 \\
 \bottomrule
 \end{tabular}
-\caption{ThermoML Statistics}
+\caption{{\bf Number of ThermoML measurements matching sequentially applied filters.}}
 \label{table:ThermoMLSummary}
 \end{table}
 
@@ -283,7 +283,7 @@ The inverse dielectric $\frac{1}{\epsilon}$ is plotted instead of $\epsilon$ bec
 
 \section{Discussion}
 
-\subsection{Forcefield Accuracy Depends on Functional Group???}
+\subsection{Examining discrepancies by functional group}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIGURE: ACCURACY BY FUNCTIONAL GROUP
@@ -336,17 +336,20 @@ Finally, this schema and Pandas was used to extract the data and apply the data 
 
 \subsection{Simulation}
 Boxes of 1000 molecules were constructed using PackMol \cite{martinez2009packmol}. 
- AM1-BCC charges were generated using OpenEye Toolkit 2014-6-6 \cite{openeye}, using the oequacpac.OEAssignPartialCharges module with parameter set OECharges\_AM1BCCSym.  
- The selected conformer was then processed using antechamber in AmberTools 14 \cite{amber14}.  
- The resulting AMBER files were converted to OpenMM \cite{eastman2012openmm} XML files.  
- Simulation code used libraries gaff2xml 0.6, TrustButVerify 0.1, openmm 6.2, and MDTraj \cite{mcgibbon2014mdtraj} 1.2.  
+AM1-BCC~\cite{am1bcc1,am1bcc2} charges were generated using OpenEye Toolkit 2014-6-6 \cite{openeye}, using the {\tt oequacpac.OEAssignPartialCharges} module with the {\tt OECharges\_AM1BCCSym}.  
+The selected conformer was then processed using antechamber in AmberTools~14~\cite{amber14}.  
+The resulting AMBER files were converted to OpenMM~\cite{eastman2012openmm} ffxml forcefield XML files.  
+Simulation code used libraries gaff2xml~0.6, TrustButVerify~0.1, OpenMM~6.2~\cite{eastman2012openmm}, and MDTraj~1.2~\cite{mcgibbon2014mdtraj}.  
+{\color{red}[TODO: Provide a script to install all of these versions via {\tt conda}.]}
 
-Molecular dynamics simulations were performed using OpenMM 6.2 using a Langevin integrator (friction $1 ps^{-1}$) and a 1 fs timestep; interestingly, we found that a 2 fs timestep led to insufficient accuracy in equilibrium densities (Table \ref{table:TimestepDependence}).  
-Pressure coupling was achieved with a Monte Carlo barostat applied every 25 steps.  
-Particle mesh Ewald \cite{Darden1993} was used with a long-range cutoff of 0.95 nm and an isotropic dispersion correction.  
-Simulations were continued until density standard errors were less than $2 \times 10^{-4}$ g / mL, as estimated using the equilibration detection module in pymbar 2.1 \cite{shirts2008statistically}.  
-Trajectory analysis was performed using OpenMM \cite{eastman2012openmm} and MDTraj \cite{mcgibbon2014mdtraj}.  
-Density data was output every 250 fs, while trajectory data was stored every 10 ps.  
+Molecular dynamics simulations were performed using OpenMM~6.2~\cite{eastman2012openmm} using a Langevin integrator (with collision rate 1 ps$^{-1}$) and a 1~fs timestep; interestingly, we found that a 2~fs timestep led to insufficient accuracy in equilibrium densities (Table~\ref{table:TimestepDependence}).  
+{\color{red}[JDC: Cite Langevin integrator used in OpenMM.]}
+Pressure coupling at 1 atmosphere was achieved with a Monte Carlo barostat utilizing molecular scaling and automated step size adjustment during equilibration, applied every 25 steps.  
+Particle mesh Ewald~\cite{Darden1993} was used with a long-range cutoff of 0.95~nm and an long-range isotropic dispersion correction.  
+{\color{red}[JDC: Can we report the automatically-selected PME parameters?]}
+Simulations were continued until density standard errors were less than $2 \times 10^{-4}$ g / mL, as estimated using the equilibration detection module in pymbar 2.1~\cite{shirts2008statistically}.  
+Trajectory analysis was performed using OpenMM~\cite{eastman2012openmm} and MDTraj~\cite{mcgibbon2014mdtraj}.  
+Density data was output every 250~fs, while trajectory data was stored every 10~ps.  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CONCLUSIONS
@@ -416,6 +419,16 @@ We find a 2fs timestep leads to systematic biases in the density on the order of
 \label{table:TimestepDependence}
 \end{table}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Assessment of experimental error
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Assessment of experimental error in ThermoML measurements}
+\label{section:experimental-error}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FIGURE: ILLUSTRATION OF ASSESSMENT OF EXPERIMENTAL ERROR
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{figure}
 
@@ -425,38 +438,52 @@ We find a 2fs timestep leads to systematic biases in the density on the order of
 \includegraphics[width=8cm]{./figures/error_analysis_density_index.pdf}
 \includegraphics[width=8cm]{./figures/error_analysis_dielectric_index.pdf}
 
-\caption{To assess the experimental error in our benchmark set, we consider two orthogonal error measurements.  
-The first is the mean of the uncertainties reported by the measurement authors.  The second is the standard deviation of measurements in ThermoML.   
+\caption{{\bf Assessment of experimental error in ThermoML data.}
+To assess the experimental error in our benchmark set, we consider two orthogonal error measurements.  
+The first is the mean of the uncertainties reported by the measurement authors.  
+The second is the standard deviation of measurements in ThermoML.   
 We see that author-reported uncertainties appear to be overly optimistic for densities (a, c), but author-reported uncertainties of dielectrics (b, d) appear consistent with the standard deviations.  
 A simple psychological explanation might be that because density measurements are more routine, the authors simply report the accuracy limit of their hardware (e.g. 0.0001 g / mL for a Mettler Toledo DM40 \cite{mettlertoledo}).  
-However, this hardware limit is not achieved due to inconsistencies in sample preparation; see Appendix in ref \cite{chirico2013improvement}.  
+However, this hardware limit is not achieved due to inconsistencies in sample preparation; see Appendix in Ref.~\cite{chirico2013improvement}.  
 Note that in panels (c, d) show the same information as (a, b) but as a function of the measurement index, rather than as a scatter plot---because not all measurements have author-supplied uncertainties, panels (c, d) contains slightly more data points than (a, b).  
 }
 \label{figure:ErrorAnalysis}
 
 \end{figure}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FIGURE: DENSITIES VS TEMPERATURE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure*}
 
-\begin{figure}
+\includegraphics[width=\textwidth]{./figures/densities_versus_temperature_all.pdf}
 
-\includegraphics[width=\columnwidth]{./figures/densities_versus_temperature_all.pdf}
-
-\caption{Measured (blue) and simulated (green) densities [kg / m3] for all compounds.
+\caption{{\bf Comparison of simulated and experimental densities for all compounds.} 
+Measured (blue) and simulated (green) densities are shown in units of kg/m$^3$.
 }
 \label{figure:AllDensities}
 
-\end{figure}
+\end{figure*}
 
-\begin{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FIGURE: DIELECTRIC VS TEMPERATURE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\includegraphics[width=\columnwidth]{./figures/dielectric_versus_temperature_all.pdf}
+\begin{figure*}
 
-\caption{Measured (blue), MD (green), and MD + polarizability-corrected (red) dielectrics for all compounds.  Note that these are dielectrics, \emph{not} inverse dielectrics.
+\includegraphics[width=\textwidth]{./figures/dielectric_versus_temperature_all.pdf}
+
+\caption{{\bf Comparison of simulated and experimental static dielectric constants for all compounds.}
+Measured (blue), simulated (green), and polarizability-corrected simulated (red) static dielectric constants are shown for all compounds.
+Note that dielectric constants, rather than inverse dielectric constants, are plotted here.
 }
 \label{figure:AllDielectrics}
 
-\end{figure}
+\end{figure*}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FIGURE: DIELECTRIC VIRTUAL CHEMISTRY
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{figure}
 
@@ -464,8 +491,7 @@ Note that in panels (c, d) show the same information as (a, b) but as a function
 
 \includegraphics[width=\columnwidth]{./figures/dielectric_virtual_chemistry_opls.pdf}
 
-
-\caption{Measured (blue), MD (green), and MD + polarizability-corrected (red) dielectrics for the virtualchemistry dataset \cite{caleman2011force, van2012gromacs}.  
+\caption{{\bf Comparison of measured and simulated dielectric constants from the virtualchemistry dataset with and without polarizability correction.}  Measured (blue), MD (green), and MD + polarizability-corrected (red) dielectrics for the Virtual Chemistry dataset~\cite{caleman2011force, van2012gromacs}.  
 }
 \label{figure:VirtualChemistry}
 \end{figure}
@@ -487,10 +513,6 @@ Note that in panels (c, d) show the same information as (a, b) but as a function
 %$$ = \frac{4\pi}{3k_B}(\frac{M}{TV})^2[(\frac{\delta(V)^2}{V^2} + \frac{\delta(T)^2}{T^2} + \frac{\delta(M)^2}{M^2}]$$
 
 %$$\delta(M)^2 = \delta(\langle M_x^2 \rangle)^2 + \delta(\langle M_y^2 \rangle)^2 + \delta(\langle M_z^2 \rangle)^2 + \delta(\langle M_x \rangle)^2 + \delta(\langle M_y \rangle)^2 + \delta(\langle M_z \rangle)^2 $$
-
-\section{Uncertainty in experimental measurements}
-\label{section:experimental-error}
-
 
 \clearpage
 
