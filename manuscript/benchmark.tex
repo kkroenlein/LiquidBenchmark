@@ -1,4 +1,3 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DOCUMENT CLASS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -109,7 +108,7 @@ Neat Liquid Densities and Static Dielectrics}
 
 Useful atomistic simulations in the condensed phase require accurate depictions of solvent.  
 While accurate experimental measurements of fundamental physical properties offer a straightforward approach for evaluating forcefield quality, the bulk of this information has been tied up in non-machine-readable formats that pose many risks to the automated evaluation of forcefield accuracy.
-Here we examine the feasibility of benchmarking atomistic forcefields against the NIST ThermoML database of physicochemical measurements, which aggregates thousands off experimental measurements in a portable machine-readable self-annotating format. 
+Here we examine the feasibility of benchmarking atomistic forcefields against the NIST ThermoML database of physicochemical measurements, which aggregates thousands of experimental measurements in a portable machine-readable self-annotating format. 
 We present a detailed benchmark of the generalized Amber small molecule forcefield (GAFF) using the AM1-BCC charge model against measurements (specifically liquid densities and static dielectric constants at ambient pressure) extracted from ThermoML, and discuss the extent of available data for neat liquids.  
 {\color{red} We show that empirical polarizability models correct systematic biases inherent in predicting dielectric constants with fixed-charged forcefields.  [JDC: Will need to be convinced!]}
 
@@ -137,7 +136,7 @@ There are also outstanding questions of generalizability of parameters.
 Will changes to a specific chemical moiety be compatible with seemingly unrelated improvements?  
 Addressing these questions requires agreement on shared benchmarks that can be easily replicated with proposed forcefield enhancements.
 
-A key barrier in forcefield development is that many experimental datasets are heterogeneous, paywalled, and unavailable in machine-readable formats (although notable counterexamples exist, e.g. RSCB~\cite{}, FreeSolv~\cite{freesolv} and BMRB~\cite{}).  
+A key barrier in forcefield development is that many experimental datasets are heterogeneous, paywalled, and unavailable in machine-readable formats (although notable counterexamples exist, e.g. RSCB~\cite{}, FreeSolv~\cite{freesolv} and BMRB~\cite{Ulrich2008}).  
 While this inconvenience is relatively minor for benchmarking a single target (e.g. water), it becomes prohibitive for studies spanning chemical space.  
 To ameliorate problems of data archival, the NIST Thermodynamics Research Center has developed a IUPAC standard XML-based format---ThermoML \cite{}---for storing physicochemical measurements, uncertainties, and metadata.
  Experimental researchers publishing measurements in several journals (J.~Chem.~Eng.~Data, J.~Chem.~Therm., Fluid Phase Equil., Therm.~Acta, and Int.~J.~Therm.) are now guided through a data archival process that involves sanity checks and eventual archival at the TRC (\url{http://trc.nist.gov/ThermoML.html}).  
