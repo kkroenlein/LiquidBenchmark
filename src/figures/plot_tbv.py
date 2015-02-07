@@ -1,3 +1,4 @@
+import sklearn.metrics, sklearn.cross_validation
 import statsmodels.formula.api as sm
 import simtk.unit as u
 import polarizability
@@ -9,7 +10,7 @@ sns.set_palette("bright")
 sns.set_style("whitegrid")
 
 
-expt = pd.read_csv("./tables/data_dielectric.csv")
+expt = pd.read_csv("./tables/data_with_metadata.csv")
 expt["temperature"] = expt["Temperature, K"]
 
 
@@ -23,8 +24,10 @@ pred = pred.set_index(["cas", "temperature"])
 
 pred["expt_density"] = expt["Mass density, kg/m3"]
 pred["expt_dielectric"] = expt["Relative permittivity at zero frequency"]
-pred["expt_density_std"] = expt["Mass density, kg/m3_std"]
-pred["expt_dielectric_std"] = expt["Relative permittivity at zero frequency_std"]
+#pred["expt_density_std"] = expt["Mass density, kg/m3_std"]
+pred["expt_density_std"] = expt["Mass density, kg/m3_uncertainty_bestguess"]
+#pred["expt_dielectric_std"] = expt["Relative permittivity at zero frequency_std"]
+pred["expt_dielectric_std"] = expt["Relative permittivity at zero frequency_uncertainty_bestguess"]
 
 
 for (formula, grp) in pred.groupby("formula"):
@@ -34,13 +37,18 @@ for (formula, grp) in pred.groupby("formula"):
     plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='.', label=formula)
 
 plt.plot([600, 1400], [600, 1400], 'k')
-plt.title("Density [kg / m^3]")
 plt.xlim((600, 1400))
 plt.ylim((600, 1400))
 plt.xlabel("Predicted (GAFF)")
 plt.ylabel("Experiment (ThermoML)")
 plt.gca().set_aspect('equal', adjustable='box')
 plt.draw()
+x, y = pred["density"], pred["expt_density"]
+relative_rms = (((x - y) / x)**2).mean()** 0.5
+cv = sklearn.cross_validation.Bootstrap(len(x), train_size=len(x) - 1, n_iter=100)
+relative_rms_grid = np.array([(((x[ind] - y[ind]) / x[ind])**2).mean()** 0.5 for ind, _ in cv])
+relative_rms_err = relative_rms_grid.std()
+plt.title("Density [kg / m^3] (relative rms: %.2f $\pm$ %.3f)" % (relative_rms, relative_rms_err))
 plt.savefig("./manuscript/figures/densities_thermoml.pdf", bbox_inches=None)
 
 
