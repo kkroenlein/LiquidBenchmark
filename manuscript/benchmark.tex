@@ -338,7 +338,7 @@ While this behavior is well-known and results from missing physics of polarizabi
 \includegraphics[width=\columnwidth]{./figures/chlorides.png}
 
 \caption{(a). Measured static dielectric constants of various nonpolar or symmetric molecules \cite{wikipedia}; fixed-charge forcefields give $\epsilon \approx 1$ for each species.  
-(b).  A congeneric series of chloromethanes show dielectric constants between 2 and 10.  
+(b).  A congeneric series of chloromethanes show dielectric constants between 2 and 13.  
 }
 \label{figure:nonpolars}
 
@@ -356,8 +356,7 @@ Using the Onsager model for the transfer free energy of a dipole (Eqn. \ref{eq:o
 \Delta G = -\frac{\mu^2}{a^3}\frac{\epsilon - 1}{2 \epsilon + 1}
 \end{equation}
 
-Although detailed comparison of polarizable electrostatic models is outside the scope of the present work, the success of the simple empirical model (Eq. \ref{eq:sales}) suggests that simple polarizability models may be worth considering, particularly when simulating low dielectric liquids.  
-Separating the contributions of fixed charges and polarization may also lead to the development of improved models of electrostatics that account for the missing polarization physics; some such models have been proposed recently \cite{leontyev2014polarizable, truchon2010using, truchon2009integrated}.
+Given their ease of measurement and direct connection to long-range electrostatic interactions, static dielectric constants should be considered primary data for forcefield parameterization efforts.  Although this will require the use of forcefields with explicit polarizability, the inconsistency of fixed-charge models in low-dielectric media is sufficiently alarming to motivate further study of polarizable forcefields.  In particular, continuum methods \cite{truchon2010using, truchon2009integrated, truchon2008accurate}, induced dipole methods \cite{Ponder2010, ren2004temperature}, and drude methods \cite{lamoureux2003modeling, anisimov2005determination} have been maturing rapidly.  Finding the optimal balance of accuracy and performance remains an open question; however, the use of experimentally-parameterized direct polarization methods \cite{wang2013systematic} may provide polarizability physics at a cost not much greater than fixed charge forcefields.
 
 
 \subsection{ThermoML as a Data Source}
