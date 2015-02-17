@@ -1,3 +1,6 @@
+"""
+Builds a table of error by functional groups.  Not currently used in the paper because the number of unique chemicals is quite low.
+"""
 import sklearn.metrics, sklearn.cross_validation
 import statsmodels.formula.api as sm
 import simtk.unit as u
