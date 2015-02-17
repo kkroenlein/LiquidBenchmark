@@ -288,29 +288,6 @@ The inverse dielectric $\frac{1}{\epsilon}$ is plotted instead of $\epsilon$ bec
 
 \section{Discussion}
 
-\subsection{Examining discrepancies by functional group}
-
-SEE FIG. \ref{figure:ByFunctionalGroup}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% FIGURE: ACCURACY BY FUNCTIONAL GROUP
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{figure}
-
-\includegraphics[width=\columnwidth]{./figures/functional_group_logerr_density.pdf}
-
-\includegraphics[width=\columnwidth]{./figures/functional_group_logerr_dielectric.pdf}
-
-\includegraphics[width=\columnwidth]{./figures/functional_group_logerr_dielectric_raw.pdf}
-
-\caption{TODO: MAKE A DECENT ANALYSIS THAT BREAKS THINGS DOWN ERRORS BY FUNCTIONAL GROUP!
-}
-\label{figure:ByFunctionalGroup}
-
-\end{figure}
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FITTING FORCEFIELDS TO DIELECTRIC CONSTANTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -356,7 +333,7 @@ Using the Onsager model for the transfer free energy of a dipole (Eqn. \ref{eq:o
 \Delta G = -\frac{\mu^2}{a^3}\frac{\epsilon - 1}{2 \epsilon + 1}
 \end{equation}
 
-Given their ease of measurement and direct connection to long-range electrostatic interactions, static dielectric constants should be considered primary data for forcefield parameterization efforts.  Although this will require the use of forcefields with explicit polarizability, the inconsistency of fixed-charge models in low-dielectric media is sufficiently alarming to motivate further study of polarizable forcefields.  In particular, continuum methods \cite{truchon2010using, truchon2009integrated, truchon2008accurate}, induced dipole methods \cite{Ponder2010, ren2004temperature}, and drude methods \cite{lamoureux2003modeling, anisimov2005determination} have been maturing rapidly.  Finding the optimal balance of accuracy and performance remains an open question; however, the use of experimentally-parameterized direct polarization methods \cite{wang2013systematic} may provide polarizability physics at a cost not much greater than fixed charge forcefields.
+Given their ease of measurement and direct connection to long-range electrostatic interactions, static dielectric constants are potentially usable as primary data for forcefield parameterization efforts.  Although this will require the use of forcefields with explicit polarizability, the inconsistency of fixed-charge models in low-dielectric media is sufficiently alarming to motivate further study of polarizable forcefields.  In particular, continuum methods \cite{truchon2010using, truchon2009integrated, truchon2008accurate}, induced dipole methods \cite{Ponder2010, ren2004temperature}, and drude methods \cite{lamoureux2003modeling, anisimov2005determination} have been maturing rapidly.  Finding the optimal balance of accuracy and performance remains an open question; however, the use of experimentally-parameterized direct polarization methods \cite{wang2013systematic} may provide polarizability physics at a cost not much greater than fixed charge forcefields.
 
 
 \subsection{ThermoML as a Data Source}
