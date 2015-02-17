@@ -69,8 +69,8 @@
 % TITLE AND AUTHORS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\title{Benchmarking Simulations against the ThermoML Database:\\
-Neat Liquid Densities and Static Dielectrics}
+\title{Benchmarking Atomistic Simulations against the ThermoML Database:\\
+Neat Liquid Densities and Static Dielectric Constants}
 
 \author{Kyle A. Beauchamp$^+$}
 \email{kyle.beauchamp@choderalab.org}
@@ -107,8 +107,9 @@ Neat Liquid Densities and Static Dielectrics}
 \begin{abstract}
 
 Useful atomistic simulations in the condensed phase require accurate depictions of solvent.  
-While accurate experimental measurements of fundamental physical properties offer a straightforward approach for evaluating forcefield quality, the bulk of this information has been tied up in non-machine-readable formats that pose many risks to the automated evaluation of forcefield accuracy.
-Here we examine the feasibility of benchmarking atomistic forcefields against the NIST ThermoML database of physicochemical measurements, which aggregates thousands of experimental measurements in a portable machine-readable self-annotating format. 
+While experimental measurements of fundamental physical properties offer a straightforward approach for evaluating forcefield quality, the bulk of this information has been tied up in non-machine-readable formats.
+This inaccessibility hinders reproducible benchmarks of forcefield accuracy.
+Here we examine the feasibility of benchmarking atomistic forcefields against the NIST ThermoML database of physicochemical measurements, which aggregates thousands of experimental measurements in a portable, machine-readable, and self-annotating format. 
 We present a detailed benchmark of the generalized Amber small molecule forcefield (GAFF) using the AM1-BCC charge model against measurements (specifically liquid densities and static dielectric constants at ambient pressure) extracted from ThermoML, and discuss the extent of available data for neat liquids.  
 {\color{red} We show that empirical polarizability models correct systematic biases inherent in predicting dielectric constants with fixed-charged forcefields.  [JDC: Will need to be convinced!]}
 
@@ -128,20 +129,19 @@ Recent advances in hardware and molecular dynamics software have provided routin
 Leveraging these advances in combination with GPU clusters, distributed computing, or custom hardware has brought the microsecond and milliseconds within reach.  
 These dramatic advances in sampling, however, have revealed forcefields as a critical barrier for truly predictive simulation.  
 
-Protein and water forcefields have been the subject of numerous benchmarks~\cite{} and enhancements~\cite{}, with key outcomes including the ability to fold fast-folding proteins, improved fidelity of water thermodynamic properties, and improved prediction of NMR observables.  
-Although small molecule forcefields have also been the subject of benchmarks~\cite{} and improvements~\cite{}, such work has focused on small perturbations to specific functional groups.  
-For example, a recent study found that modified hydroxyl nonbonded parameters led to improved prediction of static dielectrics and hydration free energies.  
-%Other studies have found XYZ.  
+Protein and water forcefields have been the subject of numerous benchmarks~\cite{lindorff2012systematic} and enhancements~\cite{li2011iterative, best2012optimization, Lindorff-Larsen2010}, with key outcomes including the ability to fold fast-folding proteins, improved fidelity of water thermodynamic properties, and improved prediction of NMR observables.  
+Although small molecule forcefields have also been the subject of benchmarks~\cite{caleman2011force} and improvements~\cite{fennell2014fixed}, such work has typically focused on small perturbations to specific functional groups.  
+For example, a recent study found that modified hydroxyl nonbonded parameters led to improved prediction of static dielectrics and hydration free energies \cite{fennell2014fixed}.
 There are also outstanding questions of generalizability of parameters.  
 Will changes to a specific chemical moiety be compatible with seemingly unrelated improvements?  
 Addressing these questions requires agreement on shared benchmarks that can be easily replicated with proposed forcefield enhancements.
 
-A key barrier in forcefield development is that many experimental datasets are heterogeneous, paywalled, and unavailable in machine-readable formats (although notable counterexamples exist, e.g. RSCB~\cite{}, FreeSolv~\cite{freesolv} and BMRB~\cite{Ulrich2008}).  
+A key barrier in forcefield development is that many experimental datasets are heterogeneous, paywalled, and unavailable in machine-readable formats (although notable counterexamples exist, e.g. RCSB~\cite{Berman2000}, FreeSolv~\cite{freesolv} and BMRB~\cite{Ulrich2008}).  
 While this inconvenience is relatively minor for benchmarking a single target (e.g. water), it becomes prohibitive for studies spanning chemical space.  
-To ameliorate problems of data archival, the NIST Thermodynamics Research Center has developed a IUPAC standard XML-based format---ThermoML \cite{}---for storing physicochemical measurements, uncertainties, and metadata.
- Experimental researchers publishing measurements in several journals (J.~Chem.~Eng.~Data, J.~Chem.~Therm., Fluid Phase Equil., Therm.~Acta, and Int.~J.~Therm.) are now guided through a data archival process that involves sanity checks and eventual archival at the TRC (\url{http://trc.nist.gov/ThermoML.html}).  
+To ameliorate problems of data archival, the NIST Thermodynamics Research Center has developed a IUPAC standard XML-based format---ThermoML \cite{frenkel2006xml}---for storing physicochemical measurements, uncertainties, and metadata.
+ Experimental researchers publishing measurements in several journals (J.~Chem.~Eng.~Data, J.~Chem.~Therm., Fluid Phase Equil., Therm.~Acta, and Int.~J.~Therm.) are now guided through a data archival process that involves sanity checks and archival at the TRC (\url{http://trc.nist.gov/ThermoML.html}).  
 
-Here we examine the ThermoML archive as a potential source for neat liquid density and static dielectric measurements, with the goal of developing a standard benchmark for validating these properties in fixed-charge forcefields of drug-like molecules.  
+Here we examine the ThermoML archive as a potential source for neat liquid density and static dielectric constant measurements, with the goal of developing a standard benchmark for validating these properties in fixed-charge forcefields of drug-like molecules.  
 These two observables provide sensitive tests of forcefield accuracy that are nonetheless straightforward to calculate.  
 Using the ThermoML data, we evaluate the generalized Amber small molecule forcefield (GAFF)~\cite{gaff} with the AM1-BCC charge model~\cite{am1bcc1,am1bcc2} and identify systematic biases that might be improved upon.
 
@@ -153,13 +153,13 @@ Using the ThermoML data, we evaluate the generalized Amber small molecule forcef
 
 \subsection{Neat Liquid Measurements in ThermoML}
 
-We performed a number of queries to summarize the ThermoML content relevant for benchmarking organic molecule forcefields.  
+We performed a number of sequential queries to summarize the ThermoML content relevant for benchmarking organic molecule forcefields.  
 Our aim is to explore neat liquid data with functional groups relevant to drug-like molecules.  
 We therefore applied the following sequence of filters: has either density or static dielectric measurements, contains a single component, contains only druglike elements (H, N, C, O, S, P, F, Cl, Br), has low heavy atom count $(\le 10)$, has ambient temperature [K] $(270 \le T \le 330)$, has ambient pressure [kPA] $(100 \le P \le 102)$, and has density greater than 300 kg $m^{-3}$ (a proxy for liquid state).  
 After applying these filters, we also round all pressures within this range to exactly one atmosphere.  We also round temperatures to one decimal place.  
 These approximations are motived by common data entry errors; for example, an experiment performed at water's freezing point at ambient pressure might be entered as either 101.325 kPA or 100 kPA, with a temperature of either 273 K or 273.15 K.  
-After the application of these filters (Table \ref{table:ThermoMLSummary}), we are left with 245 conditions for which both density and dielectric data are available.  
-The functional groups present are summarized in Table \ref{table:ThermoMLSummary}.  
+The application of these filters (Table \ref{table:ThermoMLSummary}) leaves 245 conditions for which both density and dielectric data are available.  
+The functional groups present are summarized in Table \ref{table:FunctionalGroups}.  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TABLE: DENSITY AND STATIC DIELECTRIC
@@ -224,9 +224,9 @@ Functional group classification was performed using checkmol version 0.5 \cite{h
 
 \subsection{Benchmarking GAFF against ThermoML: Mass Density}
 
-Mass density has been widely used as a critical ingredient for parameterizing and testing forcefields, particularly the Lennard Jones parameters \cite{jorgensen1983comparison, jorgensen1984optimized}.  
-We therefore used the present ThermoML compilation as a benchmark of the GAFF AM1-BCC forcefield (Fig. \ref{figure:Density}).  
-Overall, the densities show reasonable accuracy (R2 + errobars), consistent with previous studies \cite{caleman2011force} reporting agreement of XYZ on a different benchmark set.  
+Mass density has been widely used for parameterizing and testing forcefields, particularly the Lennard Jones parameters \cite{jorgensen1983comparison, jorgensen1984optimized}.  
+We therefore used the present ThermoML compilation as a benchmark of the GAFF / AM1-BCC forcefield (Fig. \ref{figure:Density}).  
+Overall, the densities show reasonable accuracy (RMS percent error: 3 \% $\pm$ 0.1\%), consistent with previous studies \cite{caleman2011force} reporting agreement of 4 \% on a different benchmark set.  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIGURE: DENSITY COMPARISON
@@ -235,9 +235,8 @@ Overall, the densities show reasonable accuracy (R2 + errobars), consistent with
 \begin{figure}
 \includegraphics[width=\columnwidth]{./figures/densities_thermoml.pdf}
 \caption{{\bf Comparison of liquid densities between experiment and simulation.}
-Liquid density measurements at ambient (1 atm) pressure extracted from ThermoML are compared against simulated densities at ambient pressure using the GAFF/AM1-BCC small molecule fixed-charge forcefield.
-Color groupings represent identical chemical formulas.  
-{\color{red}[JDC: Chemical \emph{species}?]}
+Liquid density measurements extracted from ThermoML are compared against densities predicted using the GAFF / AM1-BCC small molecule fixed-charge forcefield.
+Color groupings represent identical chemical species.  
 Simulation error bars represent one standard error of the mean, with the number of effective (uncorrelated) samples estimated using pymbar.  
 Experimental error bars indicate the standard deviation between independently reported measurements, when available, or author-reported standard deviations in ThermoML entries; for some measurements, neither uncertainty estimate is available.  
 See {\bf Section~\ref{section:experimental-error}} for further discussion of error.
@@ -249,13 +248,20 @@ See {\bf Section~\ref{section:experimental-error}} for further discussion of err
 % DIELECTRIC
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Benchmarking GAFF against ThermoML: Static Dielectric}
+\subsection{Benchmarking GAFF / AM1-BCC against ThermoML: Static Dielectric}
 
-As a measure of the electronic medium, the static dielectric constant of neat liquids provides a critical benchmark that is somewhat orthogonal to density and thermodynamic quantities.  
+As a measure of the electronic medium, the static dielectric constant of neat liquids provides a critical benchmark of electrostatic models.  
 We therefore compare simulations against the measurements in our ThermoML compilation.  
 Overall, we find the dielectric constants to be qualitatively reasonable, but with clear deviations from experiment.  
-In particular, GAFF AM1-BCC systematically underestimates the dielectric constants for nonpolar organics, with GAFF predictions of $\epsilon \approx 1.0 \pm 0.05$ being substantially smaller than the measured $\epsilon \approx 2$.  
-Because this deviation likely stems from the lack of electronic polarization, we added a simple empirical correction for polarization \cite{bosque2002polarizabilities}, which leads to better agreement with experiment.  
+In particular, GAFF / AM1-BCC systematically underestimates the dielectric constants for nonpolar organics, with the predictions of $\epsilon \approx 1.0 \pm 0.05$ being substantially smaller than the measured $\epsilon \approx 2$.  
+Because this deviation likely stems from the lack of electronic polarization, we added a simple empirical correction for polarization \cite{bosque2002polarizabilities} that is based on counting the elements in a molecule:
+\begin{equation} \label{eq:sales}
+\begin{split}
+\frac{\alpha}{\textnormal{\AA}} = 1.53 n_C + 0.17 n_H + 0.57 n_O + 1.05 n_N + 2.99 n_S + \\ 2.48 n_P + 0.22 n_F + 2.16 n_{Cl} + 3.29 n_{Br} + 5.45 n_I + 0.32 
+\end{split}
+\end{equation}
+From the polarizability, one can correct the static dielectric using the following equation (from ref. \cite{horn2004}):
+$$\epsilon_{corrected} = \epsilon_{MD} + 4 \pi N  \frac{\alpha}{\langle V \rangle}$$
 A similar polarization correction was used in the development of the TIP4P-EW water model \cite{horn2004}; however, the need is much greater for the nonpolar organics, as the missing polarizability is the dominant contribution to the static dielectric constant.  
 In the case of water, the Sales polarizability model predicts a dielectric correction of 0.52, while 0.79 was used for the TIP4P-EW model.  
 For comparison, we also applied the same empirical correction to the VirtualChemistry dataset \cite{caleman2011force, van2012gromacs} and saw similarly improved agreement with experiment for both the GAFF and OPLS forcefields (Fig. \ref{figure:VirtualChemistry}).
@@ -267,10 +273,10 @@ For comparison, we also applied the same empirical correction to the VirtualChem
 \begin{figure}
 \includegraphics[width=\columnwidth]{./figures/dielectrics_thermoml.pdf}
 
-\caption{{\bf Measured (ThermoML) versus predicted (GAFF) inverse static dielectrics (a).}
-Color groupings represent identical chemical formulas.  Simulation error bars represent one standard error of the mean estimated via block averaging with block sizes of 200 ps \cite{flyvbjerg1989error}.  
+\caption{{\bf Measured (ThermoML) versus predicted (GAFF / AM1-BCC) inverse static dielectrics (a).}
+Simulation error bars represent one standard error of the mean estimated via block averaging with block sizes of 200 ps \cite{flyvbjerg1989error}.  
 Experimental error bars indicate the larger of standard deviation between independently reported measurements and the authors reported standard deviations; for some measurements, neither uncertainty estimate is available.  
-See section S2 for further discussion of error.  
+See section \ref{section:experimental-error} for further discussion of error.  
 The inverse dielectric $\frac{1}{\epsilon}$ is plotted instead of $\epsilon$ because $\frac{1}{\epsilon}$ is directly proportional to energy in continuum dielectric models: e.g. $U(r) = \frac{1}{4 \pi \epsilon} \frac{q_1 q_2}{r} \propto \frac{1}{\epsilon}$.
 }
 \label{figure:Dielectric}
@@ -282,18 +288,6 @@ The inverse dielectric $\frac{1}{\epsilon}$ is plotted instead of $\epsilon$ bec
 
 \section{Discussion}
 
-\subsection{Examining discrepancies by functional group}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% FIGURE: ACCURACY BY FUNCTIONAL GROUP
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\includegraphics[width=\columnwidth]{./figures/functional_group_logerr_density.pdf}
-
-\includegraphics[width=\columnwidth]{./figures/functional_group_logerr_dielectric.pdf}
-
-\includegraphics[width=\columnwidth]{./figures/functional_group_logerr_dielectric_raw.pdf}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FITTING FORCEFIELDS TO DIELECTRIC CONSTANTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -301,14 +295,45 @@ The inverse dielectric $\frac{1}{\epsilon}$ is plotted instead of $\epsilon$ bec
 \subsection{Fitting Forcefields to Dielectric Constants}
 
 Recent forcefield development has seen a resurgence of papers fitting dielectric constants as primary data \cite{wang2014building, fennell2014fixed}.  
-However, a number of authors have pointed out potential challenges in constructing self-consistent fixed-charge force fields \cite{fennell2012simple, leontyev2014polarizable}.  
+However, a number of authors have pointed out potential challenges in constructing self-consistent fixed-charge forcefields \cite{fennell2012simple, leontyev2014polarizable}.  
+
+
 Interestingly, a recent work by Dill \cite{fennell2012simple} pointed out that, for $\mathrm{CCl_4}$, reasonable choices of point charges are incapable of recapitulating the observed dielectric of $\epsilon = 2.2$, instead producing dielectric constants in the range of $1.0 \le \epsilon \le 1.05$.  
-Suppose, for example, that one attempts to directly fit the static dielectric constants of $\mathrm{CCl_4}$, $\mathrm{CHCl_3}$, $\mathrm{CH_2Cl_2}$, $\mathrm{CH_3Cl_1}$, $\mathrm{CH_4}$.  
-In moving from the tetrahedrally-symmetric $\mathrm{CCl_4}$ to $\mathrm{CHCl_3}$, it suddenly becomes possible to achieve the observed dielectric constant of 4.8.  
-However, the model for $\mathrm{CHCl_3}$ uses fixed point charges to account for \emph{both} the net dipole moment and the (electronic) polarizability, whereas the $\mathrm{CCl_4}$ model contains no treatment of polarizability.  
-We hypothesize that this inconsistency in parameterization may lead to strange mismatches, where symmetric molecules (e.g. benzene, $\mathrm{CCl_4}$) have qualitatively different properties than closely related asymmetric molecules (e.g. toluene, $\mathrm{CHCl_3}$).  
-As a first-order fix, we suggest using empirical polarization corrections before directly comparing measured static dielectric constants to fixed-charge models---particularly when examining low-dielectric solvents.  
-Separating the contributions of fixed charges and polarization may also lead to the development of improved models of electrostatics that account for the missing polarization physics; some such models have been proposed recently \cite{leontyev2014polarizable}.
+This behavior is quite general: a fixed charge monopole force field predicts $\epsilon \approx 1$ for several nonpolar or symmetric molecules, but the measured dielectric constants are instead $\epsilon \approx 2$ (Fig. \ref{figure:nonpolars}).  
+While this behavior is well-known and results from missing physics of polarizability, we suspect it may have several unanticipated consequences.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FIGURE: Nonpolars
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure}
+
+\includegraphics[width=\columnwidth]{./figures/molecules.png}
+
+\noindent\rule{8cm}{0.4pt}
+
+\includegraphics[width=\columnwidth]{./figures/chlorides.png}
+
+\caption{(a). Measured static dielectric constants of various nonpolar or symmetric molecules \cite{wikipedia}; fixed-charge forcefields give $\epsilon \approx 1$ for each species.  
+(b).  A congeneric series of chloromethanes show dielectric constants between 2 and 13.  
+}
+\label{figure:nonpolars}
+
+\end{figure}
+
+
+Suppose, for example, that one attempts to fit forcefield parameters to match the static dielectric constants of $\mathrm{CCl_4}$, $\mathrm{CHCl_3}$, $\mathrm{CH_2Cl_2}$, and $\mathrm{CH_3Cl}$.
+In moving from the tetrahedrally-symmetric $\mathrm{CCl_4}$ to $\mathrm{CHCl_3}$, it suddenly becomes possible to achieve the observed dielectric constant of 4.8 by an appropriate choice of point charges.
+However, the model for $\mathrm{CHCl_3}$ uses fixed point charges to account for \emph{both} the permanent dipole moment and the electronic polarizability, whereas the $\mathrm{CCl_4}$ model contains no treatment of polarizability.  
+We hypothesize that this inconsistency in parameterization may lead to strange mismatches, where symmetric molecules (e.g. benzene, $\mathrm{CCl_4}$) have qualitatively different properties than closely related asymmetric molecules (e.g. toluene, $\mathrm{CHCl_3}$).
+
+As a possible real-world example, we imagine that the missing polarizability could be important in accurate transfer free energies involving low-dielectric solvents.  
+Using the Onsager model for the transfer free energy of a dipole (Eqn. \ref{eq:onsager}) gives an error of $\Delta \Delta G = \Delta G(\epsilon=2.2) - \Delta G(\epsilon=1)$ of 2 kcal / mol for the transfer of water ($a = 1.93$ \AA\, $\mu = 2.2$D) into a low dielectric medium such as tetrachloromethane or benzene.
+\begin{equation} \label{eq:onsager}
+\Delta G = -\frac{\mu^2}{a^3}\frac{\epsilon - 1}{2 \epsilon + 1}
+\end{equation}
+
+Given their ease of measurement and direct connection to long-range electrostatic interactions, static dielectric constants are potentially usable as primary data for forcefield parameterization efforts.  Although this will require the use of forcefields with explicit polarizability, the inconsistency of fixed-charge models in low-dielectric media is sufficiently alarming to motivate further study of polarizable forcefields.  In particular, continuum methods \cite{truchon2010using, truchon2009integrated, truchon2008accurate}, induced dipole methods \cite{Ponder2010, ren2004temperature}, and drude methods \cite{lamoureux2003modeling, anisimov2005determination} have been maturing rapidly.  Finding the optimal balance of accuracy and performance remains an open question; however, the use of experimentally-parameterized direct polarization methods \cite{wang2013systematic} may provide polarizability physics at a cost not much greater than fixed charge forcefields.
 
 
 \subsection{ThermoML as a Data Source}
@@ -316,9 +341,11 @@ Separating the contributions of fixed charges and polarization may also lead to 
 The present work has focused on the neat liquid density and dielectric measurements present in ThermoML \cite{frenkel2006xml, frenkel2003thermoml, chirico2003thermoml} as a target for molecular dynamics forcefield validation.  
 While densities and dielectric constants have been widely used in forcefield work, several aspects of ThermoML make it a unique resource for the forcefield community.  
 First, the aggregation, support, and dissemination of ThermoML is supported by NIST, whose mission makes these tasks a long-term priority.  
-Second, ThermoML is actively growing, through partnerships with journals such as J. Chem. Thermo--new experimental measurements published in these journals are critically examined by the TRC and included in the archive.  
+Second, ThermoML is actively growing, through partnerships with several journals---new experimental measurements published in these journals are critically examined by the TRC and included in the archive.  
 Finally, the files in ThermoML are machine readable via a formal XML schema, allowing facile access to thousands of measurements.  
 In the future, we hope to examine additional measurement classes, including both mixture and two-phase data.
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % METHODS
@@ -368,7 +395,7 @@ Density data was output every 250~fs, while trajectory data was stored every 10~
 
 \section{Acknowledgements}
 
-We thank Vijay S.~Pande (Stanford University), Lee-Ping Wang (Stanford University), Peter Eastman (Stanford University), Robert McGibbon (Stanford University), Jason Swails (Rutgers University), David L.~Mobley (University of California, Irvine), Christopher I.~Bayly (OpenEye Software), Michael R~.Shirts (University of Virginia), and members of Chodera lab for helpful discussions.  
+We thank Vijay S.~Pande (Stanford University), Lee-Ping Wang (Stanford University), Peter Eastman (Stanford University), Robert McGibbon (Stanford University), Jason Swails (Rutgers University), David L.~Mobley (University of California, Irvine), Christopher I.~Bayly (OpenEye Software), Michael R. Shirts (University of Virginia), and members of Chodera lab for helpful discussions.  
 Support for JMB was provided by the Tri-Institutional Training Program in Computational Biology and Medicine (via NIH training grant 1T32GM083937).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
