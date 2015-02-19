@@ -155,9 +155,21 @@ Using the ThermoML data, we evaluate the generalized Amber small molecule forcef
 
 We performed a number of sequential queries to summarize the ThermoML content relevant for benchmarking organic molecule forcefields.  
 Our aim is to explore neat liquid data with functional groups relevant to drug-like molecules.  
-We therefore applied the following sequence of filters: has either density or static dielectric measurements, contains a single component, contains only druglike elements (H, N, C, O, S, P, F, Cl, Br), has low heavy atom count $(\le 10)$, has ambient temperature [K] $(270 \le T \le 330)$, has ambient pressure [kPA] $(100 \le P \le 102)$, and has density greater than 300 kg $m^{-3}$ (a proxy for liquid state).  
-After applying these filters, we also round all pressures within this range to exactly one atmosphere.  We also round temperatures to one decimal place.  
-These approximations are motived by common data entry errors; for example, an experiment performed at water's freezing point at ambient pressure might be entered as either 101.325 kPA or 100 kPA, with a temperature of either 273 K or 273.15 K.  
+We therefore applied the following ordered sequence filters, starting with all data containing density or static dielectric constants: 
+
+\begin{enumerate}
+ \item The measured solution contains only a single component (e.g. no binary mixtures)
+ \item The molecule contains only the druglike elements (H, N, C, O, S, P, F, Cl, Br)
+ \item The molecule has fewer than or equal to 10 heavy atoms
+ \item The measurement was performed under ambient temperature [K] $(270 \le T \le 330)$
+ \item The measurement was performed under ambient pressure [kPA] $(100 \le P \le 102)$
+ \item Measured densities below 300 kg $m^{-3}$ were discarded; this criterion eliminated all non-liquid data in the collection.
+ \item The temperature and pressure were rounded to nearby values (as described below), averaging all measurements within each group of like conditions.
+ \item Only conditions (molecule, temperature, pressure) for which \emph{both} density and dielectric constants were available were retained.  
+\end{enumerate}
+The temperature and pressure rounding step was motivated by common data entry errors; for example, an experiment performed at water's freezing point at ambient pressure might be entered as either 101.325 kPA or 100 kPA, with a temperature of either 273 K or 273.15 K.  
+Therefore all pressures within the range [kPA] $(100 \le P \le 102)$ were rounded to exactly one atmosphere.  
+Temperatures were rounded to one decimal place.  
 The application of these filters (Table \ref{table:ThermoMLSummary}) leaves 245 conditions for which both density and dielectric data are available.  
 The functional groups present are summarized in Table \ref{table:FunctionalGroups}.  
 
@@ -170,14 +182,14 @@ The functional groups present are summarized in Table \ref{table:FunctionalGroup
 \toprule
 Filter &  Mass Density &  Static Dielectric \\ 
 \midrule
-0.  Single Component   &               130074 &                                     1649 \\
-1.  Druglike Elements  &               120410 &                                     1649 \\
-2.  Heavy Atoms        &                67897 &                                     1567 \\
-3.  Temperature        &                36827 &                                      962 \\
-4.  Pressure           &                13598 &                                      461 \\
-5.  Liquid state       &                13573 &                                      461 \\
-6.  Aggregate T, P     &                 3573 &                                      432 \\
-7.  Density+Dielectric &                  245 &                                      245 \\
+1.  Single Component   &               130074 &                                     1649 \\
+2.  Druglike Elements  &               120410 &                                     1649 \\
+3.  Heavy Atoms        &                67897 &                                     1567 \\
+4.  Temperature        &                36827 &                                      962 \\
+5.  Pressure           &                13598 &                                      461 \\
+6.  Liquid state       &                13573 &                                      461 \\
+7.  Aggregate T, P     &                 3573 &                                      432 \\
+8.  Density+Dielectric &                  245 &                                      245 \\
 \bottomrule
 \end{tabular}
 \caption{{\bf Number of ThermoML measurements matching sequentially applied filters.}}
