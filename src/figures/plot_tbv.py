@@ -8,6 +8,7 @@ import pandas as pd
 
 sns.set_palette("bright")
 sns.set_style("whitegrid")
+sns.set(font_scale=1.2)
 
 
 expt = pd.read_csv("./tables/data_with_metadata.csv")

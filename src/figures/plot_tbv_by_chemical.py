@@ -5,6 +5,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 
+sns.set(font_scale=1.2)
 sns.set_palette("bright")
 sns.set_style("whitegrid")
 

@@ -6,6 +6,7 @@ import pandas as pd
 import simtk.unit as u
 import polarizability
 
+sns.set(font_scale=1.2)
 sns.set_palette("bright")
 sns.set_style("whitegrid")
 
@@ -24,7 +25,7 @@ data["opls_corrected"] = data.opls + data.polcorr
 figure()
 
 plt.plot([0.01, 1], [0.01, 1], 'k')  # Guide
-title("Inverse Static Dielectric (Virtual Chemistry Data; GAFF)")
+title("Inverse Static Dielectric (Virtual Chemistry; GAFF)")
 xlabel("Predicted")
 ylabel("Experiment")
 
@@ -64,7 +65,7 @@ figure()
 plt.plot([0.01, 1], [0.01, 1], 'k')  # Guide
 xlabel("Predicted")
 ylabel("Experiment")
-title("Inverse Static Dielectric (Virtual Chemistry Data; OPLS)")
+title("Inverse Static Dielectric (Virtual Chemistry; OPLS)")
 
 x, y = data["opls"], data["expt"]
 ols_model = sm.OLS(y, x)

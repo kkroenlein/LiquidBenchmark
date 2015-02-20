@@ -1,5 +1,8 @@
+import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
+
+sns.set(font_scale=1.2)
 
 experiments = ["Mass density, kg/m3", "Relative permittivity at zero frequency"]
 
