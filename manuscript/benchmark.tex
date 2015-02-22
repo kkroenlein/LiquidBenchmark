@@ -107,11 +107,12 @@ Neat Liquid Densities and Static Dielectric Constants}
 \begin{abstract}
 
 Useful atomistic simulations in the condensed phase require accurate depictions of solvent.  
-While experimental measurements of fundamental physical properties offer a straightforward approach for evaluating forcefield quality, the bulk of this information has been tied up in non-machine-readable formats.
-This inaccessibility hinders reproducible benchmarks of forcefield accuracy.
-Here we examine the feasibility of benchmarking atomistic forcefields against the NIST ThermoML data archive of physicochemical measurements, which aggregates thousands of experimental measurements in a portable, machine-readable, and self-annotating format. 
-We present a detailed benchmark of the generalized Amber small molecule forcefield (GAFF) using the AM1-BCC charge model against measurements (specifically liquid densities and static dielectric constants at ambient pressure) extracted from the archive, and discuss the extent of available data for neat liquids.  
-{\color{red} We show that empirical polarizability models correct systematic biases inherent in predicting dielectric constants with fixed-charged forcefields.  [JDC: Will need to be convinced!]}
+While experimental measurements of fundamental physical properties offer a straightforward approach for evaluating forcefield quality, the bulk of this information has been tied up in formats that are not machine-readable.
+These formats require substantial human effort to compile benchmark datasets which are prone to accumulation of human errors, hindering the development of reproducible benchmarks of forcefield accuracy.
+Here, we examine the feasibility of benchmarking atomistic forcefields against the NIST ThermoML data archive of physicochemical measurements, which aggregates thousands of experimental measurements in a portable, machine-readable, self-annotating format. 
+As a proof of concept, we present a detailed benchmark of the generalized Amber small molecule forcefield (GAFF) using the AM1-BCC charge model against measurements (specifically liquid densities and static dielectric constants at ambient pressure) automatically extracted from the archive, and discuss the extent of available data for neat liquids.  
+%{\color{red} We show that empirical polarizability models correct systematic biases inherent in predicting dielectric constants with fixed-charged forcefields.  [JDC: Will need to be convinced!]}
+The results of this benchmark highlights a general problem with fixed-charge forcefields in the representation of liquids of low dielectric.
 
 \emph{Keywords: molecular mechanics forcefields; forcefield parameterization; forcefield accuracy; forcefield validation; mass density; static dielectric constant}
 
@@ -125,14 +126,14 @@ We present a detailed benchmark of the generalized Amber small molecule forcefie
 
 \section{Introduction}
 
-Recent advances in hardware and molecular dynamics software have provided routine access to atomistic simulations at the 100 ns timescale and beyond. 
-Leveraging these advances in combination with GPU clusters, distributed computing, or custom hardware has brought the microsecond and milliseconds within reach.  
+Recent advances in hardware and software for molecular dynamics simulation now permits routine access to atomistic simulations at the 100 ns timescale and beyond {\color{red}[CITE e.g.~\url{http://pubs.acs.org/doi/abs/10.1021/ct400314y}]}. 
+Leveraging these advances in combination with consumer GPU clusters, distributed computing, or custom hardware has brought the microsecond and milliseconds within reach.  
 These dramatic advances in sampling, however, have revealed forcefields as a critical barrier for truly predictive simulation.  
 
 Protein and water forcefields have been the subject of numerous benchmarks~\cite{lindorff2012systematic} and enhancements~\cite{li2011iterative, best2012optimization, Lindorff-Larsen2010}, with key outcomes including the ability to fold fast-folding proteins, improved fidelity of water thermodynamic properties, and improved prediction of NMR observables.  
 Although small molecule forcefields have also been the subject of benchmarks~\cite{caleman2011force} and improvements~\cite{fennell2014fixed}, such work has typically focused on small perturbations to specific functional groups.  
-For example, a recent study found that modified hydroxyl nonbonded parameters led to improved prediction of static dielectrics and hydration free energies \cite{fennell2014fixed}.
-There are also outstanding questions of generalizability of parameters.  
+For example, a recent study found that modified hydroxyl nonbonded parameters led to improved prediction of static dielectric constants and hydration free energies~\cite{fennell2014fixed}.
+There are also outstanding questions of generalizability of parameters.
 Will changes to a specific chemical moiety be compatible with seemingly unrelated improvements?  
 Addressing these questions requires agreement on shared benchmarks that can be easily replicated with proposed forcefield enhancements.
 
