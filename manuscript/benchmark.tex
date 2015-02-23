@@ -433,12 +433,14 @@ Simulation code used libraries gaff2xml~0.6, TrustButVerify~0.1, OpenMM~6.2~\cit
 
 Molecular dynamics simulations were performed with OpenMM~6.2~\cite{eastman2012openmm} using a Langevin integrator (with collision rate 1 ps$^{-1}$) and a 1~fs timestep, as we found that timesteps of 2~fs timestep or greater led to a significant timestep dependence in computed equilibrium densities (Table~\ref{table:TimestepDependence}).  
 {\color{red}[JDC: Cite Langevin integrator used in OpenMM.]}
-Pressure coupling at 1 atmosphere was achieved with a Monte Carlo barostat utilizing molecular scaling and automated step size adjustment during equilibration, applied every 25 steps.  
-Particle mesh Ewald~\cite{Darden1993} was used with a long-range cutoff of 0.95~nm and an long-range isotropic dispersion correction.  
-{\color{red}[JDC: Can we report the automatically-selected PME parameters?]}
+Pressure control to 1 atm was achieved with a Monte Carlo barostat utilizing molecular scaling and automated step size adjustment during equilibration, with volume moves attempted every 25 steps.  
+The particle mesh Ewald (PME) method~\cite{Darden1993} was used with a long-range cutoff of 0.95~nm and a long-range isotropic dispersion correction. 
+{\color{red}[JDC: Can we report the automatically-selected PME parameters to aid reproducibility in other codes?]}
 Simulations were continued until density standard errors were less than $2 \times 10^{-4}$ g / mL, as estimated using the equilibration detection module in pymbar 2.1~\cite{shirts2008statistically}.  
 Trajectory analysis was performed using OpenMM~\cite{eastman2012openmm} and MDTraj~\cite{mcgibbon2014mdtraj}.  
-Density data was output every 250~fs, while trajectory data was stored every 10~ps.  
+{\color{red}[JDC: Which versions?]}
+Instantaneous densities were stored every 250~fs, while trajectory snapshots were stored every 10~ps.  
+{\color{red}[JDC: Did we plan to make this data available somewhere, or is it sufficient to put out the scripts?]}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CONCLUSIONS
