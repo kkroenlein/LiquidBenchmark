@@ -204,19 +204,21 @@ Also, can we automate the downloading of the complete up-to-date archive, perhap
  &  \multicolumn{2}{c}{\bf Number of measurements remaining} \\ \cline{2-3}
 {\bf Filter step} &  {\bf Mass density} &  {\bf Static dielectric} \\ 
 \hline
-1.  Single Component   &               130074 &                                     1649 \\
-2.  Druglike Elements  &               120410 &                                     1649 \\
-3.  Heavy Atoms        &                67897 &                                     1567 \\
-4.  Temperature        &                36827 &                                      962 \\
-5.  Pressure           &                13598 &                                      461 \\
-6.  Liquid state       &                13573 &                                      461 \\
-7.  Aggregate T, P     &                 3573 &                                      432 \\
-8.  Density+Dielectric &                  245 &                                      245 \\
+1.  single component   &               130074 &                                     1649 \\
+2.  only druglike elements  &               120410 &                                     1649 \\
+3.  $\le$10 heavy atoms        &                67897 &                                     1567 \\
+4.  $(270 \le T \le 330)$ [K]  &                36827 &                                      962 \\
+5.  ambient pressure           &                13598 &                                      461 \\
+6.  liquid state       &                13573 &                                      461 \\
+7.  aggregate T, P     &                 3573 &                                      432 \\
+8.  density and dielectric &                  245 &                                      245 \\
 \hline
 \end{tabular}
 \caption{{\bf Successive filtration of the ThermoML Archive.}
 A set of successive filters were applied to all measurements in the ThermoML Archive (accessed 13 Sep 2014) that contained either mass density or static dielectric constant measurements.
-Each column reports the number of measurements remaining after successive application of the corresponding filtration step.}
+Each column reports the number of measurements remaining after successive application of the corresponding filtration step.
+{\color{red}[JDC: Are all of these filters actually applied sequentially?  If not, I think we should rework this table to match the order in which filters are applied successively in the text.]}
+}
 \label{table:ThermoMLSummary}
 \end{table}
 
