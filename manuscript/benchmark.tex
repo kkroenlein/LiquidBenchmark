@@ -289,7 +289,7 @@ Liquid density measurements extracted from ThermoML are compared against densiti
 Color groupings represent identical chemical species.  
 Simulation error bars represent one standard error of the mean, with the number of effective (uncorrelated) samples estimated using pymbar.  
 Experimental error bars indicate the standard deviation between independently reported measurements, when available, or author-reported standard deviations in ThermoML entries; for some measurements, neither uncertainty estimate is available.  
-See {\bf Section~\ref{section:experimental-error}} for further discussion of error.
+See Appendix~\ref{section:experimental-error} for further discussion of error.
 }
 \label{figure:Density}
 \end{figure}
@@ -304,17 +304,22 @@ As a measure of the dielectric response, the static dielectric constant of neat 
 We therefore compare simulations against the measurements in our ThermoML extract.  
 Overall, we find the dielectric constants to be qualitatively reasonable, but with clear deviations from experiment.  
 In particular, GAFF/AM1-BCC systematically underestimates the dielectric constants for nonpolar organics, with the predictions of $\epsilon \approx 1.0 \pm 0.05$ being substantially smaller than the measured $\epsilon \approx 2$.  
-Because this deviation likely stems from the lack of electronic polarization, we added a simple empirical correction for polarization \cite{bosque2002polarizabilities} that is based on counting the elements in a molecule:
-\begin{equation} \label{eq:sales}
-\begin{split}
-\frac{\alpha}{\textnormal{\AA}} = 1.53 n_C + 0.17 n_H + 0.57 n_O + 1.05 n_N + 2.99 n_S + \\ 2.48 n_P + 0.22 n_F + 2.16 n_{Cl} + 3.29 n_{Br} + 5.45 n_I + 0.32 
-\end{split}
-\end{equation}
-From the polarizability, one can correct the static dielectric using the following equation (from ref. \cite{horn2004}):
-$$\epsilon_{corrected} = \epsilon_{MD} + 4 \pi N  \frac{\alpha}{\langle V \rangle}$$
-A similar polarization correction was used in the development of the TIP4P-Ew water model~\cite{horn2004}; however, the need is much greater for the nonpolar organics, as the missing polarizability is the dominant contribution to the static dielectric constant.  
-In the case of water, the Sales polarizability model predicts a dielectric correction of 0.52, while 0.79 was used for the TIP4P-EW model.  
+Because this deviation likely stems from the lack of an explicit treatment of electronic polarization, we used a simple empirical polarization model that computes the molecular electronic polarizability $\alpha$ a sum of elemental atomic polarizability contributions~\cite{bosque2002polarizabilities}.
+%\begin{equation} \label{eq:sales}
+%\begin{split}
+%\alpha/\textnormal{\AA} = 1.53 \, n_C + 0.17 \, n_H + 0.57 \, n_O + 1.05 \, n_N + 2.99 \, n_S \\ + 2.48 \, n_P + 0.22 \, n_F + 2.16 \, n_{Cl} + 3.29 \, n_{Br} + 5.45 \, n_I + 0.32 
+%\end{split}
+%\end{equation}
+{\color{red}[JDC: I've commented out the equation because I don't think it is central to our point. Essentially, it is just an atom-based linear model for computing the molecular polarizability, and the parameters can be looked up elsewhere.]}
+From the computed molecular electronic polarizability $\alpha$, an additive correction to the simulation-derived static dielectric constant accounting for the missing electronic polarizability can be computed~\cite{horn2004}
+\begin{eqnarray}
+\Delta \epsilon &=& 4 \pi N  \frac{\alpha}{\langle V \rangle} \label{equation:dielectric correction}
+\end{eqnarray}
+While a similar polarization correction was used in the development of the TIP4P-Ew water model, where it had a minor effect~\cite{horn2004}, missing polarizability is a dominant contribution to the static dielectric constant of nonpolar organic molecules;   
+in the case of water, the empirical atomic polarizability model predicts a dielectric correction of 0.52, while 0.79 was used for the TIP4P-Ew model.  
+{\color{red}[JDC: What were the results for nonpolar organic molecules?]}
 For comparison, we also applied the same empirical correction to the VirtualChemistry dataset~\cite{caleman2011force, van2012gromacs} and saw similarly improved agreement with experiment for both the GAFF and OPLS forcefields (Fig. \ref{figure:VirtualChemistry}).
+{\color{red}[JDC: Not sure if we should keep the VirtualChemistry stuff here other than to compare our computed pipeline results with Virtual Chemistry as validation to show we didn't screw up our pipeline.]}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIGURE: DIELECTRIC COMPARISON
@@ -393,7 +398,9 @@ The Onsager model for the transfer free energy of a dipole (Eq.~\ref{eq:onsager}
 
 Similarly, we calculated the mean polarization error for solvation free energies (gas to solvent transfer free energies) of druglike molecules in cyclohexane.  
 For each molecule in the FreeSolv database~\cite{freesolv} {\color{red}[JDC: Which version of FreeSolv?]}, we took the cavity radius $a$ to be the half the maximum interatomic distance and calculated $\mu = \sum_i q_i r_i$ using the provided mol2 coordinates and AM1-BCC charges.  
-This calculation predicts a mean error of $-0.9\pm0.07$ kcal / mol for the 643 molecules (where the standard error is computed from bootstrapping over measurements), suggesting that the missing atomic polarizabilty unrepresentable by fixed point charge forcefields could contribute substantially to errors in predicted transfer and solvation properties of druglike molecules.  
+This calculation predicts a mean error of $-0.9\pm0.07$ kcal / mol for the 643 molecules (where the standard error is computed from bootstrapping over measurements), 
+{\color{red}[JDC: Need to fix reported sig figs: $-0.9x\pm0.07$.]}
+suggesting that the missing atomic polarizabilty unrepresentable by fixed point charge forcefields could contribute substantially to errors in predicted transfer and solvation properties of druglike molecules.  
 
 Given their ease of measurement and direct connection to long-range electrostatic interactions, static dielectric constants have high potential utility as primary data for forcefield parameterization efforts.  
 Although this will require the use of forcefields with explicit treatment of atomic polarizability, the inconsistency of fixed-charge models in low-dielectric media is sufficiently alarming to motivate further study of polarizable forcefields.  In particular, continuum methods~\cite{truchon2010using, truchon2009integrated, truchon2008accurate}, point dipole methods~\cite{Ponder2010, ren2004temperature}, and Drude methods~\cite{lamoureux2003modeling, anisimov2005determination} have been maturing rapidly.  Finding the optimal balance of accuracy and performance remains an open question; however, the use of experimentally-parameterized direct polarization methods~\cite{wang2013systematic} may provide polarizability physics at a cost not much greater than fixed charge forcefields.
@@ -420,7 +427,7 @@ Numerous additional physical properties contained in ThermoML---including activi
 \subsection{ThermoML Processing}
 
 A tarball archive of the ThermoML Archive was obtained from the the NIST TRC on 13 Sep 2014.
-To explore the content of this archive, we created a Python (version 2.7.9) tool (ThermoPyl: \url{https://github.com/choderalab/ThermoPyL}) that formats the XML content into a spreadsheet-like format accessible via the Pandas (version 0.15.2) library.  
+To explore the content of this archive, we created a Python (version 2.7.9) tool (ThermoPyL: \url{https://github.com/choderalab/ThermoPyL}) that formats the XML content into a spreadsheet-like format accessible via the Pandas (version 0.15.2) library.  
 First, we obtained the XML schema (\url{http://media.iupac.org/namespaces/ThermoML/ThermoML.xsd}) defining the layout of the data.
 This schema was converted into a Python object via PyXB 1.2.4 (\url{http://pyxb.sourceforge.net/}).
 Finally, this schema and Pandas was used to extract the data and apply the successive data filters described in Section~\ref{section:filtering-thermoml}.  
@@ -572,6 +579,7 @@ Measured (blue) and simulated (green) densities are shown in units of kg/m$^3$.
 \caption{{\bf Comparison of simulated and experimental static dielectric constants for all compounds.}
 Measured (blue), simulated (green), and polarizability-corrected simulated (red) static dielectric constants are shown for all compounds.
 Note that dielectric constants, rather than inverse dielectric constants, are plotted here.
+{\color{red}[JDC: Let's plot these as in Fig.~\ref{figure:Density} and Fig.~\ref{figure:Dielectric}, maybe only four plots across so they are larger and more legible.  We can also shorten ``name = compound'' to just ``compound''.]}
 }
 \label{figure:AllDielectrics}
 
@@ -590,6 +598,7 @@ Note that dielectric constants, rather than inverse dielectric constants, are pl
 \caption{{\bf Atomic polarizability corrections for the Virtual Chemistry dataset.}
 A comparison of measured (\emph{blue}) and simulated dielectric constants from the Virtual Chemistry dataset~\cite{caleman2011force, van2012gromacs}.   with (\emph{red}) and without (\emph{green}) atomic polarizability corrections are shown.
 {\color{red}[JDC: What from the Virtual Chemistry dataset did we end up using? The computed values? The parameterized files? Since the story is about the ThermoML Archive, do we really want this here, or do we just want to do a comparison between our computed results for some molecules and the Virtual Chemistry results as a validation or sanity check on our computational pipeline?]}
+{\color{red}[JDC: Plot needs to be adjusted to be more legible if we decide to keep it.]}
 }
 \label{figure:VirtualChemistry}
 \end{figure}
