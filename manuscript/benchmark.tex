@@ -380,7 +380,7 @@ While this behavior is well-known and results from missing physics of polarizabi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Suppose, for example, that one attempts to fit forcefield parameters to match the static dielectric constants of $\mathrm{CCl_4}$, $\mathrm{CHCl_3}$, $\mathrm{CH_2Cl_2}$, and $\mathrm{CH_3Cl}$.
-In moving from the tetrahedrally-symmetric $\mathrm{CCl_4}$ to $\mathrm{CHCl_3}$, it suddenly becomes possible to achieve the observed dielectric constant of 4.8 by an appropriate choice of point charges.
+In moving from the tetrahedrally-symmetric $\mathrm{CCl_4}$ to the asymmetric $\mathrm{CHCl_3}$, it suddenly becomes possible to achieve the observed dielectric constant of 4.8 by an appropriate choice of point charges.
 However, the model for $\mathrm{CHCl_3}$ uses fixed point charges to account for \emph{both} the permanent dipole moment and the electronic polarizability, whereas the $\mathrm{CCl_4}$ model contains no treatment of polarizability.  
 We hypothesize that this inconsistency in parameterization may lead to strange mismatches, where symmetric molecules (e.g.~benzene and $\mathrm{CCl_4}$) have qualitatively different properties than closely related asymmetric molecules (e.g.~toluene and $\mathrm{CHCl_3}$).
 
@@ -395,17 +395,19 @@ Similarly, we calculated the mean polarization error for solvation free energies
 For each molecule in the FreeSolv database~\cite{freesolv} {\color{red}[JDC: Which version of FreeSolv?]}, we took the cavity radius $a$ to be the half the maximum interatomic distance and calculated $\mu = \sum_i q_i r_i$ using the provided mol2 coordinates and AM1-BCC charges.  
 This calculation predicts a mean error of $-0.9\pm0.07$ kcal / mol for the 643 molecules (where the standard error is computed from bootstrapping over measurements), suggesting that the missing atomic polarizabilty unrepresentable by fixed point charge forcefields could contribute substantially to errors in predicted transfer and solvation properties of druglike molecules.  
 
-Given their ease of measurement and direct connection to long-range electrostatic interactions, static dielectric constants are potentially usable as primary data for forcefield parameterization efforts.  Although this will require the use of forcefields with explicit polarizability, the inconsistency of fixed-charge models in low-dielectric media is sufficiently alarming to motivate further study of polarizable forcefields.  In particular, continuum methods \cite{truchon2010using, truchon2009integrated, truchon2008accurate}, induced dipole methods \cite{Ponder2010, ren2004temperature}, and drude methods \cite{lamoureux2003modeling, anisimov2005determination} have been maturing rapidly.  Finding the optimal balance of accuracy and performance remains an open question; however, the use of experimentally-parameterized direct polarization methods \cite{wang2013systematic} may provide polarizability physics at a cost not much greater than fixed charge forcefields.
+Given their ease of measurement and direct connection to long-range electrostatic interactions, static dielectric constants have high potential utility as primary data for forcefield parameterization efforts.  
+Although this will require the use of forcefields with explicit treatment of atomic polarizability, the inconsistency of fixed-charge models in low-dielectric media is sufficiently alarming to motivate further study of polarizable forcefields.  In particular, continuum methods~\cite{truchon2010using, truchon2009integrated, truchon2008accurate}, point dipole methods~\cite{Ponder2010, ren2004temperature}, and Drude methods~\cite{lamoureux2003modeling, anisimov2005determination} have been maturing rapidly.  Finding the optimal balance of accuracy and performance remains an open question; however, the use of experimentally-parameterized direct polarization methods~\cite{wang2013systematic} may provide polarizability physics at a cost not much greater than fixed charge forcefields.
 
 
-\subsection{ThermoML as a Data Source}
+\subsection{ThermoML as a data source}
 
-The present work has focused on the neat liquid density and dielectric measurements present in the ThermoML Data Archive \cite{frenkel2006xml, frenkel2003thermoml, chirico2003thermoml} as a target for molecular dynamics forcefield validation.  
-While densities and dielectric constants have been widely used in forcefield work, several aspects of ThermoML make it a unique resource for the forcefield community.  
-First, the aggregation, support, and dissemination of ThermoML is supported by NIST, whose mission makes these tasks a long-term priority.  
-Second, ThermoML is actively growing, through partnerships with several journals---new experimental measurements published in these journals are critically examined by the TRC and included in the archive.  
-Finally, the files in the ThermoML Data Archive are machine readable via a formal XML schema, allowing facile access to thousands of measurements.  
-In the future, we hope to examine additional measurement classes, including both mixture and two-phase data.
+The present work has focused on the neat liquid density and dielectric measurements present in the ThermoML Archive~\cite{frenkel2006xml, frenkel2003thermoml, chirico2003thermoml} as a target for molecular dynamics forcefield validation.  
+While liquid mass densities and static dielectric constants have already been widely used in forcefield work, several aspects of ThermoML make it a unique resource for the forcefield community.  
+First, the aggregation, support, and dissemination of ThermoML datasets through the ThermoML Archive is supported by NIST, whose mission makes these tasks a long-term priority.  
+Second, the ThermoML Archive is actively growing, through partnerships with several journals, and new experimental measurements published in these journals are critically examined by the TRC and included in the archive.  
+{\color{red}[JDC: Is the number of journal here also expanding?]}
+Finally, the files in the ThermoML Archive are portable and machine readable via a formal XML schema, allowing facile access to hundreds of thousands of measurements.  
+Numerous additional physical properties contained in ThermoML---including activity coefficients, diffusion constants, boiling point temperatures, critical pressures and densities, coefficients of expansion, speed of sound measurements, viscosities, excess molar enthalpies, heat capacities, and volumes---for neat phases and mixtures represent a rich dataset of high utility for forcefield validation and parameterization.
 
 
 
@@ -585,7 +587,9 @@ Note that dielectric constants, rather than inverse dielectric constants, are pl
 
 \includegraphics[width=\columnwidth]{./figures/dielectric_virtual_chemistry_opls.pdf}
 
-\caption{{\bf Comparison of measured and simulated dielectric constants from the virtualchemistry dataset with and without polarizability correction.}  Measured (blue), MD (green), and MD + polarizability-corrected (red) dielectrics for the Virtual Chemistry dataset~\cite{caleman2011force, van2012gromacs}.  
+\caption{{\bf Atomic polarizability corrections for the Virtual Chemistry dataset.}
+A comparison of measured (\emph{blue}) and simulated dielectric constants from the Virtual Chemistry dataset~\cite{caleman2011force, van2012gromacs}.   with (\emph{red}) and without (\emph{green}) atomic polarizability corrections are shown.
+{\color{red}[JDC: What from the Virtual Chemistry dataset did we end up using? The computed values? The parameterized files? Since the story is about the ThermoML Archive, do we really want this here, or do we just want to do a comparison between our computed results for some molecules and the Virtual Chemistry results as a validation or sanity check on our computational pipeline?]}
 }
 \label{figure:VirtualChemistry}
 \end{figure}
