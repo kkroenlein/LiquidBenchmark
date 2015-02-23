@@ -153,7 +153,7 @@ For example, a recent study found that modified hydroxyl nonbonded parameters le
 There are also outstanding questions of generalizability of these targeted perturbations; it is uncertain whether changes to the parameters for a specific chemical moiety will be compatible with seemingly unrelated improvements to other groups.
 Addressing these questions requires establishing a community agreement on shared benchmarks that can be easily replicated among laboratories to test proposed forcefield enhancements and expanded as the body of experimental data grows.
 
-A key barrier to establishing reproducible and extensible forcefield accuracy benchmarks is that many experimental datasets are heterogeneous, paywalled, and unavailable in machine-readable formats (although notable counterexamples exist, e.g. the RCSB~\cite{Berman2000}, FreeSolv~\cite{freesolv}, and BMRB~\cite{Ulrich2008}).  
+A key barrier to establishing reproducible and extensible forcefield accuracy benchmarks is that many experimental datasets are heterogeneous, paywalled, and unavailable in machine-readable formats (although notable counterexamples exist, e.g.~the RCSB~\cite{Berman2000}, FreeSolv~\cite{freesolv}, and the BMRB~\cite{Ulrich2008}).  
 While this inconvenience is relatively minor for benchmarking forcefield accuracy for a single target (e.g.~water), it becomes prohibitive for studies spanning the relevant chemical space.  
 To ameliorate problems of data archival, the NIST Thermodynamics Research Center (TRC) has developed a IUPAC standard XML-based format---ThermoML~\cite{frenkel2006xml}---for storing physicochemical measurements, uncertainties, and metadata.
 Experimental researchers publishing measurements in several journals (J.~Chem.~Eng.~Data, J.~Chem.~Therm., Fluid Phase Equil., Therm.~Acta, and Int.~J.~Therm.) are guided through a data archival process that involves sanity checks, conversion to a standard machine-readable format, and archival at the TRC (\url{http://trc.nist.gov/ThermoML.html}).  
@@ -172,9 +172,9 @@ Using these data, we evaluate the generalized Amber small molecule forcefield (G
 \subsection{Extracting neat liquid measurements from the NIST TRC ThermoML Archive}
 \label{section:filtering-thermoml}
 
-We retrieved a copy of the ThermoML Archive from the NIST TRC (\url{http://trc.nist.gov/ThermoML.html} accessed 13 Sep 2014) and performed a number of sequential filtering steps to summarize the ThermoML content relevant for benchmarking organic molecule forcefields.  
+We retrieved a copy of the ThermoML Archive from the NIST TRC (\url{http://trc.nist.gov/ThermoML.html} accessed 13 Sep 2014) and performed a number of sequential filtering steps to produce an extract of the ThermoML Archive relevant for benchmarking forcefields describing small organic molecules.  
 {\color{red}[JDC: This is the date I had on the {\tt ThermoML.tar.gz} archive in GitHub. We should check to make sure this is accurate.]}
-As our aim is to explore neat liquid data with functional groups relevant to drug-like molecules, we applied the following ordered filters, starting with all data containing density or static dielectric constants: 
+As our aim is to explore neat liquid data with functional groups relevant to biopolymers and drug-like molecules, we applied the following ordered filters, starting with all data containing density or static dielectric constants: 
 \begin{enumerate}
  \item The measured solution contains only a single component (e.g.~no binary mixtures)
  \item The molecule contains only the druglike elements (defined here as H, N, C, O, S, P, F, Cl, Br)
@@ -471,6 +471,7 @@ Instantaneous densities were stored every 250~fs, while trajectory snapshots wer
 
 We thank Vijay S.~Pande (Stanford University), Lee-Ping Wang (Stanford University), Peter Eastman (Stanford University), Robert McGibbon (Stanford University), Jason Swails (Rutgers University), David L.~Mobley (University of California, Irvine), Christopher I.~Bayly (OpenEye Software), Michael R. Shirts (University of Virginia), and members of Chodera lab for helpful discussions.  
 Support for JMB was provided by the Tri-Institutional Training Program in Computational Biology and Medicine (via NIH training grant 1T32GM083937).
+{\color{red}[JDC: Need support acknowledgments for Patrick and Bas.]}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DISCLAIMERS
@@ -478,8 +479,9 @@ Support for JMB was provided by the Tri-Institutional Training Program in Comput
 
 \section{Disclaimers}
 
-This contribution of the National Institute of Standards and Technology is not subject to copyright in the United States.  
-Products or companies named here are cited only in the interest of complete technical description, and neither constitute nor imply endorsement by NIST or by the U.S. government.  Other products may be found to serve as well.
+This contribution of the National Institute of Standards and Technology (NIST) is not subject to copyright in the United States.  
+Products or companies named here are cited only in the interest of complete technical description, and neither constitute nor imply endorsement by NIST or by the U.S.~government.  
+Other products may be found to serve as well.
 
 \clearpage
 
@@ -493,6 +495,7 @@ Products or companies named here are cited only in the interest of complete tech
 All information below this point will eventually be pulled into a separate SI.  
 This will happen closer to submission, as the formatting may be journal-specific.  
 The references may be split in two as well, depending on journal.
+{\color{red}[JDC: It may be fine to leave this as an Appendix.]}
 
 \begin{itemize}
  \item Table: Timestep-dependence of density
