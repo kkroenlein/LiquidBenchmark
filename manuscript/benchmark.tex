@@ -127,7 +127,6 @@ While experimental measurements of fundamental physical properties offer a strai
 These formats require substantial human effort to compile benchmark datasets which are prone to accumulation of human errors, hindering the development of reproducible benchmarks of forcefield accuracy.
 Here, we examine the feasibility of benchmarking atomistic forcefields against the NIST ThermoML data archive of physicochemical measurements, which aggregates thousands of experimental measurements in a portable, machine-readable, self-annotating format. 
 As a proof of concept, we present a detailed benchmark of the generalized Amber small molecule forcefield (GAFF) using the AM1-BCC charge model against measurements (specifically liquid densities and static dielectric constants at ambient pressure) automatically extracted from the archive, and discuss the extent of available data for neat liquids.  
-%{\color{red} We show that empirical polarizability models correct systematic biases inherent in predicting dielectric constants with fixed-charged forcefields.  [JDC: Will need to be convinced!]}
 The results of this benchmark highlights a general problem with fixed-charge forcefields in the representation of liquids of low dielectric.\\
 
 \emph{Keywords: molecular mechanics forcefields; forcefield parameterization; forcefield accuracy; forcefield validation; mass density; static dielectric constant}
@@ -142,12 +141,11 @@ The results of this benchmark highlights a general problem with fixed-charge for
 
 \section{Introduction}
 
-Recent advances in hardware and software for molecular dynamics simulation now permits routine access to atomistic simulations at the 100 ns timescale and beyond.
- {\color{red}[JDC: Cite something here, like the Amber ``routine microsecond'' paper? \url{http://pubs.acs.org/doi/abs/10.1021/ct400314y}]}. 
+Recent advances in hardware and software for molecular dynamics simulation now permits routine access to atomistic simulations at the 100 ns timescale and beyond \cite{salomon2013routine}.
 Leveraging these advances in combination with consumer GPU clusters, distributed computing, or custom hardware has brought microsecond and millisecond simulation timescales within reach of many laboratories.  
 These dramatic advances in sampling, however, have revealed deficiencies in forcefields as a critical barrier to enabling truly predictive simulations of physical properties of biomolecular systems.  
 
-Protein and water forcefields have been the subject of numerous benchmarks~\cite{lindorff2012systematic} and enhancements~\cite{li2011iterative, best2012optimization, Lindorff-Larsen2010}, with key outcomes including the ability to fold fast-folding proteins {\color{red}[JDC: Cite Pande and Shaw papers?]}, improved fidelity of water thermodynamic properties~\cite{horn2004}, and improved prediction of NMR observables.  
+Protein and water forcefields have been the subject of numerous benchmarks~\cite{lindorff2012systematic} and enhancements~\cite{li2011iterative, best2012optimization, Lindorff-Larsen2010}, with key outcomes including the ability to fold fast-folding proteins \cite{shaw2011, ensign2007heterogeneity, Voelz2010}, improved fidelity of water thermodynamic properties~\cite{horn2004}, and improved prediction of NMR observables.  
 Although small molecule forcefields have also been the subject of benchmarks~\cite{caleman2011force} and improvements~\cite{fennell2014fixed}, such work has typically focused on small perturbations to specific functional groups.  
 For example, a recent study found that modified hydroxyl nonbonded parameters led to improved prediction of static dielectric constants and hydration free energies~\cite{fennell2014fixed}.
 There are also outstanding questions of generalizability of these targeted perturbations; it is uncertain whether changes to the parameters for a specific chemical moiety will be compatible with seemingly unrelated improvements to other groups.
@@ -187,12 +185,15 @@ As our aim is to explore neat liquid data with functional groups relevant to bio
 \end{enumerate}
 The temperature and pressure rounding step was motivated by common data reporting variations; for example, an experiment performed at water's freezing point at ambient pressure might be entered as either 101.325~kPA or 100~kPA, with a temperature of either 273~K or 273.15~K.  
 Therefore all pressures within the range [kPA] $(100 \le P \le 102)$ were rounded to exactly one atmosphere.  
-Temperatures were rounded to one decimal place. {\color{red}[JDC: Does this reflect the accuracy of reporting ambient temperatures?]}
+Temperatures were rounded to one decimal place. 
+%{\color{red}[JDC: Does this reflect the accuracy of reporting ambient temperatures?]}
+% KAB: AFAIK, based on conversations with Kenneth this was a reasonable compromise.  
 The application of these filters (Table~\ref{table:ThermoMLSummary}) leaves 245 conditions---where a \emph{condition} here indicates a (molecule, temperature, pressure) tuple---for which both density and dielectric data are available.  
 The functional groups present in the resulting dataset are summarized in Table~\ref{table:FunctionalGroups}.  
 
 {\color{red}[JDC: It might be useful to point the users to the scripts that were used to do this extraction.
-Also, can we automate the downloading of the complete up-to-date archive, perhaps with Kenneth's help in identifying the least intrusive way to do so?]}
+%Also, can we automate the downloading of the complete up-to-date archive, perhaps with Kenneth's help in identifying the least intrusive way to do so?]}
+% KAB: I believe that we can automate things.  However, given that it's not officially supported by TRC so IMHO we should postpone for a later work.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TABLE: DENSITY AND STATIC DIELECTRIC
@@ -217,7 +218,8 @@ Also, can we automate the downloading of the complete up-to-date archive, perhap
 \caption{{\bf Successive filtration of the ThermoML Archive.}
 A set of successive filters were applied to all measurements in the ThermoML Archive (accessed 13 Sep 2014) that contained either mass density or static dielectric constant measurements.
 Each column reports the number of measurements remaining after successive application of the corresponding filtration step.
-{\color{red}[JDC: Are all of these filters actually applied sequentially?  If not, I think we should rework this table to match the order in which filters are applied successively in the text.]}
+%{\color{red}[JDC: Are all of these filters actually applied sequentially?  If not, I think we should rework this table to match the order in which filters are applied successively in the text.]}
+% KAB: This is the actual order the filters are applied.  
 }
 \label{table:ThermoMLSummary}
 \end{table}
@@ -263,20 +265,20 @@ The functional groups represented in these compounds (as identified by the progr
 
 \subsection{Benchmarking GAFF/AM1-BCC against the ThermoML Archive}
 
-{\color{red}[JDC: If we lead with a Results section before Methods, we have to start with a small summary of the calculation.
-We should tell readers the salient details---we ran simulations with a small timestep to minimize integrator error, we used stochastic thermal and pressure control, and we used an adaptive simulation scheme that ensured simulations ran long enough to achieve target accuracy.  We can also mention that we used OpenMM, but these calculations can easily be adapted to other codes.]}
+\subsection{Methods Summary}
+
+We used OpenMM 6.2 to perform highly precise constant-pressure simulations of mass density.  The Langevin timestep was fixed at 1 fs to reduce systematic error.  All simulations used the GAFF / AM1-BCC forcefield.  Addition details are provided in Methods.  
 
 \subsubsection{Mass density}
 
 Mass density has been widely used for parameterizing and testing forcefields, particularly the Lennard-Jones parameters representing dispersive and repulsive interactions~\cite{jorgensen1983comparison, jorgensen1984optimized}.
 We therefore used the present ThermoML extract as a benchmark of the GAFF/AM1-BCC forcefield (Fig.~\ref{figure:Density}).  
+We estimate the mass density via $\rho = \langle \frac{M}{V} \rangle$.
 
-{\color{red}[JDC: Remind readers how mass density is computed.]}
-
-Overall, the densities show reasonable accuracy, with a root-mean square (RMS) relative error over all measurements of 3$\pm$0.1\% (with one standard error of the mean determined by bootstrapping over all measurements), especially encouraging given that this forcefield was not designed with the intention of modeling bulk liquid properties of organic molecules~\cite{gaff}
-{\color{red}[JDC: Sig figs issue---this should be 3.x$\pm$0.1\%.]}
+Overall, the densities show reasonable accuracy, with a root-mean square (RMS) relative error over all measurements of 2.8$\pm$0.1\% (with one standard error of the mean determined by bootstrapping over all measurements), especially encouraging given that this forcefield was not designed with the intention of modeling bulk liquid properties of organic molecules~\cite{gaff}
 This is reasonably consistent with previous studies reporting agreement of 4\% on a different benchmark set~\cite{caleman2011force}.
-{\color{red}[JDC: Did that previous study report an uncertainty?]}
+%{\color{red}[JDC: Did that previous study report an uncertainty?]}  
+%KAB: Previous study does not appear to have an uncertainty, at least according to Table 2 in said work.
 
 {\color{red}[JDC: Discuss outliers here.  There must be more things we can say about densities.  Some of the densities are quite good, while others seem poor, with systematic bias toward higher densities than experiment.  We can also point out that densities at different temperatures for a given molecule seem to be biased in a consistent way.]}
 
@@ -358,8 +360,8 @@ However, a number of authors have pointed out potential challenges in constructi
 
 Interestingly, recent work by Dill and coworkers~\cite{fennell2012simple} observed that, for $\mathrm{CCl_4}$, reasonable choices of point charges are incapable of recapitulating the observed dielectric of $\epsilon = 2.2$, instead producing dielectric constants in the range of $1.0 \le \epsilon \le 1.05$.  
 This behavior is quite general: fixed point charge forcefields will predict $\epsilon \approx 1$ for many nonpolar or symmetric molecules, but the measured dielectric constants are instead $\epsilon \approx 2$ (Fig.~\ref{figure:nonpolars}).  
-While this behavior is well-known and results from missing physics of polarizability, we suspect it may have several unanticipated consequences.
-{\color{red}[JDC: Perhaps the free energy of binding to hydrophobic cavities in proteins could be relevant?]}
+While this behavior is well-known and results from missing physics of polarizability, we suspect it may have several unanticipated consequences, which we discuss below.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIGURE: Nonpolars
@@ -399,10 +401,10 @@ The Onsager model for the transfer free energy of a dipole (Eq.~\ref{eq:onsager}
 \end{equation}
 
 Similarly, we calculated the mean polarization error for solvation free energies (gas to solvent transfer free energies) of druglike molecules in cyclohexane.  
-For each molecule in the FreeSolv database~\cite{freesolv} {\color{red}[JDC: Which version of FreeSolv?]}, we took the cavity radius $a$ to be the half the maximum interatomic distance and calculated $\mu = \sum_i q_i r_i$ using the provided mol2 coordinates and AM1-BCC charges.  
-This calculation predicts a mean error of $-0.9\pm0.07$ kcal / mol for the 643 molecules (where the standard error is computed from bootstrapping over measurements), 
-{\color{red}[JDC: Need to fix reported sig figs: $-0.9x\pm0.07$.]}
+For each molecule in the latest (Feb. 20) FreeSolv database~\cite{freesolv, freesolv_github}, we took the cavity radius $a$ to be the half the maximum interatomic distance and calculated $\mu = \sum_i q_i r_i$ using the provided mol2 coordinates and AM1-BCC charges.  
+This calculation predicts a mean error of $-0.91 \pm0.07$ kcal / mol for the 643 molecules (where the standard error is computed from bootstrapping over measurements), 
 suggesting that the missing atomic polarizabilty unrepresentable by fixed point charge forcefields could contribute substantially to errors in predicted transfer and solvation properties of druglike molecules.  
+We also conjecture that 
 
 Given their ease of measurement and direct connection to long-range electrostatic interactions, static dielectric constants have high potential utility as primary data for forcefield parameterization efforts.  
 Although this will require the use of forcefields with explicit treatment of atomic polarizability, the inconsistency of fixed-charge models in low-dielectric media is sufficiently alarming to motivate further study of polarizable forcefields.  In particular, continuum methods~\cite{truchon2010using, truchon2009integrated, truchon2008accurate}, point dipole methods~\cite{Ponder2010, ren2004temperature}, and Drude methods~\cite{lamoureux2003modeling, anisimov2005determination} have been maturing rapidly.  Finding the optimal balance of accuracy and performance remains an open question; however, the use of experimentally-parameterized direct polarization methods~\cite{wang2013systematic} may provide polarizability physics at a cost not much greater than fixed charge forcefields.
