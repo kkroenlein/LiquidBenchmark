@@ -11,10 +11,11 @@ for timestep in [0.5, 1.0, 2.0]:
     mu = data.mean()
     sigma = data.std()
     stderr = sigma * neff ** -0.5
-    table[timestep] = dict(n=n, neff=neff, mu=mu, sigma=sigma, stderr=stderr)
+    table[timestep] = dict(n=n, neff=neff, mu=mu, sigma=sigma, stderr=stderr, timestep=timestep)
 
 table = pd.DataFrame(table).T
 table["error"] = table.mu - table.mu[0.5]
 table["relerr"] = (table.mu - table.mu[0.5]) / table.mu[0.5]
 table
 print table.to_latex()
+table.to_csv("../../tables/timestep_dependence.csv")

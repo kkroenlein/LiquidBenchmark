@@ -127,7 +127,6 @@ While experimental measurements of fundamental physical properties offer a strai
 These formats require substantial human effort to compile benchmark datasets which are prone to accumulation of human errors, hindering the development of reproducible benchmarks of forcefield accuracy.
 Here, we examine the feasibility of benchmarking atomistic forcefields against the NIST ThermoML data archive of physicochemical measurements, which aggregates thousands of experimental measurements in a portable, machine-readable, self-annotating format. 
 As a proof of concept, we present a detailed benchmark of the generalized Amber small molecule forcefield (GAFF) using the AM1-BCC charge model against measurements (specifically liquid densities and static dielectric constants at ambient pressure) automatically extracted from the archive, and discuss the extent of available data for neat liquids.  
-%{\color{red} We show that empirical polarizability models correct systematic biases inherent in predicting dielectric constants with fixed-charged forcefields.  [JDC: Will need to be convinced!]}
 The results of this benchmark highlights a general problem with fixed-charge forcefields in the representation of liquids of low dielectric.\\
 
 \emph{Keywords: molecular mechanics forcefields; forcefield parameterization; forcefield accuracy; forcefield validation; mass density; static dielectric constant}
@@ -142,12 +141,11 @@ The results of this benchmark highlights a general problem with fixed-charge for
 
 \section{Introduction}
 
-Recent advances in hardware and software for molecular dynamics simulation now permits routine access to atomistic simulations at the 100 ns timescale and beyond.
- {\color{red}[JDC: Cite something here, like the Amber ``routine microsecond'' paper? \url{http://pubs.acs.org/doi/abs/10.1021/ct400314y}]}. 
+Recent advances in hardware and software for molecular dynamics simulation now permits routine access to atomistic simulations at the 100 ns timescale and beyond \cite{salomon2013routine}.
 Leveraging these advances in combination with consumer GPU clusters, distributed computing, or custom hardware has brought microsecond and millisecond simulation timescales within reach of many laboratories.  
 These dramatic advances in sampling, however, have revealed deficiencies in forcefields as a critical barrier to enabling truly predictive simulations of physical properties of biomolecular systems.  
 
-Protein and water forcefields have been the subject of numerous benchmarks~\cite{lindorff2012systematic} and enhancements~\cite{li2011iterative, best2012optimization, Lindorff-Larsen2010}, with key outcomes including the ability to fold fast-folding proteins {\color{red}[JDC: Cite Pande and Shaw papers?]}, improved fidelity of water thermodynamic properties~\cite{horn2004}, and improved prediction of NMR observables.  
+Protein and water forcefields have been the subject of numerous benchmarks~\cite{lindorff2012systematic} and enhancements~\cite{li2011iterative, best2012optimization, Lindorff-Larsen2010}, with key outcomes including the ability to fold fast-folding proteins \cite{shaw2011, ensign2007heterogeneity, Voelz2010}, improved fidelity of water thermodynamic properties~\cite{horn2004}, and improved prediction of NMR observables.  
 Although small molecule forcefields have also been the subject of benchmarks~\cite{caleman2011force} and improvements~\cite{fennell2014fixed}, such work has typically focused on small perturbations to specific functional groups.  
 For example, a recent study found that modified hydroxyl nonbonded parameters led to improved prediction of static dielectric constants and hydration free energies~\cite{fennell2014fixed}.
 There are also outstanding questions of generalizability of these targeted perturbations; it is uncertain whether changes to the parameters for a specific chemical moiety will be compatible with seemingly unrelated improvements to other groups.
@@ -173,7 +171,8 @@ Using these data, we evaluate the generalized Amber small molecule forcefield (G
 \label{section:filtering-thermoml}
 
 We retrieved a copy of the ThermoML Archive from the NIST TRC (\url{http://trc.nist.gov/ThermoML.html} accessed 13 Sep 2014) and performed a number of sequential filtering steps to produce an extract of the ThermoML Archive relevant for benchmarking forcefields describing small organic molecules.  
-{\color{red}[JDC: This is the date I had on the {\tt ThermoML.tar.gz} archive in GitHub. We should check to make sure this is accurate.]}
+%{\color{red}[JDC: This is the date I had on the {\tt ThermoML.tar.gz} archive in GitHub. We should check to make sure this is accurate.]}
+% This date is consistent with the timeline of our first discussion with Kenneth, which happen on 8/21/2014
 As our aim is to explore neat liquid data with functional groups relevant to biopolymers and drug-like molecules, we applied the following ordered filters, starting with all data containing density or static dielectric constants: 
 \begin{enumerate}
  \item The measured solution contains only a single component (e.g.~no binary mixtures)
@@ -187,12 +186,15 @@ As our aim is to explore neat liquid data with functional groups relevant to bio
 \end{enumerate}
 The temperature and pressure rounding step was motivated by common data reporting variations; for example, an experiment performed at water's freezing point at ambient pressure might be entered as either 101.325~kPA or 100~kPA, with a temperature of either 273~K or 273.15~K.  
 Therefore all pressures within the range [kPA] $(100 \le P \le 102)$ were rounded to exactly one atmosphere.  
-Temperatures were rounded to one decimal place. {\color{red}[JDC: Does this reflect the accuracy of reporting ambient temperatures?]}
+Temperatures were rounded to one decimal place. 
+%{\color{red}[JDC: Does this reflect the accuracy of reporting ambient temperatures?]}
+% KAB: AFAIK, based on conversations with Kenneth this was a reasonable compromise.  
 The application of these filters (Table~\ref{table:ThermoMLSummary}) leaves 245 conditions---where a \emph{condition} here indicates a (molecule, temperature, pressure) tuple---for which both density and dielectric data are available.  
-The functional groups present in the resulting dataset are summarized in Table~\ref{table:FunctionalGroups}.  
+The functional groups present in the resulting dataset are summarized in Table~\ref{table:FunctionalGroups}; see Methods for further description of the software pipeline used.  
 
-{\color{red}[JDC: It might be useful to point the users to the scripts that were used to do this extraction.
-Also, can we automate the downloading of the complete up-to-date archive, perhaps with Kenneth's help in identifying the least intrusive way to do so?]}
+%{\color{red}[JDC: It might be useful to point the users to the scripts that were used to do this extraction.
+%Also, can we automate the downloading of the complete up-to-date archive, perhaps with Kenneth's help in identifying the least intrusive way to do so?]}
+% KAB: I believe that we can automate things.  However, given that it's not officially supported by TRC so IMHO we should postpone for a later work.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TABLE: DENSITY AND STATIC DIELECTRIC
@@ -217,7 +219,8 @@ Also, can we automate the downloading of the complete up-to-date archive, perhap
 \caption{{\bf Successive filtration of the ThermoML Archive.}
 A set of successive filters were applied to all measurements in the ThermoML Archive (accessed 13 Sep 2014) that contained either mass density or static dielectric constant measurements.
 Each column reports the number of measurements remaining after successive application of the corresponding filtration step.
-{\color{red}[JDC: Are all of these filters actually applied sequentially?  If not, I think we should rework this table to match the order in which filters are applied successively in the text.]}
+%{\color{red}[JDC: Are all of these filters actually applied sequentially?  If not, I think we should rework this table to match the order in which filters are applied successively in the text.]}
+% KAB: This is the actual order the filters are applied.  
 }
 \label{table:ThermoMLSummary}
 \end{table}
@@ -263,20 +266,20 @@ The functional groups represented in these compounds (as identified by the progr
 
 \subsection{Benchmarking GAFF/AM1-BCC against the ThermoML Archive}
 
-{\color{red}[JDC: If we lead with a Results section before Methods, we have to start with a small summary of the calculation.
-We should tell readers the salient details---we ran simulations with a small timestep to minimize integrator error, we used stochastic thermal and pressure control, and we used an adaptive simulation scheme that ensured simulations ran long enough to achieve target accuracy.  We can also mention that we used OpenMM, but these calculations can easily be adapted to other codes.]}
+\subsection{Methods Summary}
+
+We used OpenMM 6.2 to perform highly precise constant-pressure simulations of mass density.  The Langevin timestep was fixed at 1 fs to reduce systematic error.  All simulations used the GAFF / AM1-BCC forcefield.  Addition details are provided in Methods.  
 
 \subsubsection{Mass density}
 
 Mass density has been widely used for parameterizing and testing forcefields, particularly the Lennard-Jones parameters representing dispersive and repulsive interactions~\cite{jorgensen1983comparison, jorgensen1984optimized}.
 We therefore used the present ThermoML extract as a benchmark of the GAFF/AM1-BCC forcefield (Fig.~\ref{figure:Density}).  
+We estimate the mass density via $\rho = \langle \frac{M}{V} \rangle$.
 
-{\color{red}[JDC: Remind readers how mass density is computed.]}
-
-Overall, the densities show reasonable accuracy, with a root-mean square (RMS) relative error over all measurements of 3$\pm$0.1\% (with one standard error of the mean determined by bootstrapping over all measurements), especially encouraging given that this forcefield was not designed with the intention of modeling bulk liquid properties of organic molecules~\cite{gaff}
-{\color{red}[JDC: Sig figs issue---this should be 3.x$\pm$0.1\%.]}
+Overall, the densities show reasonable accuracy, with a root-mean square (RMS) relative error over all measurements of 2.8$\pm$0.1\% (with one standard error of the mean determined by bootstrapping over all measurements), especially encouraging given that this forcefield was not designed with the intention of modeling bulk liquid properties of organic molecules~\cite{gaff}
 This is reasonably consistent with previous studies reporting agreement of 4\% on a different benchmark set~\cite{caleman2011force}.
-{\color{red}[JDC: Did that previous study report an uncertainty?]}
+%{\color{red}[JDC: Did that previous study report an uncertainty?]}  
+%KAB: Previous study does not appear to have an uncertainty, at least according to Table 2 in said work.
 
 {\color{red}[JDC: Discuss outliers here.  There must be more things we can say about densities.  Some of the densities are quite good, while others seem poor, with systematic bias toward higher densities than experiment.  We can also point out that densities at different temperatures for a given molecule seem to be biased in a consistent way.]}
 
@@ -291,7 +294,7 @@ Liquid density measurements extracted from ThermoML are compared against densiti
 Color groupings represent identical chemical species.  
 Simulation error bars represent one standard error of the mean, with the number of effective (uncorrelated) samples estimated using pymbar.  
 Experimental error bars indicate the standard deviation between independently reported measurements, when available, or author-reported standard deviations in ThermoML entries; for some measurements, neither uncertainty estimate is available.  
-See Appendix~\ref{section:experimental-error} for further discussion of error.
+See SI Fig. \ref{figure:ErrorAnalysisDensity} for further discussion of error.
 }
 \label{figure:Density}
 \end{figure}
@@ -312,16 +315,17 @@ Because this deviation likely stems from the lack of an explicit treatment of el
 %\alpha/\textnormal{\AA} = 1.53 \, n_C + 0.17 \, n_H + 0.57 \, n_O + 1.05 \, n_N + 2.99 \, n_S \\ + 2.48 \, n_P + 0.22 \, n_F + 2.16 \, n_{Cl} + 3.29 \, n_{Br} + 5.45 \, n_I + 0.32 
 %\end{split}
 %\end{equation}
-{\color{red}[JDC: I've commented out the equation because I don't think it is central to our point. Essentially, it is just an atom-based linear model for computing the molecular polarizability, and the parameters can be looked up elsewhere.]}
+%{\color{red}[JDC: I've commented out the equation because I don't think it is central to our point. Essentially, it is just an atom-based linear model for computing the molecular polarizability, and the parameters can be looked up elsewhere.]} 
 From the computed molecular electronic polarizability $\alpha$, an additive correction to the simulation-derived static dielectric constant accounting for the missing electronic polarizability can be computed~\cite{horn2004}
 \begin{eqnarray}
 \Delta \epsilon &=& 4 \pi N  \frac{\alpha}{\langle V \rangle} \label{equation:dielectric correction}
 \end{eqnarray}
 While a similar polarization correction was used in the development of the TIP4P-Ew water model, where it had a minor effect~\cite{horn2004}, missing polarizability is a dominant contribution to the static dielectric constant of nonpolar organic molecules;   
 in the case of water, the empirical atomic polarizability model predicts a dielectric correction of 0.52, while 0.79 was used for the TIP4P-Ew model.  
-{\color{red}[JDC: What were the results for nonpolar organic molecules?]}
-For comparison, we also applied the same empirical correction to the VirtualChemistry dataset~\cite{caleman2011force, van2012gromacs} and saw similarly improved agreement with experiment for both the GAFF and OPLS forcefields (Fig. \ref{figure:VirtualChemistry}).
-{\color{red}[JDC: Not sure if we should keep the VirtualChemistry stuff here other than to compare our computed pipeline results with Virtual Chemistry as validation to show we didn't screw up our pipeline.]}
+Considering all predictions in the present work leads to polarizability corrections to the static dielectric of $0.74 \pm 0.08$.
+%For comparison, we also applied the same empirical correction to the VirtualChemistry dataset~\cite{caleman2011force, van2012gromacs} and saw similarly improved agreement with experiment for both the GAFF and OPLS forcefields (Fig. \ref{figure:VirtualChemistry}).
+%{\color{red}[JDC: Not sure if we should keep the VirtualChemistry stuff here other than to compare our computed pipeline results with Virtual Chemistry as validation to show we didn't screw up our pipeline.]}
+%KAB: For now I've removed this figure from the SI
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIGURE: DIELECTRIC COMPARISON
@@ -331,12 +335,11 @@ For comparison, we also applied the same empirical correction to the VirtualChem
 \includegraphics[width=\columnwidth]{./figures/dielectrics_thermoml.pdf}
 
 \caption{{\bf Measured (ThermoML) versus predicted (GAFF/AM1-BCC) inverse static dielectrics (a).}
-Simulation error bars represent one standard error of the mean estimated via block averaging with block sizes of 200 ps \cite{flyvbjerg1989error}.  
-{\color{red}[JDC: Why are we using block averaging here?  Why didn't we just use {\tt timeseries.py}. We should not be using block averaging, especially without a justification that 200 ps is a reasonable block size for every specific system and condition  Let's talk about this.]}
+Simulation error bars represent one standard error of the mean estimated via circular block averaging \cite{sheppard_2015_15681} with block sizes automatically selected to maximize the error \cite{flyvbjerg1989error}.  
+%{\color{red}[JDC: Why are we using block averaging here?  Why didn't we just use {\tt timeseries.py}. We should not be using block averaging, especially without a justification that 200 ps is a reasonable block size for every specific system and condition  Let's talk about this.]}
 Experimental error bars indicate the larger of standard deviation between independently reported measurements and the authors reported standard deviations; for some measurements, neither uncertainty estimate is available.  
-See Section~\ref{section:experimental-error} for further discussion of error.  
+See SI Fig. ~\ref{figure:ErrorAnalysisDensity} for further discussion of error.  
 The inverse dielectric constant $\epsilon^{-1}$ is plotted instead of $\epsilon$ because $\epsilon^{-1}$ is directly proportional to the Coulomb interaction energy between point charges embedded in a dielectric material [e.g. $U(r) \propto q_1 q_2 / r \propto \epsilon^{-1}$].
-{\color{red}[JDC: We need to trim the whitespace of all sides of the figures that you are outputting in order for the figure to actually fill the column width.  There must be some option to set that.  See the {\tt figure.tight\_layout()} option in {\tt matplotlib}, along with {\tt matplotlib.backends.backend\_pdf.PdfPages}.]}
 }
 \label{figure:Dielectric}
 \end{figure}
@@ -358,8 +361,8 @@ However, a number of authors have pointed out potential challenges in constructi
 
 Interestingly, recent work by Dill and coworkers~\cite{fennell2012simple} observed that, for $\mathrm{CCl_4}$, reasonable choices of point charges are incapable of recapitulating the observed dielectric of $\epsilon = 2.2$, instead producing dielectric constants in the range of $1.0 \le \epsilon \le 1.05$.  
 This behavior is quite general: fixed point charge forcefields will predict $\epsilon \approx 1$ for many nonpolar or symmetric molecules, but the measured dielectric constants are instead $\epsilon \approx 2$ (Fig.~\ref{figure:nonpolars}).  
-While this behavior is well-known and results from missing physics of polarizability, we suspect it may have several unanticipated consequences.
-{\color{red}[JDC: Perhaps the free energy of binding to hydrophobic cavities in proteins could be relevant?]}
+While this behavior is well-known and results from missing physics of polarizability, we suspect it may have several unanticipated consequences, which we discuss below.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIGURE: Nonpolars
@@ -374,11 +377,15 @@ While this behavior is well-known and results from missing physics of polarizabi
 \includegraphics[width=\columnwidth]{./figures/chlorides.png}
 
 \caption{{\bf Typical experimental static dielectric constants of some nonpolar compounds.}
-(a). Measured static dielectric constants of various nonpolar or symmetric molecules~\cite{wikipedia}; fixed-charge forcefields give $\epsilon \approx 1$ for each species.  
+(a). Measured static dielectric constants of various nonpolar or symmetric molecules~\cite{d1990dielectric, haynes2011crc}.  
+Fixed-charge forcefields give $\epsilon \approx 1$ for each species; for example, we calculated $\epsilon = 1.003 \pm 0.0002$ for octane.  
 (b).  A congeneric series of chloro-substituted methanes have static dielectric constants between 2 and 13.  
-{\color{red}[Can we use a better citable source for these numbers instead of Wikipedia?  Also, what temperatures/pressures are these measurements cited at?  Maybe we can just say ``near ambient''?]}
-{\color{red}[JDC: We should not use PNG files for figure graphics---only vector graphics (when possible).  Can you use a vector graphics PDF instead?]}
-{\color{red}[JDC: Can we show both experimental and GAFF/AM1-BCC computed dielectric constants for some of these compounds?]}
+Reported dielectric constants are at near-ambient temperatures.  
+%{\color{red}[Can we use a better citable source for these numbers instead of Wikipedia?  Also, what temperatures/pressures are these measurements cited at?  Maybe we can just say ``near ambient''?]}
+%{\color{red}[JDC: We should not use PNG files for figure graphics---only vector graphics (when possible).  Can you use a vector graphics PDF instead?]}
+%KAB: I can't make this figure with vector graphics, as it involved a screenshot from an online chemical editor.  
+%{\color{red}[JDC: Can we show both experimental and GAFF/AM1-BCC computed dielectric constants for some of these compounds?]}
+%KAB: now reporting the calculated value for octane, the only one in our list.
 }
 \label{figure:nonpolars}
 
@@ -399,10 +406,10 @@ The Onsager model for the transfer free energy of a dipole (Eq.~\ref{eq:onsager}
 \end{equation}
 
 Similarly, we calculated the mean polarization error for solvation free energies (gas to solvent transfer free energies) of druglike molecules in cyclohexane.  
-For each molecule in the FreeSolv database~\cite{freesolv} {\color{red}[JDC: Which version of FreeSolv?]}, we took the cavity radius $a$ to be the half the maximum interatomic distance and calculated $\mu = \sum_i q_i r_i$ using the provided mol2 coordinates and AM1-BCC charges.  
-This calculation predicts a mean error of $-0.9\pm0.07$ kcal / mol for the 643 molecules (where the standard error is computed from bootstrapping over measurements), 
-{\color{red}[JDC: Need to fix reported sig figs: $-0.9x\pm0.07$.]}
+For each molecule in the latest (Feb. 20) FreeSolv database~\cite{freesolv, freesolv_github}, we took the cavity radius $a$ to be the half the maximum interatomic distance and calculated $\mu = \sum_i q_i r_i$ using the provided mol2 coordinates and AM1-BCC charges.  
+This calculation predicts a mean error of $-0.91 \pm0.07$ kcal / mol for the 643 molecules (where the standard error is computed from bootstrapping over measurements), 
 suggesting that the missing atomic polarizabilty unrepresentable by fixed point charge forcefields could contribute substantially to errors in predicted transfer and solvation properties of druglike molecules.  
+We also conjecture that 
 
 Given their ease of measurement and direct connection to long-range electrostatic interactions, static dielectric constants have high potential utility as primary data for forcefield parameterization efforts.  
 Although this will require the use of forcefields with explicit treatment of atomic polarizability, the inconsistency of fixed-charge models in low-dielectric media is sufficiently alarming to motivate further study of polarizable forcefields.  In particular, continuum methods~\cite{truchon2010using, truchon2009integrated, truchon2008accurate}, point dipole methods~\cite{Ponder2010, ren2004temperature}, and Drude methods~\cite{lamoureux2003modeling, anisimov2005determination} have been maturing rapidly.  Finding the optimal balance of accuracy and performance remains an open question; however, the use of experimentally-parameterized direct polarization methods~\cite{wang2013systematic} may provide polarizability physics at a cost not much greater than fixed charge forcefields.
@@ -435,21 +442,20 @@ This schema was converted into a Python object via PyXB 1.2.4 (\url{http://pyxb.
 Finally, this schema and Pandas was used to extract the data and apply the successive data filters described in Section~\ref{section:filtering-thermoml}.  
 
 \subsection{Simulation}
-Using an automated tool, boxes of 1000 molecules were constructed using PackMol~\cite{martinez2009packmol} {\color{red}[JDC: Which version?]}. 
+Using an automated tool, boxes of 1000 molecules were constructed using PackMol version 14-225~\cite{martinez2009packmol}.
 AM1-BCC~\cite{am1bcc1,am1bcc2} charges were generated using OpenEye Toolkit 2014-6-6 \cite{openeye}, using the {\tt oequacpac.OEAssignPartialCharges} module with the {\tt OECharges\_AM1BCCSym} option, which utilizes a conformational expansion procedure prior to charge fitting to minimize artifacts from intramolecular contacts.  
 The selected conformer was then processed using antechamber in AmberTools~14~\cite{amber14}.  
 The resulting AMBER files were converted to OpenMM~\cite{eastman2012openmm} ffxml forcefield XML files.  
-Simulation code used libraries gaff2xml~0.6, TrustButVerify~0.1, OpenMM~6.2~\cite{eastman2012openmm}, and MDTraj~1.2~\cite{mcgibbon2014mdtraj}.  
+Simulation code used libraries gaff2xml~0.6, TrustButVerify~0.1, OpenMM~6.2~\cite{eastman2012openmm}, and MDTraj~1.3~\cite{mcgibbon2014mdtraj}.  
 {\color{red}[TODO: Provide a script to install all of these versions via {\tt conda}.]}
 
-Molecular dynamics simulations were performed with OpenMM~6.2~\cite{eastman2012openmm} using a Langevin integrator (with collision rate 1 ps$^{-1}$) and a 1~fs timestep, as we found that timesteps of 2~fs timestep or greater led to a significant timestep dependence in computed equilibrium densities (Table~\ref{table:TimestepDependence}).  
+Molecular dynamics simulations were performed with OpenMM~6.2~\cite{eastman2012openmm} using a Langevin integrator (with collision rate 1 ps$^{-1}$) and a 1~fs timestep, as we found that timesteps of 2~fs timestep or greater led to a significant timestep dependence in computed equilibrium densities (Table~\ref{figure:timestep}).  
 {\color{red}[JDC: Cite Langevin integrator used in OpenMM.]}
 Pressure control to 1 atm was achieved with a Monte Carlo barostat utilizing molecular scaling and automated step size adjustment during equilibration, with volume moves attempted every 25 steps.  
 The particle mesh Ewald (PME) method~\cite{Darden1993} was used with a long-range cutoff of 0.95~nm and a long-range isotropic dispersion correction. 
 {\color{red}[JDC: Can we report the automatically-selected PME parameters to aid reproducibility in other codes?]}
 Simulations were continued until density standard errors were less than $2 \times 10^{-4}$ g / mL, as estimated using the equilibration detection module in pymbar 2.1~\cite{shirts2008statistically}.  
-Trajectory analysis was performed using OpenMM~\cite{eastman2012openmm} and MDTraj~\cite{mcgibbon2014mdtraj}.  
-{\color{red}[JDC: Which versions?]}
+Trajectory analysis was performed using OpenMM~6.2~\cite{eastman2012openmm} and MDTraj~1.3~\cite{mcgibbon2014mdtraj}.  
 Instantaneous densities were stored every 250~fs, while trajectory snapshots were stored every 10~ps.  
 {\color{red}[JDC: Did we plan to make this data available somewhere, or is it sufficient to put out the scripts?]}
 
@@ -500,64 +506,115 @@ The references may be split in two as well, depending on journal.
 {\color{red}[JDC: It may be fine to leave this as an Appendix.]}
 
 \begin{itemize}
- \item Table: Timestep-dependence of density
+ \item Figure: Timestep-dependence of density
  \item Figure: Error analysis for ThermoML dataset
  \item Table (CSV File): ThermoML Dataset used in present analysis.
 \end{itemize}
 
+\clearpage
 
-\begin{table*}
-\begin{tabular}{rrrrrrrr}
-\toprule
-$\Delta t$ &        $\langle \rho \rangle$  (g/cm$^3$) &       n &          neff &     stddev($\rho$) &    stderr &     abs error (g/cm$^3$) &    rel error (\%) \\
-\midrule
-0.5 &  0.903701 &  145510 &  20358.0 &  0.007362 &  0.000052 &  0.000000 &  0.0000 \\
-1.0 &  0.903114 &  159515 &  21988.5 &  0.007415 &  0.000050 & -0.000588 & -0.0650 \\
-2.0 &  0.901811 &  108346 &  15964.1 &  0.007494 &  0.000059 & -0.001891 & -0.2092 \\
-\bottomrule
-\end{tabular}
-\caption{{\bf Timestep dependence in computed equilibrium density of butyl acrylate.}
+
+% \begin{table*}
+% \begin{tabular}{rrrrrrrr}
+% \toprule
+% $\Delta t$ &        $\langle \rho \rangle$  (g/cm$^3$) &       n &          neff &     stddev($\rho$) &    stderr &     abs error (g/cm$^3$) &    rel error (\%) \\
+% \midrule
+% 0.5 &  0.903701 &  145510 &  20358.0 &  0.007362 &  0.000052 &  0.000000 &  0.0000 \\
+% 1.0 &  0.903114 &  159515 &  21988.5 &  0.007415 &  0.000050 & -0.000588 & -0.0650 \\
+% 2.0 &  0.901811 &  108346 &  15964.1 &  0.007494 &  0.000059 & -0.001891 & -0.2092 \\
+% \bottomrule
+% \end{tabular}
+% \caption{{\bf Timestep dependence in computed equilibrium density of butyl acrylate.}
+% To probe the systematic error from finite time-step integration, we examined the timestep dependence of butyl acrylate density.  
+% The number of effective samples was estimated using pymbar's statistical inefficiency routine \cite{shirts2008statistically}.  
+% To approximate the timestep bias, we compare the density expectation ($\langle \rho \rangle$) to values calculated with a 0.5~fs timestep.  
+% We find a 2~fs timestep leads to systematic biases in the density on the order of 0.2\%, while 1fs reduces the systematic bias to less than 0.1\%---we therefore selected a 1~fs timestep for the present work, where we aimed to achieve three digits of accuracy in density predictions.
+% {\color{red}[JDC: I've reformatted this table a bit, paying more attention to sig figs.  I think this might actually be better presented as a figure showing the timestep dependence, perhaps for 4 or 5 timesteps from 0.5 to 2.5 fs, rather than just 3.]}
+% }
+% \label{table:TimestepDependence}
+% \end{table*}
+
+\begin{figure}
+
+\includegraphics[width=8cm]{./figures/timestep_dependence_density.pdf}
+\includegraphics[width=8cm]{./figures/timestep_dependence_relative_error.pdf}
+
+\caption{
 To probe the systematic error from finite time-step integration, we examined the timestep dependence of butyl acrylate density.  
-The number of effective samples was estimated using pymbar's statistical inefficiency routine \cite{shirts2008statistically}.  
-To approximate the timestep bias, we compare the density expectation ($\langle \rho \rangle$) to values calculated with a 0.5~fs timestep.  
-We find a 2~fs timestep leads to systematic biases in the density on the order of 0.2\%, while 1fs reduces the systematic bias to less than 0.1\%---we therefore selected a 1~fs timestep for the present work, where we aimed to achieve three digits of accuracy in density predictions.
-{\color{red}[JDC: I've reformatted this table a bit, paying more attention to sig figs.  I think this might actually be better presented as a figure showing the timestep dependence, perhaps for 4 or 5 timesteps from 0.5 to 2.5 fs, rather than just 3.]}
+(a).  The density is shown for several choices of timestep.  
+(b).  The relative error, as compared to the 0.5 fs value, is shown for several choices of timestep.  
+Error bars represent stand errors of the mean, with the number of effective samples estimated using pymbar's statistical inefficiency routine \cite{shirts2008statistically}.  
+We find a 2~fs timestep leads to systematic biases in the density on the order of 0.2\%, while 1 fs reduces the systematic bias to less than 0.1\%---we therefore selected a 1~fs timestep for the present work, where we aimed to achieve three digits of accuracy in density predictions.
 }
-\label{table:TimestepDependence}
-\end{table*}
+\label{figure:timestep}
+
+\end{figure}
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Assessment of experimental error
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Assessment of experimental error in ThermoML measurements}
-\label{section:experimental-error}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FIGURE: ILLUSTRATION OF ASSESSMENT OF EXPERIMENTAL ERROR: DENSITY
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% FIGURE: ILLUSTRATION OF ASSESSMENT OF EXPERIMENTAL ERROR
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
 
 \begin{figure}
 
 \includegraphics[width=8cm]{./figures/error_analysis_density.pdf}
-\includegraphics[width=8cm]{./figures/error_analysis_dielectric.pdf}
 
 \includegraphics[width=8cm]{./figures/error_analysis_density_index.pdf}
-\includegraphics[width=8cm]{./figures/error_analysis_dielectric_index.pdf}
 
-\caption{{\bf Assessment of experimental error in ThermoML data.}
-To assess the experimental error in our ThermoML extract, we considered two different approaches.
-In the first approach, we computed the mean of the uncertainties reported by the measurement authors.  
-{\color{red}[JDC: This is an incorrect way to combine uncertainties.  If you take the unweighted mean $\hat{x} = N^{-1} \sum_i x_i$ of $N$ experimental measurements $x_i$ with associated standard errors or uncertainties $\sigma_i$,  the resulting uncertainty is $\hat\sigma = N^{-1} (\sum_i \sigma_i^2)^{1/2}$---the procedure you suggest where uncertainties are simply averaged is incorrect and should not be used.  But I think we should really use the \emph{optimal} way to combine multiple independent measurements with uncertainties, $\hat{x} = (\sum_i \sigma_i^{-2} x_i) / (\sum_j \sigma_j^{-2})$, with corresponding uncertainty $\hat{\sigma} = (\sum_i \sigma_i^{-2})^{-1/2}$.]}
-The second approach is to compute the standard deviation of independent measurements reported in the ThermoML extract.   
-We see that author-reported uncertainties appear to be overly optimistic for densities (a, c), but author-reported uncertainties of dielectrics (b, d) appear consistent with the standard deviations.  
+
+\caption{{\bf Assessment of experimental error: Density}
+To assess the experimental error in our ThermoML extract, we compared three difference estimates of uncertainty.  
+In the first approach (Weighted), we computed the standard deviation of the optimally weighted average of the measurements, using the uncertainties reported by authors ($\sigma_{Weighted} = [\sum_k \sigma_k^{-2}]^{-0.5}$).
+This uncertainty estimator places the highest weights on measurements with small uncertainties and is therefore easily dominated by small outliers and uncertainty under-reporting.
+In the second approach (Median), we estimated the median of the uncertainties reported by authors; this statistic should be robust to small and large outliers of author-reported uncertainties.
+In the third approach (Std), we calculated at the standard deviation of independent measurements reported in the ThermoML extract, completely avoiding the author-reported uncertainties.
+Plot (a) compares the three uncertainty estimates.
+We see that author-reported uncertainties appear to be substantially smaller than the scatter between the observed measurements.
 A simple psychological explanation might be that because density measurements are more routine, the authors simply report the accuracy limit of their hardware (e.g. 0.0001 g / mL for a Mettler Toledo DM40~\cite{mettlertoledo}).  
 However, this hardware limit is not achieved due to inconsistencies in sample preparation; see Appendix in Ref.~\cite{chirico2013improvement}.  
-Note that in panels (c, d) show the same information as (a, b) but as a function of the measurement index, rather than as a scatter plot---because not all measurements have author-supplied uncertainties, panels (c, d) contains slightly more data points than (a, b).  
+Panel (b) shows the same information as (a) but as a function of the measurement index, rather than as a scatter plot---because not all measurements have author-supplied uncertainties, panel (c) contains slightly more data points than (a, b).  
 }
-\label{figure:ErrorAnalysis}
+\label{figure:ErrorAnalysisDensity}
 
 \end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FIGURE: ILLUSTRATION OF ASSESSMENT OF EXPERIMENTAL ERROR: DIELECTRIC
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+
+
+
+\begin{figure}
+
+\includegraphics[width=8cm]{./figures/error_analysis_dielectric.pdf}
+
+\includegraphics[width=8cm]{./figures/error_analysis_dielectric_index.pdf}
+
+\caption{{\bf Assessment of experimental error: Static Dielectric Constant}
+To assess the experimental error in our ThermoML extract, we compared three difference estimates of uncertainty.  
+In the first approach (Weighted), we computed the standard deviation of the optimally weighted average of the measurements, using the uncertainties reported by authors ($\sigma_{Weighted} = [\sum_k \sigma_k^{-2}]^{-0.5}$).
+This uncertainty estimator places the highest weights on measurements with small uncertainties and is therefore easily dominated by small outliers and uncertainty under-reporting.
+In the second approach (Median), we estimated the median of the uncertainties reported by authors; this statistic should be robust to small and large outliers of author-reported uncertainties.
+In the third approach (Std), we calculated at the standard deviation of independent measurements reported in the ThermoML extract, completely avoiding the author-reported uncertainties.
+Plot (a) compares the three uncertainty estimates.
+Unlike the case of densities, author-reported uncertainties appear to be somewhat larger than the scatter between the observed measurements.
+Panel (b) shows the same information as (a) but as a function of the measurement index, rather than as a scatter plot---because not all measurements have author-supplied uncertainties, panel (c) contains slightly more data points than (a, b).  
+}
+\label{figure:ErrorAnalysisDielectric}
+
+\end{figure}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIGURE: DENSITIES VS TEMPERATURE
@@ -584,7 +641,8 @@ Measured (blue) and simulated (green) densities are shown in units of kg/m$^3$.
 \caption{{\bf Comparison of simulated and experimental static dielectric constants for all compounds.}
 Measured (blue), simulated (green), and polarizability-corrected simulated (red) static dielectric constants are shown for all compounds.
 Note that dielectric constants, rather than inverse dielectric constants, are plotted here.
-{\color{red}[JDC: Let's plot these as in Fig.~\ref{figure:Density} and Fig.~\ref{figure:Dielectric}, maybe only four plots across so they are larger and more legible.  We can also shorten ``name = compound'' to just ``compound''.]}
+{\color{red}[JDC: Let's plot these as in Fig.~\ref{figure:Density} and Fig.~\ref{figure:Dielectric}, maybe only four plots across so they are larger and more legible.  We can also shorten ``name = compound'' to just ``compound''.]
+KAB: We should discuss this more before I rebuild this figure several times.}
 }
 \label{figure:AllDielectrics}
 
@@ -594,19 +652,19 @@ Note that dielectric constants, rather than inverse dielectric constants, are pl
 % FIGURE: DIELECTRIC VIRTUAL CHEMISTRY
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{figure}
-
-\includegraphics[width=\columnwidth]{./figures/dielectric_virtual_chemistry_gaff.pdf}
-
-\includegraphics[width=\columnwidth]{./figures/dielectric_virtual_chemistry_opls.pdf}
-
-\caption{{\bf Atomic polarizability corrections for the Virtual Chemistry dataset.}
-A comparison of measured (\emph{blue}) and simulated dielectric constants from the Virtual Chemistry dataset~\cite{caleman2011force, van2012gromacs}.   with (\emph{red}) and without (\emph{green}) atomic polarizability corrections are shown.
-{\color{red}[JDC: What from the Virtual Chemistry dataset did we end up using? The computed values? The parameterized files? Since the story is about the ThermoML Archive, do we really want this here, or do we just want to do a comparison between our computed results for some molecules and the Virtual Chemistry results as a validation or sanity check on our computational pipeline?]}
-{\color{red}[JDC: Plot needs to be adjusted to be more legible if we decide to keep it.]}
-}
-\label{figure:VirtualChemistry}
-\end{figure}
+% \begin{figure}
+% 
+% \includegraphics[width=\columnwidth]{./figures/dielectric_virtual_chemistry_gaff.pdf}
+% 
+% \includegraphics[width=\columnwidth]{./figures/dielectric_virtual_chemistry_opls.pdf}
+% 
+% \caption{{\bf Atomic polarizability corrections for the Virtual Chemistry dataset.}
+% A comparison of measured (\emph{blue}) and simulated dielectric constants from the Virtual Chemistry dataset~\cite{caleman2011force, van2012gromacs}.   with (\emph{red}) and without (\emph{green}) atomic polarizability corrections are shown.
+% The predicted (GAFF and OPLS) and measured values were scraped from the virtual chemistry web site (\url{http://virtualchemistry.org/}); static dielectric corrections were calculated as above. 
+% {\color{red}[JDC: Plot needs to be adjusted to be more legible if we decide to keep it.]}
+% }
+% \label{figure:VirtualChemistry}
+% \end{figure}
 
 
 %\subsection{Dielectric Uncertainty}
@@ -627,6 +685,8 @@ A comparison of measured (\emph{blue}) and simulated dielectric constants from t
 %$$\delta(M)^2 = \delta(\langle M_x^2 \rangle)^2 + \delta(\langle M_y^2 \rangle)^2 + \delta(\langle M_z^2 \rangle)^2 + \delta(\langle M_x \rangle)^2 + \delta(\langle M_y \rangle)^2 + \delta(\langle M_z \rangle)^2 $$
 
 \clearpage
+
+
 
 \bibliography{benchmark}
 

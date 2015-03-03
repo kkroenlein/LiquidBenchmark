@@ -50,7 +50,7 @@ cv = sklearn.cross_validation.Bootstrap(len(x), train_size=len(x) - 1, n_iter=10
 relative_rms_grid = np.array([(((x[ind] - y[ind]) / x[ind])**2).mean()** 0.5 for ind, _ in cv])
 relative_rms_err = relative_rms_grid.std()
 plt.title("Density [kg / m^3] (relative rms: %.3f $\pm$ %.3f)" % (relative_rms, relative_rms_err))
-plt.savefig("./manuscript/figures/densities_thermoml.pdf", bbox_inches=None)
+plt.savefig("./manuscript/figures/densities_thermoml.pdf", bbox_inches="tight")
 
 
 yerr = pred["expt_dielectric_std"].replace(np.nan, 0.0)
@@ -85,7 +85,7 @@ ylim((0.01, 1))
 plt.legend(loc=0)
 plt.gca().set_aspect('equal', adjustable='box')
 plt.draw()
-plt.savefig("./manuscript/figures/dielectrics_thermoml_nocorr.pdf", bbox_inches=None)
+plt.savefig("./manuscript/figures/dielectrics_thermoml_nocorr.pdf", bbox_inches="tight")
 
 
 x, y = pred["corrected_dielectric"], pred["expt_dielectric"]
@@ -101,4 +101,4 @@ ylim((0.01, 1))
 plt.legend(loc=0)
 plt.gca().set_aspect('equal', adjustable='box')
 plt.draw()
-plt.savefig("./manuscript/figures/dielectrics_thermoml.pdf", bbox_inches=None)
+plt.savefig("./manuscript/figures/dielectrics_thermoml.pdf", bbox_inches="tight")

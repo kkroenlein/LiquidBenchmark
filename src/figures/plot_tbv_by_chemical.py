@@ -40,7 +40,7 @@ g.map(plt.errorbar, "temperature", "expt_density", "expt_density_std", fmt='.', 
 g.map(plt.errorbar, "temperature", "density", "density_sigma", fmt='.', color='g', label="MD")
 g.set_ylabels("Density [kg / m^3")
 legend(loc=4)
-plt.savefig("./manuscript/figures/densities_versus_temperature_all.pdf", bbox_inches=None)
+plt.savefig("./manuscript/figures/densities_versus_temperature_all.pdf", bbox_inches="tight")
 
 
 # HACK TO PLOT DATA THAT LACKS ERRORBARS!
@@ -60,4 +60,4 @@ g.set(yticks=[0.5, 0,6, 0.7, 0.8, 0.9] + range(1, 10) + range(10, 100, 10) + ran
 g.set(ylim=(0.5, 200))
 g.set_ylabels("Dielectric")
 legend(loc=4)
-plt.savefig("./manuscript/figures/dielectric_versus_temperature_all.pdf", bbox_inches=None)
+plt.savefig("./manuscript/figures/dielectric_versus_temperature_all.pdf", bbox_inches="tight")
