@@ -9,7 +9,8 @@ import pandas as pd
 import glob
 import dipole_errorbars
 
-block_length = 20  # 200 ps blocks for dielectric error bar block averaging.
+num_bootstrap = 100
+fixed_block_length = 20  # 200 ps blocks for dielectric error bar block averaging.
 
 filenames = glob.glob("./data/equil/*.pdb")
 filename_munger = lambda filename: os.path.splitext(os.path.split(filename)[1])[0].split("_")
@@ -38,9 +39,11 @@ for pdb_filename in filenames:
     #dielectric0 = md.geometry.static_dielectric(traj[0:n/2], charges, temperature)
     #dielectric1 = md.geometry.static_dielectric(traj[n/2:], charges, temperature)
     #dielectric_sigma = np.std([dielectric0, dielectric1])
-    dielectric_sigma = dipole_errorbars.bootstrap(traj, charges, temperature, block_length)[1]
+    dielectric_sigma_fixedblock = dipole_errorbars.bootstrap_old(traj, charges, temperature, fixed_block_length)[1]
+    block_length = dipole_errorbars.find_block_size(traj, charges, temperature)
+    dielectric_sigma = dipole_errorbars.bootstrap(traj, charges, temperature, block_length, num_bootstrap)
     formula = cirpy.resolve(cas, "formula")
-    data.append(dict(cas=cas, temperature=temperature, density=mu, density_sigma=sigma, Neff=Neff, n_frames=traj.n_frames, dielectric=dielectric, dielectric_sigma=dielectric_sigma, formula=formula))
+    data.append(dict(cas=cas, temperature=temperature, density=mu, density_sigma=sigma, Neff=Neff, n_frames=traj.n_frames, dielectric=dielectric, dielectric_sigma=dielectric_sigma, dielectric_sigma_fixedblock=dielectric_sigma_fixedblock, block_length=block_length, formula=formula))
     print(data[-1])
 
 data = pd.DataFrame(data)

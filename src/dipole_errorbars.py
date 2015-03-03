@@ -1,3 +1,4 @@
+import arch.bootstrap
 import mdtraj as md
 import numpy as np
 import mdtraj.utils.unit.unit_definitions as u
@@ -23,7 +24,7 @@ def dipole_moment_errorbars():
 
 
 
-def bootstrap(traj, charges, temperature, block_length):
+def bootstrap_old(traj, charges, temperature, block_length):
     n = traj.n_frames / block_length
     indices = np.array_split(np.arange(traj.n_frames), n)
     epsilon = np.zeros(n)
@@ -31,3 +32,21 @@ def bootstrap(traj, charges, temperature, block_length):
         t = traj[ind]
         epsilon[k] = md.geometry.static_dielectric(t, charges, temperature)
     return epsilon, epsilon.std() * n ** -0.5
+
+
+def find_block_size(traj, charges, temperature, num_block_sizes_to_try=12, num_bootstrap=15):
+    block_size_grid = np.logspace(0, np.log10(len(traj)), num_block_sizes_to_try).astype('int')
+    block_size_grid = np.unique(block_size_grid)  # The float -> int conversion sometimes leads to duplicate values, so avoid this
+    epsilon_grid = np.array([bootstrap(traj, charges, temperature, block_length, num_bootstrap) for block_length in block_size_grid])
+    return block_size_grid[epsilon_grid.argmax()]
+    
+def bootstrap(traj, charges, temperature, block_length, num_bootstrap):
+    bootstrap = arch.bootstrap.CircularBlockBootstrap(block_length, traj=traj)
+
+    def bootstrap_func(traj):
+        return md.geometry.static_dielectric(traj, charges, temperature)
+
+    results = bootstrap.apply(bootstrap_func, num_bootstrap)
+    epsilon_err = results.std()
+    return epsilon_err
+
