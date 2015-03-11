@@ -40,6 +40,7 @@
 \usepackage{boxedminipage}
 \usepackage{verbatim}
 \usepackage{booktabs}
+\usepackage{subfigure}
 
 \usepackage[colorlinks=true,citecolor=blue,linkcolor=blue]{hyperref}
 
@@ -405,11 +406,15 @@ While this behavior is well-known and results from missing physics of polarizabi
 
 \begin{figure}
 
+\subfigure[]{
 \includegraphics[width=\columnwidth]{./figures/molecules.png}
+}
 
 \noindent\rule{8cm}{0.4pt}
-
+\subfigure[]{
 \includegraphics[width=\columnwidth]{./figures/chlorides.png}
+}
+
 
 \caption{{\bf Typical experimental static dielectric constants of some nonpolar compounds.}
 (a). Measured static dielectric constants of various nonpolar or symmetric molecules~\cite{d1990dielectric, haynes2011crc}.  
@@ -541,8 +546,12 @@ The references may be split in two as well, depending on journal.
 
 \begin{figure}
 
+\subfigure[]{
 \includegraphics[width=8cm]{./figures/timestep_dependence_density.pdf}
+}
+\subfigure[]{
 \includegraphics[width=8cm]{./figures/timestep_dependence_relative_error.pdf}
+}
 
 \caption{
 To probe the systematic error from finite time-step integration, we examined the timestep dependence of butyl acrylate density.  
@@ -570,10 +579,13 @@ We find a 2~fs timestep leads to systematic biases in the density on the order o
 
 \begin{figure}
 
+\subfigure[]{
 \includegraphics[width=8cm]{./figures/error_analysis_density.pdf}
+}
 
+\subfigure[]{
 \includegraphics[width=8cm]{./figures/error_analysis_density_index.pdf}
-
+}
 
 \caption{{\bf Assessment of experimental error: Density}
 To assess the experimental error in our ThermoML extract, we compared three difference estimates of uncertainty.  
@@ -602,9 +614,13 @@ Panel (b) shows the same information as (a) but as a function of the measurement
 
 \begin{figure}
 
+\subfigure[]{
 \includegraphics[width=8cm]{./figures/error_analysis_dielectric.pdf}
+}
 
+\subfigure[]{
 \includegraphics[width=8cm]{./figures/error_analysis_dielectric_index.pdf}
+}
 
 \caption{{\bf Assessment of experimental error: Static Dielectric Constant}
 To assess the experimental error in our ThermoML extract, we compared three difference estimates of uncertainty.  
