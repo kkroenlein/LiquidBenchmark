@@ -440,6 +440,9 @@ The Onsager model for the transfer free energy of a dipole (Eq.~\ref{eq:onsager}
 \Delta G = -\frac{\mu^2}{a^3}\frac{\epsilon - 1}{2 \epsilon + 1}
 \end{equation}
 
+\begin{equation} \label{eq:onsager2}
+\Delta \Delta G = -\frac{\mu^2}{a^3}[\frac{\epsilon_1 - 1}{2 \epsilon_1 + 1} - \frac{\epsilon_2 - 1}{2 \epsilon_2 + 1}]
+\end{equation}
 Similarly, we calculated the mean polarization error for solvation free energies (gas to solvent transfer free energies) of druglike molecules in cyclohexane.  
 For each molecule in the latest (Feb. 20) FreeSolv database~\cite{freesolv, freesolv_github}, we took the cavity radius $a$ to be the half the maximum interatomic distance and calculated $\mu = \sum_i q_i r_i$ using the provided mol2 coordinates and AM1-BCC charges.  
 This calculation predicts a mean error of $-0.91 \pm0.07$ kcal / mol for the 643 molecules (where the standard error is computed from bootstrapping over measurements), 
