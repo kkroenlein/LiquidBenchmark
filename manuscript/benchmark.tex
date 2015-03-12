@@ -556,9 +556,10 @@ The references may be split in two as well, depending on journal.
 \caption{
 To probe the systematic error from finite time-step integration, we examined the timestep dependence of butyl acrylate density.  
 (a).  The density is shown for several choices of timestep.  
-(b).  The relative error, as compared to the 0.5 fs value, is shown for several choices of timestep.  
+(b).  The relative error, as compared to the reference value, is shown for several choices of timestep.  
 Error bars represent stand errors of the mean, with the number of effective samples estimated using pymbar's statistical inefficiency routine \cite{shirts2008statistically}.  
-We find a 2~fs timestep leads to systematic biases in the density on the order of 0.2\%, while 1 fs reduces the systematic bias to less than 0.1\%---we therefore selected a 1~fs timestep for the present work, where we aimed to achieve three digits of accuracy in density predictions.
+The reference value is estimated by linear extrapolation to 0 fs using the 0.5 fs and 1.0 fs data points; the linear extrapolation is shown as black lines.  
+We find a 2~fs timestep leads to systematic biases in the density on the order of 0.3\%, while 1 fs reduces the systematic bias to approximately 0.13\%---we therefore selected a 1~fs timestep for the present work, where we aimed to achieve three digits of accuracy in density predictions.
 }
 \label{figure:timestep}
 

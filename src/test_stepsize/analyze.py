@@ -2,7 +2,7 @@ import pandas as pd
 import pymbar
 
 table = {}
-for timestep in [0.5, 1.0, 2.0]:
+for timestep in [0.5, 1.0, 1.5, 2.0]:
     max_n = int(5000000 / timestep)
     data = pd.read_csv("./production_langevin%0.1fs.log" % timestep)["Density (g/mL)"].values[0:max_n]
     n = len(data)

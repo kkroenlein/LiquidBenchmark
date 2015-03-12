@@ -4,7 +4,8 @@ from simtk import unit as u
 
 cas = "126492-54-4"
 
-timestep_factor = 1.
+# EDIT THIS PARAMETER ONLY to adjust timestep, e.g. 2.0 / timestep_factor
+timestep_factor = 1.33333333333333333333333
 
 base_filename = "langevin%0.1fs" % (2.0 / timestep_factor)
 timestep = 2.0 * u.femtoseconds / timestep_factor
