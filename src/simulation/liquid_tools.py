@@ -8,7 +8,7 @@ import simtk.openmm as mm
 from simtk import unit as u
 
 from density_simulation_parameters import *
-from trustbutverify.cirpy import resolve 
+from gaff2xml.cirpy import resolve
 
 import gaff2xml
 
