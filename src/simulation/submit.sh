@@ -47,4 +47,4 @@ echo $CUDA_VISIBLE_DEVICES
 
 echo $HOSTNAME
 # start spark workers
-python /cbio/jclab/projects/behrj/VC_TPL/simulate_thermoml.py $PBS_ARRAYID
+python echo ${HOME}/src/kyleabeauchamp/LiquidBenchmark/src/simulation/simulate_thermoml.py $PBS_ARRAYID

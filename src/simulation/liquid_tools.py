@@ -43,27 +43,27 @@ class AmberMixtureSystem(object):
         identifier = list(itertools.chain(cas_strings, [str(n) for n in n_monomers], [str(temperature).split(' ')[0]]))
         self.identifier = '_'.join(identifier)        
         
-        self.monomer_pdb_filenames = ["monomers/" + string + ".pdb" for string in self.cas_strings]
-        self.box_pdb_filename = "packmol_boxes/" + self.identifier + ".pdb"
+        self.monomer_pdb_filenames = [DATA_PATH + "monomers/" + string + ".pdb" for string in self.cas_strings]
+        self.box_pdb_filename = DATA_PATH + "packmol_boxes/" + self.identifier + ".pdb"
         
-        self.inpcrd_filename = "tleap/" + '_'.join(self.cas_strings) + ".inpcrd"
-        self.prmtop_filename = "tleap/" + '_'.join(self.cas_strings) + ".prmtop"
+        self.inpcrd_filename = DATA_PATH + "tleap/" + '_'.join(self.cas_strings) + ".inpcrd"
+        self.prmtop_filename = DATA_PATH + "tleap/" + '_'.join(self.cas_strings) + ".prmtop"
         
-        self.equil_dcd_filename = "equil/" + self.identifier + "_equil.dcd"
-        self.equil_pdb_filename = "equil/" + self.identifier + "_equil.pdb"
+        self.equil_dcd_filename = DATA_PATH + "equil/" + self.identifier + "_equil.dcd"
+        self.equil_pdb_filename = DATA_PATH + "equil/" + self.identifier + "_equil.pdb"
         
-        self.production_dcd_filename = "production/" + self.identifier + "_production.dcd"
-        self.production_pdb_filename = "production/" + self.identifier + "_production.pdb"
-        self.production_data_filename = "production/" + self.identifier + "_production.csv"
+        self.production_dcd_filename = DATA_PATH + "production/" + self.identifier + "_production.dcd"
+        self.production_pdb_filename = DATA_PATH + "production/" + self.identifier + "_production.pdb"
+        self.production_data_filename = DATA_PATH + "production/" + self.identifier + "_production.csv"
         
-        make_path('monomers/')
-        make_path('packmol_boxes/')
-        make_path('tleap/')
+        make_path(DATA_PATH + 'monomers/')
+        make_path(DATA_PATH + 'packmol_boxes/')
+        make_path(DATA_PATH + 'tleap/')
         
-        make_path('equil/')
+        make_path(DATA_PATH + 'equil/')
         make_path(self.equil_pdb_filename)        
         
-        make_path('production/')
+        make_path(DATA_PATH + 'production/')
         make_path(self.production_dcd_filename)        
 
     @property
