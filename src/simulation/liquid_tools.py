@@ -8,8 +8,6 @@ import simtk.openmm as mm
 from simtk import unit as u
 
 from density_simulation_parameters import *
-from gaff2xml.cirpy import resolve
-
 import gaff2xml
 
 from pymbar import timeseries as ts
@@ -46,7 +44,7 @@ class AmberMixtureSystem(object):
         self.identifier = '_'.join(identifier)        
         
         self.monomer_pdb_filenames = ["monomers/" + string + ".pdb" for string in self.cas_strings]
-        self.box_pdb_filename = "boxes/" + self.identifier + ".pdb"
+        self.box_pdb_filename = "packmol_boxes/" + self.identifier + ".pdb"
         
         self.inpcrd_filename = "tleap/" + '_'.join(self.cas_strings) + ".inpcrd"
         self.prmtop_filename = "tleap/" + '_'.join(self.cas_strings) + ".prmtop"
@@ -59,7 +57,7 @@ class AmberMixtureSystem(object):
         self.production_data_filename = "production/" + self.identifier + "_production.csv"
         
         make_path('monomers/')
-        make_path('boxes/')
+        make_path('packmol_boxes/')
         make_path('tleap/')
         
         make_path('equil/')
@@ -72,7 +70,7 @@ class AmberMixtureSystem(object):
     def smiles_strings(self):
         self._smiles_strings = []
         for mlc in self.cas_strings:
-            self._smiles_strings.append(resolve(mlc, 'smiles'))
+            self._smiles_strings.append(gaff2xml.cirpy.resolve(mlc, 'smiles'))
         
         return self._smiles_strings
 
@@ -83,35 +81,31 @@ class AmberMixtureSystem(object):
     @property
     def frcmod_filenames(self):
         return ["monomers/" + string + ".frcmod" for string in self.cas_strings]
+    
+    def run(self):
+        self.build_monomers()
+        self.build_boxes()
+        self.equilibrate()
+        self.production()
 
-    def build_amber_files(self):
-        make_path(self.box_pdb_filename)
+    def build_monomers(self):
+        """Generate GAFF mol2 and frcmod files for each chemical."""
+        for k, smiles_string in enumerate(self.smiles_strings):
+            mol2_filename = self.gaff_mol2_filenames[k]
+            frcmod_filename = self.frcmod_filenames[k]
+            if not (os.path.exists(mol2_filename) and os.path.exists(frcmod_filename)):
+                gaff2xml.openeye.smiles_to_antechamber(smiles_string, mol2_filename, frcmod_filename)
 
-        rungaff = False
-        
-        if not (os.path.exists(self.inpcrd_filename) and os.path.exists(self.prmtop_filename)):
-            rungaff = True
-        
+
+    def build_boxes(self):
+        """Build an initial box with packmol and use it to generate AMBER files."""
         if not os.path.exists(self.box_pdb_filename):
-            for filename in self.monomer_pdb_filenames:
-                if not os.path.exists(filename):
-                    rungaff = True
-
-        if rungaff:
-            oemlcs = []
-            for k, smiles_string in enumerate(self.smiles_strings):
-                gaff2xml.openeye.smiles_to_gaff_mol2(smiles_string, self.gaff_mol2_filenames[k], self.frcmod_filenames[k])
-
-        if not os.path.exists(self.box_pdb_filename):
-            self.packed_trj = gaff2xml.packmol.pack_box([md.load(mol2) for mol2 in self.gaff_mol2_filenames], self.n_monomers)
-            self.packed_trj.save(self.box_pdb_filename)
-        else:
-            self.packed_trj = md.load(self.box_pdb_filename)
+            packed_trj = gaff2xml.packmol.pack_box([md.load(mol2) for mol2 in self.gaff_mol2_filenames], self.n_monomers)
+            packed_trj.save(self.box_pdb_filename)
 
         if not (os.path.exists(self.inpcrd_filename) and os.path.exists(self.prmtop_filename)):
             tleap_cmd = gaff2xml.amber.build_mixture_prmtop(self.gaff_mol2_filenames, self.frcmod_filenames, self.box_pdb_filename, self.prmtop_filename, self.inpcrd_filename)
-        else:
-            pass
+
 
     def equilibrate(self):
         
@@ -143,7 +137,7 @@ class AmberMixtureSystem(object):
 
     def production(self):  
 
-        if os.path.exists(self.production_dcd_filename) or os.path.exists(self.production_data_filename):
+        if os.path.exists(self.production_dcd_filename) and os.path.exists(self.production_data_filename):
             return
 
         prmtop = app.AmberPrmtopFile(self.prmtop_filename)
