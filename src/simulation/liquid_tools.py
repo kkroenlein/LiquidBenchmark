@@ -1,3 +1,4 @@
+import time
 import numpy as np
 import os
 import itertools
@@ -106,7 +107,8 @@ class AmberMixtureSystem(object):
         
         if os.path.exists(self.equil_pdb_filename):
             return
-
+        
+        time.sleep(3)  # Workaround for strange filesystem issues when loading prmtop
         prmtop = app.AmberPrmtopFile(self.prmtop_filename)
         inpcrd = app.AmberInpcrdFile(self.inpcrd_filename)
 
