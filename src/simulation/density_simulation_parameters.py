@@ -3,6 +3,8 @@ This file contains all simulation parameters used in this project.
 """
 from simtk import unit as u
 
+MOLECULES_PER_BOX = 1000
+
 CUTOFF = 0.95 * u.nanometers
 
 PRESSURE = 1.0 * u.atmospheres

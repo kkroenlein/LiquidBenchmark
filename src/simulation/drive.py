@@ -1,5 +1,6 @@
 from simtk import unit as u
-import liquid_tools
+from liquid_tools import AmberMixtureSystem
+from density_simulation_parameters import MOLECULES_PER_BOX
 
-builder = liquid_tools.AmberMixtureSystem(["CO"], [1000], 300 * u.kelvin)
+builder = AmberMixtureSystem(["CO"], [MOLECULES_PER_BOX], 300 * u.kelvin)
 builder.run()
