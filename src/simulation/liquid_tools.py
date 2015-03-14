@@ -1,4 +1,3 @@
-import time
 import numpy as np
 import os
 import itertools
@@ -107,8 +106,7 @@ class AmberMixtureSystem(object):
         
         if os.path.exists(self.equil_pdb_filename):
             return
-        
-        time.sleep(5)  # Workaround for strange filesystem issues when loading prmtop
+
         prmtop = app.AmberPrmtopFile(self.prmtop_filename)
         inpcrd = app.AmberInpcrdFile(self.inpcrd_filename)
 
@@ -131,7 +129,7 @@ class AmberMixtureSystem(object):
         simulation.context.setVelocitiesToTemperature(self.temperature)
         print('Equilibrating.')
 
-        simulation.reporters.append(app.DCDReporter(self.equil_dcd_filename, OUTPUT_FREQUENCY))
+        simulation.reporters.append(app.DCDReporter(self.equil_dcd_filename, OUTPUT_FREQUENCY_EQUIL))
         simulation.step(N_EQUIL_STEPS)
 
         # Re-write a better PDB with correct box sizes.
