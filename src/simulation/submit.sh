@@ -21,7 +21,7 @@
 #PBS -V
 #
 # job name (default = name of script file)
-#PBS -N VC_TPL
+#PBS -N DENSITY
 #
 # specify email for notifications
 #PBS -M julie.behr@choderalab.org
@@ -47,4 +47,4 @@ echo $CUDA_VISIBLE_DEVICES
 
 echo $HOSTNAME
 # start spark workers
-python echo ${HOME}/src/kyleabeauchamp/LiquidBenchmark/src/simulation/simulate_thermoml.py $PBS_ARRAYID
+python ${HOME}/src/kyleabeauchamp/LiquidBenchmark/src/simulation/simulate_thermoml.py $PBS_ARRAYID
