@@ -1,3 +1,6 @@
+"""
+This file contains all simulation parameters used in this project.
+"""
 from simtk import unit as u
 
 CUTOFF = 0.95 * u.nanometers
@@ -24,4 +27,5 @@ STD_ERROR_TOLERANCE = 0.0002 # g/mL
 
 # DEBUG PARAMETERS
 N_STEPS = 100000
-N_EQUIL_STEPS = 50000 # 5ns
+N_EQUIL_STEPS = 50000
+STD_ERROR_TOLERANCE = 0.002 # g/mL
