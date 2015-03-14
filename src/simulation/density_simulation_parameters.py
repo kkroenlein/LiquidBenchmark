@@ -17,7 +17,7 @@ FRICTION = 1.0 / u.picoseconds
 EQUIL_FRICTION = 5.0 / u.picoseconds
 
 
-EQUIL_TIMESTEP = 1.0 * u.femtoseconds
+EQUIL_TIMESTEP = 0.5 * u.femtoseconds
 TIMESTEP = 1.0 * u.femtoseconds
 
 
