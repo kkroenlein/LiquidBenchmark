@@ -119,6 +119,9 @@ class AmberMixtureSystem(object):
         
         print('Minimizing.')
         simulation.minimizeEnergy()
+        
+        state = simulation.context.getState(getEnergy=True)
+        print(state.getPotentialEnergy())
 
         simulation.context.setVelocitiesToTemperature(self.temperature)
         print('Equilibrating.')
