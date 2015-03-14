@@ -1,0 +1,10 @@
+python simulate_thermoml.py 0
+python simulate_thermoml.py 1
+python simulate_thermoml.py 2
+python simulate_thermoml.py 3
+python simulate_thermoml.py 4
+python simulate_thermoml.py 5
+python simulate_thermoml.py 6
+python simulate_thermoml.py 7
+python simulate_thermoml.py 8
+python simulate_thermoml.py 9
