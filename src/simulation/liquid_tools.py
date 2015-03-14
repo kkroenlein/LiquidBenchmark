@@ -143,7 +143,7 @@ class AmberMixtureSystem(object):
 
     def production(self):  
 
-        if os.path.exists(self.production_pdb_filename):
+        if os.path.exists(self.production_dcd_filename) or os.path.exists(self.production_data_filename):
             return
 
         prmtop = app.AmberPrmtopFile(self.prmtop_filename)
