@@ -116,6 +116,9 @@ class AmberMixtureSystem(object):
 
         simulation = app.Simulation(prmtop.topology, system, integrator)
         simulation.context.setPositions(inpcrd.positions)
+
+        state = simulation.context.getState(getEnergy=True)
+        print(state.getPotentialEnergy())
         
         print('Minimizing.')
         simulation.minimizeEnergy()
