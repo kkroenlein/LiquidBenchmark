@@ -56,6 +56,9 @@ class AmberMixtureSystem(object):
         self.production_pdb_filename = DATA_PATH + "production/" + self.identifier + "_production.pdb"
         self.production_data_filename = DATA_PATH + "production/" + self.identifier + "_production.csv"
         
+        self.gaff_mol2_filenames = [DATA_PATH + "monomers/" + string + ".mol2" for string in self.cas_strings]
+        self.frcmod_filenames = [DATA_PATH + "monomers/" + string + ".frcmod" for string in self.cas_strings]
+        
         make_path(DATA_PATH + 'monomers/')
         make_path(DATA_PATH + 'packmol_boxes/')
         make_path(DATA_PATH + 'tleap/')
@@ -74,14 +77,6 @@ class AmberMixtureSystem(object):
         
         return self._smiles_strings
 
-    @property
-    def gaff_mol2_filenames(self):
-        return ["monomers/" + string + ".mol2" for string in self.cas_strings]
-
-    @property
-    def frcmod_filenames(self):
-        return ["monomers/" + string + ".frcmod" for string in self.cas_strings]
-    
     def run(self):
         self.build_monomers()
         self.build_boxes()
