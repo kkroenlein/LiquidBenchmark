@@ -4,7 +4,7 @@ This file contains all simulation parameters used in this project.
 from simtk import unit as u
 import os
 
-DATA_PATH = os.path.join(os.environ["HOME"], "/liquid_benchmark_3_14/")
+DATA_PATH = os.path.join(os.environ["HOME"], "liquid_benchmark_3_14/")
 
 MOLECULES_PER_BOX = 1000
 
