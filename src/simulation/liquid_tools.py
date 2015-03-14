@@ -47,8 +47,8 @@ class AmberMixtureSystem(object):
         self.monomer_pdb_filenames = [DATA_PATH + "monomers/" + string + ".pdb" for string in self.cas_strings]
         self.box_pdb_filename = DATA_PATH + "packmol_boxes/" + self.identifier + ".pdb"
         
-        self.inpcrd_filename = DATA_PATH + "tleap/" + '_'.join(self.cas_strings) + ".inpcrd"
-        self.prmtop_filename = DATA_PATH + "tleap/" + '_'.join(self.cas_strings) + ".prmtop"
+        self.inpcrd_filename = DATA_PATH + "tleap/" + self.identifier + ".inpcrd"
+        self.prmtop_filename = DATA_PATH + "tleap/" + self.identifier + ".prmtop"
         
         self.equil_dcd_filename = DATA_PATH + "equil/" + self.identifier + "_equil.dcd"
         self.equil_pdb_filename = DATA_PATH + "equil/" + self.identifier + "_equil.pdb"
@@ -108,7 +108,7 @@ class AmberMixtureSystem(object):
         if os.path.exists(self.equil_pdb_filename):
             return
         
-        time.sleep(3)  # Workaround for strange filesystem issues when loading prmtop
+        time.sleep(5)  # Workaround for strange filesystem issues when loading prmtop
         prmtop = app.AmberPrmtopFile(self.prmtop_filename)
         inpcrd = app.AmberInpcrdFile(self.inpcrd_filename)
 
