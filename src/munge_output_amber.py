@@ -6,20 +6,19 @@ import os
 import pandas as pd
 import glob
 import dipole_errorbars
-
-PATH = "./liquid_benchmark_3_14/"
+from density_simulation_parameters import DATA_PATH
 
 num_bootstrap = 100
 fixed_block_length = 20  # 200 ps blocks for dielectric error bar block averaging.
 
-prmtop_filenames = glob.glob(PATH + "/tleap/*.prmtop")
+prmtop_filenames = glob.glob(DATA_PATH + "/tleap/*.prmtop")
 filename_munger = lambda filename: os.path.splitext(os.path.split(filename)[1])[0].split("_")
 data = []
 for prmtop_filename in prmtop_filenames[0:2]:
     cas, n_molecules, temperature = filename_munger(prmtop_filename)
     print(cas, temperature)
-    dcd_filename = PATH + "/production/%s_%s_%s_production.dcd" % (cas, n_molecules, temperature)
-    csv_filename = PATH + "/production/%s_%s_%s_production.csv" % (cas, n_molecules, temperature)
+    dcd_filename = DATA_PATH + "/production/%s_%s_%s_production.dcd" % (cas, n_molecules, temperature)
+    csv_filename = DATA_PATH + "/production/%s_%s_%s_production.csv" % (cas, n_molecules, temperature)
     try:
         traj = md.load(dcd_filename, top=prmtop_filename)
     except IOError:
