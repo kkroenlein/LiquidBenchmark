@@ -40,6 +40,7 @@
 \usepackage{boxedminipage}
 \usepackage{verbatim}
 \usepackage{booktabs}
+\usepackage{subfigure}
 
 \usepackage[colorlinks=true,citecolor=blue,linkcolor=blue]{hyperref}
 
@@ -161,6 +162,45 @@ In particular, we concentrate on two important physical property measurements ea
 These two properties provide sensitive tests of forcefield accuracy that are nonetheless straightforward to calculate.  
 Using these data, we evaluate the generalized Amber small molecule forcefield (GAFF)~\cite{gaff} with the AM1-BCC charge model~\cite{am1bcc1,am1bcc2} and identify systematic biases to aid further forcefield refinement.
 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% METHODS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Methods}
+
+\subsection{ThermoML Processing}
+
+A tarball archive of the ThermoML Archive was obtained from the the NIST TRC on 13 Sep 2014.
+To explore the content of this archive, we created a Python (version 2.7.9) tool (ThermoPyL: \url{https://github.com/choderalab/ThermoPyL}) that formats the XML content into a spreadsheet-like format accessible via the Pandas (version 0.15.2) library.  
+First, we obtained the XML schema (\url{http://media.iupac.org/namespaces/ThermoML/ThermoML.xsd}) defining the layout of the data.
+This schema was converted into a Python object via PyXB 1.2.4 (\url{http://pyxb.sourceforge.net/}).
+Finally, this schema and Pandas was used to extract the data and apply the successive data filters described in Section~\ref{section:filtering-thermoml}.  
+
+\subsection{Simulation}
+Using an automated tool, boxes of 1000 molecules were constructed using PackMol version 14-225~\cite{martinez2009packmol}.
+AM1-BCC~\cite{am1bcc1,am1bcc2} charges were generated using OpenEye Toolkit 2014-6-6 \cite{openeye}, using the {\tt oequacpac.OEAssignPartialCharges} module with the {\tt OECharges\_AM1BCCSym} option, which utilizes a conformational expansion procedure prior to charge fitting to minimize artifacts from intramolecular contacts.  
+The selected conformer was then processed using antechamber in AmberTools~14~\cite{amber14}.  
+The resulting AMBER files were converted to OpenMM~\cite{eastman2012openmm} ffxml forcefield XML files.  
+Simulation code used libraries gaff2xml~0.6, TrustButVerify~0.1, OpenMM~6.2~\cite{eastman2012openmm}, and MDTraj~1.3~\cite{mcgibbon2014mdtraj}.  
+{\color{red}[TODO: Provide a script to install all of these versions via {\tt conda}.]}
+
+Molecular dynamics simulations were performed with OpenMM~6.2~\cite{eastman2012openmm} using a Langevin integrator (with collision rate 1 ps$^{-1}$) and a 1~fs timestep, as we found that timesteps of 2~fs timestep or greater led to a significant timestep dependence in computed equilibrium densities (Table~\ref{figure:timestep}).  
+{\color{red}[JDC: Cite Langevin integrator used in OpenMM.]}
+Pressure control to 1 atm was achieved with a Monte Carlo barostat utilizing molecular scaling and automated step size adjustment during equilibration, with volume moves attempted every 25 steps.  
+The particle mesh Ewald (PME) method~\cite{Darden1993} was used with a long-range cutoff of 0.95~nm and a long-range isotropic dispersion correction. 
+{\color{red}[JDC: Can we report the automatically-selected PME parameters to aid reproducibility in other codes?]}
+Simulations were continued until density standard errors were less than $2 \times 10^{-4}$ g / mL, as estimated using the equilibration detection module in pymbar 2.1~\cite{shirts2008statistically}.  
+Trajectory analysis was performed using OpenMM~6.2~\cite{eastman2012openmm} and MDTraj~1.3~\cite{mcgibbon2014mdtraj}.  
+Instantaneous densities were stored every 250~fs, while trajectory snapshots were stored every 10~ps.  
+{\color{red}[JDC: Did we plan to make this data available somewhere, or is it sufficient to put out the scripts?]}
+Static dielectric constants were calculated using the dipole fluctuation approach \cite{horn2004}, with box dipoles calculated from trajectory files using MDTraj 1.3 \cite{mcgibbon2014mdtraj}.
+\begin{eqnarray}
+\epsilon = 1 + \frac{4\pi}{3} \frac{\langle \mu \cdot \mu \rangle - \langle \mu \rangle \cdot \langle \mu \rangle}{\langle V \rangle k_B T} \label{equation:dielectric_calculation}
+\end{eqnarray}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % RESULTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -266,10 +306,6 @@ The functional groups represented in these compounds (as identified by the progr
 
 \subsection{Benchmarking GAFF/AM1-BCC against the ThermoML Archive}
 
-\subsection{Methods Summary}
-
-We used OpenMM 6.2 to perform highly precise constant-pressure simulations of mass density.  The Langevin timestep was fixed at 1 fs to reduce systematic error.  All simulations used the GAFF / AM1-BCC forcefield.  Addition details are provided in Methods.  
-
 \subsubsection{Mass density}
 
 Mass density has been widely used for parameterizing and testing forcefields, particularly the Lennard-Jones parameters representing dispersive and repulsive interactions~\cite{jorgensen1983comparison, jorgensen1984optimized}.
@@ -370,11 +406,15 @@ While this behavior is well-known and results from missing physics of polarizabi
 
 \begin{figure}
 
+\subfigure[]{
 \includegraphics[width=\columnwidth]{./figures/molecules.png}
+}
 
 \noindent\rule{8cm}{0.4pt}
-
+\subfigure[]{
 \includegraphics[width=\columnwidth]{./figures/chlorides.png}
+}
+
 
 \caption{{\bf Typical experimental static dielectric constants of some nonpolar compounds.}
 (a). Measured static dielectric constants of various nonpolar or symmetric molecules~\cite{d1990dielectric, haynes2011crc}.  
@@ -405,6 +445,9 @@ The Onsager model for the transfer free energy of a dipole (Eq.~\ref{eq:onsager}
 \Delta G = -\frac{\mu^2}{a^3}\frac{\epsilon - 1}{2 \epsilon + 1}
 \end{equation}
 
+\begin{equation} \label{eq:onsager2}
+\Delta \Delta G = -\frac{\mu^2}{a^3}[\frac{\epsilon_1 - 1}{2 \epsilon_1 + 1} - \frac{\epsilon_2 - 1}{2 \epsilon_2 + 1}]
+\end{equation}
 Similarly, we calculated the mean polarization error for solvation free energies (gas to solvent transfer free energies) of druglike molecules in cyclohexane.  
 For each molecule in the latest (Feb. 20) FreeSolv database~\cite{freesolv, freesolv_github}, we took the cavity radius $a$ to be the half the maximum interatomic distance and calculated $\mu = \sum_i q_i r_i$ using the provided mol2 coordinates and AM1-BCC charges.  
 This calculation predicts a mean error of $-0.91 \pm0.07$ kcal / mol for the 643 molecules (where the standard error is computed from bootstrapping over measurements), 
@@ -425,39 +468,6 @@ Second, the ThermoML Archive is actively growing, through partnerships with seve
 Finally, the files in the ThermoML Archive are portable and machine readable via a formal XML schema, allowing facile access to hundreds of thousands of measurements.  
 Numerous additional physical properties contained in ThermoML---including activity coefficients, diffusion constants, boiling point temperatures, critical pressures and densities, coefficients of expansion, speed of sound measurements, viscosities, excess molar enthalpies, heat capacities, and volumes---for neat phases and mixtures represent a rich dataset of high utility for forcefield validation and parameterization.
 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% METHODS
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Methods}
-
-\subsection{ThermoML Processing}
-
-A tarball archive of the ThermoML Archive was obtained from the the NIST TRC on 13 Sep 2014.
-To explore the content of this archive, we created a Python (version 2.7.9) tool (ThermoPyL: \url{https://github.com/choderalab/ThermoPyL}) that formats the XML content into a spreadsheet-like format accessible via the Pandas (version 0.15.2) library.  
-First, we obtained the XML schema (\url{http://media.iupac.org/namespaces/ThermoML/ThermoML.xsd}) defining the layout of the data.
-This schema was converted into a Python object via PyXB 1.2.4 (\url{http://pyxb.sourceforge.net/}).
-Finally, this schema and Pandas was used to extract the data and apply the successive data filters described in Section~\ref{section:filtering-thermoml}.  
-
-\subsection{Simulation}
-Using an automated tool, boxes of 1000 molecules were constructed using PackMol version 14-225~\cite{martinez2009packmol}.
-AM1-BCC~\cite{am1bcc1,am1bcc2} charges were generated using OpenEye Toolkit 2014-6-6 \cite{openeye}, using the {\tt oequacpac.OEAssignPartialCharges} module with the {\tt OECharges\_AM1BCCSym} option, which utilizes a conformational expansion procedure prior to charge fitting to minimize artifacts from intramolecular contacts.  
-The selected conformer was then processed using antechamber in AmberTools~14~\cite{amber14}.  
-The resulting AMBER files were converted to OpenMM~\cite{eastman2012openmm} ffxml forcefield XML files.  
-Simulation code used libraries gaff2xml~0.6, TrustButVerify~0.1, OpenMM~6.2~\cite{eastman2012openmm}, and MDTraj~1.3~\cite{mcgibbon2014mdtraj}.  
-{\color{red}[TODO: Provide a script to install all of these versions via {\tt conda}.]}
-
-Molecular dynamics simulations were performed with OpenMM~6.2~\cite{eastman2012openmm} using a Langevin integrator (with collision rate 1 ps$^{-1}$) and a 1~fs timestep, as we found that timesteps of 2~fs timestep or greater led to a significant timestep dependence in computed equilibrium densities (Table~\ref{figure:timestep}).  
-{\color{red}[JDC: Cite Langevin integrator used in OpenMM.]}
-Pressure control to 1 atm was achieved with a Monte Carlo barostat utilizing molecular scaling and automated step size adjustment during equilibration, with volume moves attempted every 25 steps.  
-The particle mesh Ewald (PME) method~\cite{Darden1993} was used with a long-range cutoff of 0.95~nm and a long-range isotropic dispersion correction. 
-{\color{red}[JDC: Can we report the automatically-selected PME parameters to aid reproducibility in other codes?]}
-Simulations were continued until density standard errors were less than $2 \times 10^{-4}$ g / mL, as estimated using the equilibration detection module in pymbar 2.1~\cite{shirts2008statistically}.  
-Trajectory analysis was performed using OpenMM~6.2~\cite{eastman2012openmm} and MDTraj~1.3~\cite{mcgibbon2014mdtraj}.  
-Instantaneous densities were stored every 250~fs, while trajectory snapshots were stored every 10~ps.  
-{\color{red}[JDC: Did we plan to make this data available somewhere, or is it sufficient to put out the scripts?]}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CONCLUSIONS
@@ -536,15 +546,20 @@ The references may be split in two as well, depending on journal.
 
 \begin{figure}
 
+\subfigure[]{
 \includegraphics[width=8cm]{./figures/timestep_dependence_density.pdf}
+}
+\subfigure[]{
 \includegraphics[width=8cm]{./figures/timestep_dependence_relative_error.pdf}
+}
 
 \caption{
 To probe the systematic error from finite time-step integration, we examined the timestep dependence of butyl acrylate density.  
 (a).  The density is shown for several choices of timestep.  
-(b).  The relative error, as compared to the 0.5 fs value, is shown for several choices of timestep.  
+(b).  The relative error, as compared to the reference value, is shown for several choices of timestep.  
 Error bars represent stand errors of the mean, with the number of effective samples estimated using pymbar's statistical inefficiency routine \cite{shirts2008statistically}.  
-We find a 2~fs timestep leads to systematic biases in the density on the order of 0.2\%, while 1 fs reduces the systematic bias to less than 0.1\%---we therefore selected a 1~fs timestep for the present work, where we aimed to achieve three digits of accuracy in density predictions.
+The reference value is estimated by linear extrapolation to 0 fs using the 0.5 fs and 1.0 fs data points; the linear extrapolation is shown as black lines.  
+We find a 2~fs timestep leads to systematic biases in the density on the order of 0.19\%, while 1 fs reduces the systematic bias to approximately 0.13\%---we therefore selected a 1~fs timestep for the present work, where we aimed to achieve three digits of accuracy in density predictions.
 }
 \label{figure:timestep}
 
@@ -565,10 +580,13 @@ We find a 2~fs timestep leads to systematic biases in the density on the order o
 
 \begin{figure}
 
+\subfigure[]{
 \includegraphics[width=8cm]{./figures/error_analysis_density.pdf}
+}
 
+\subfigure[]{
 \includegraphics[width=8cm]{./figures/error_analysis_density_index.pdf}
-
+}
 
 \caption{{\bf Assessment of experimental error: Density}
 To assess the experimental error in our ThermoML extract, we compared three difference estimates of uncertainty.  
@@ -597,9 +615,13 @@ Panel (b) shows the same information as (a) but as a function of the measurement
 
 \begin{figure}
 
+\subfigure[]{
 \includegraphics[width=8cm]{./figures/error_analysis_dielectric.pdf}
+}
 
+\subfigure[]{
 \includegraphics[width=8cm]{./figures/error_analysis_dielectric_index.pdf}
+}
 
 \caption{{\bf Assessment of experimental error: Static Dielectric Constant}
 To assess the experimental error in our ThermoML extract, we compared three difference estimates of uncertainty.  
