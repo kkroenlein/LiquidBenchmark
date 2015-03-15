@@ -41,6 +41,7 @@
 \usepackage{verbatim}
 \usepackage{booktabs}
 \usepackage{subfigure}
+\usepackage{listings}
 
 \usepackage[colorlinks=true,citecolor=blue,linkcolor=blue]{hyperref}
 
@@ -183,18 +184,27 @@ Finally, this schema and Pandas was used to extract the data and apply the succe
 Using an automated tool, boxes of 1000 molecules were constructed using PackMol version 14-225~\cite{martinez2009packmol}.
 AM1-BCC~\cite{am1bcc1,am1bcc2} charges were generated using OpenEye Toolkit 2014-6-6 \cite{openeye}, using the {\tt oequacpac.OEAssignPartialCharges} module with the {\tt OECharges\_AM1BCCSym} option, which utilizes a conformational expansion procedure prior to charge fitting to minimize artifacts from intramolecular contacts.  
 The selected conformer was then processed using antechamber in AmberTools~14~\cite{amber14}.  
-The resulting AMBER files were converted to OpenMM~\cite{eastman2012openmm} ffxml forcefield XML files.  
-Simulation code used libraries gaff2xml~0.6, TrustButVerify~0.1, OpenMM~6.2~\cite{eastman2012openmm}, and MDTraj~1.3~\cite{mcgibbon2014mdtraj}.  
-{\color{red}[TODO: Provide a script to install all of these versions via {\tt conda}.]}
+OpenMM simulations were performed using the AMBER prmtop and inpcrd files.  
+Simulation code used libraries gaff2xml~0.7, OpenMM~6.3~\cite{eastman2012openmm}, and MDTraj~1.3~\cite{mcgibbon2014mdtraj}.  
+The follow code can be used to install the necessary prerequisites:
 
-Molecular dynamics simulations were performed with OpenMM~6.2~\cite{eastman2012openmm} using a Langevin integrator (with collision rate 1 ps$^{-1}$) and a 1~fs timestep, as we found that timesteps of 2~fs timestep or greater led to a significant timestep dependence in computed equilibrium densities (Table~\ref{figure:timestep}).  
+%\begin{lstlisting}
+conda config --add channels http://conda.binstar.org/omnia
+
+conda install "gaff2xml>=0.7" "pymbar>=2.1" "mdtraj>=1.3" "openmm>=6.3" packmol
+%\end{lstlisting}
+
+Boxes were first minimized and equilibrated for $10^7$ steps with an equilibration timestep of 0.4 fs and a collision rate of 5 ps$^{-1}$.  
+Production simulations were performed with OpenMM~6.2~\cite{eastman2012openmm} using a Langevin integrator (with collision rate 1 ps$^{-1}$) and a 1~fs timestep, as we found that timesteps of 2~fs timestep or greater led to a significant timestep dependence in computed equilibrium densities (Table~\ref{figure:timestep}).  
 {\color{red}[JDC: Cite Langevin integrator used in OpenMM.]}
+{\color{red}[KAB: please provide the reference.]}
 Pressure control to 1 atm was achieved with a Monte Carlo barostat utilizing molecular scaling and automated step size adjustment during equilibration, with volume moves attempted every 25 steps.  
 The particle mesh Ewald (PME) method~\cite{Darden1993} was used with a long-range cutoff of 0.95~nm and a long-range isotropic dispersion correction. 
 {\color{red}[JDC: Can we report the automatically-selected PME parameters to aid reproducibility in other codes?]}
 Simulations were continued until density standard errors were less than $2 \times 10^{-4}$ g / mL, as estimated using the equilibration detection module in pymbar 2.1~\cite{shirts2008statistically}.  
-Trajectory analysis was performed using OpenMM~6.2~\cite{eastman2012openmm} and MDTraj~1.3~\cite{mcgibbon2014mdtraj}.  
-Instantaneous densities were stored every 250~fs, while trajectory snapshots were stored every 10~ps.  
+The burn-in period of the production simulation was automatically selected using pymbar and discarded.  
+Trajectory analysis was performed using OpenMM~6.3~\cite{eastman2012openmm} and MDTraj~1.3~\cite{mcgibbon2014mdtraj}.  
+Instantaneous densities were stored every 250~fs, while trajectory snapshots were stored every 5~ps.  
 {\color{red}[JDC: Did we plan to make this data available somewhere, or is it sufficient to put out the scripts?]}
 Static dielectric constants were calculated using the dipole fluctuation approach \cite{horn2004}, with box dipoles calculated from trajectory files using MDTraj 1.3 \cite{mcgibbon2014mdtraj}.
 \begin{eqnarray}
