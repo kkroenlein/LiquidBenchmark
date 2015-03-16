@@ -56,6 +56,9 @@
 % non-italicized boldface for math (e.g. matrices)
 \newcommand{\bfm}[1]{{\bf #1}}          
 
+% Pretty-printing of shell commands
+\newcommand{\shellcmd}[1]{\\\ \texttt{\scriptsize\# #1}\\}
+
 %\newcommand{\bfm}[1]{{\mbox{\boldmath{$#1$}}}}
 %\newcommand{\bfm}[1]{{\bf #1}}
 \newcommand{\expect}[1]{\left \langle #1 \right \rangle}                % <.> for denoting expectations over realizations of an experiment or thermal averages
@@ -124,14 +127,14 @@ Neat Liquid Densities and Static Dielectric Constants}
 %\section{Abstract}
 \begin{abstract}
 
-Useful atomistic simulations in the condensed phase require accurate depictions of solvent.  
+Atomistic molecular simulations are a powerful way to make quantitative predictions, but the accuracy of these predictions depends entirely on the quality of the forcefield employed for the task.
 While experimental measurements of fundamental physical properties offer a straightforward approach for evaluating forcefield quality, the bulk of this information has been tied up in formats that are not machine-readable.
 These formats require substantial human effort to compile benchmark datasets which are prone to accumulation of human errors, hindering the development of reproducible benchmarks of forcefield accuracy.
 Here, we examine the feasibility of benchmarking atomistic forcefields against the NIST ThermoML data archive of physicochemical measurements, which aggregates thousands of experimental measurements in a portable, machine-readable, self-annotating format. 
-As a proof of concept, we present a detailed benchmark of the generalized Amber small molecule forcefield (GAFF) using the AM1-BCC charge model against measurements (specifically liquid densities and static dielectric constants at ambient pressure) automatically extracted from the archive, and discuss the extent of available data for neat liquids.  
+As a proof of concept, we present a detailed benchmark of the generalized Amber small molecule forcefield (GAFF) using the AM1-BCC charge model against measurements (specifically bulk liquid densities and static dielectric constants at ambient pressure) automatically extracted from the archive, and discuss the extent of available data.  
 The results of this benchmark highlights a general problem with fixed-charge forcefields in the representation of liquids of low dielectric.\\
 
-\emph{Keywords: molecular mechanics forcefields; forcefield parameterization; forcefield accuracy; forcefield validation; mass density; static dielectric constant}
+\emph{Keywords: molecular mechanics forcefields; forcefield parameterization; forcefield accuracy; forcefield validation; mass density; static dielectric constant; biomolecular simulation}
 
 \end{abstract}
 
@@ -143,7 +146,7 @@ The results of this benchmark highlights a general problem with fixed-charge for
 
 \section{Introduction}
 
-Recent advances in hardware and software for molecular dynamics simulation now permits routine access to atomistic simulations at the 100 ns timescale and beyond \cite{salomon2013routine}.
+Recent advances in hardware and software for molecular dynamics simulation now permit routine access to atomistic simulations at the 100 ns timescale and beyond~\cite{salomon2013routine}.
 Leveraging these advances in combination with consumer GPU clusters, distributed computing, or custom hardware has brought microsecond and millisecond simulation timescales within reach of many laboratories.  
 These dramatic advances in sampling, however, have revealed deficiencies in forcefields as a critical barrier to enabling truly predictive simulations of physical properties of biomolecular systems.  
 
@@ -154,14 +157,14 @@ There are also outstanding questions of generalizability of these targeted pertu
 Addressing these questions requires establishing a community agreement on shared benchmarks that can be easily replicated among laboratories to test proposed forcefield enhancements and expanded as the body of experimental data grows.
 
 A key barrier to establishing reproducible and extensible forcefield accuracy benchmarks is that many experimental datasets are heterogeneous, paywalled, and unavailable in machine-readable formats (although notable counterexamples exist, e.g.~the RCSB~\cite{Berman2000}, FreeSolv~\cite{freesolv}, and the BMRB~\cite{Ulrich2008}).  
-While this inconvenience is relatively minor for benchmarking forcefield accuracy for a single target (e.g.~water), it becomes prohibitive for studies spanning the relevant chemical space.  
+While this inconvenience is relatively minor for benchmarking forcefield accuracy for a single target system (e.g.~water), it becomes prohibitive for studies spanning the relevant chemical space.  
 To ameliorate problems of data archival, the NIST Thermodynamics Research Center (TRC) has developed a IUPAC standard XML-based format---ThermoML~\cite{frenkel2006xml}---for storing physicochemical measurements, uncertainties, and metadata.
 Experimental researchers publishing measurements in several journals (J.~Chem.~Eng.~Data, J.~Chem.~Therm., Fluid Phase Equil., Therm.~Acta, and Int.~J.~Therm.) are guided through a data archival process that involves sanity checks, conversion to a standard machine-readable format, and archival at the TRC (\url{http://trc.nist.gov/ThermoML.html}).  
 
 Here, we examine the ThermoML archive as a potential source for providing the foundation for a reproducible, extensible accuracy benchmark of biomolecular forcefields.
 In particular, we concentrate on two important physical property measurements easily computable in many simulation codes---neat liquid density and static dielectric constant measurements---with the goal of developing a standard benchmark for validating these properties in fixed-charge forcefields of drug-like molecules and biopolymer residue analogues.  
 These two properties provide sensitive tests of forcefield accuracy that are nonetheless straightforward to calculate.  
-Using these data, we evaluate the generalized Amber small molecule forcefield (GAFF)~\cite{gaff} with the AM1-BCC charge model~\cite{am1bcc1,am1bcc2} and identify systematic biases to aid further forcefield refinement.
+Using these data, we evaluate the generalized Amber small molecule forcefield (GAFF)~\cite{gaff,gaff2} with the AM1-BCC charge model~\cite{am1bcc1,am1bcc2} and identify systematic biases to aid further forcefield refinement.
 
 
 
@@ -171,28 +174,39 @@ Using these data, we evaluate the generalized Amber small molecule forcefield (G
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Methods}
+\label{section:methods}
 
-\subsection{ThermoML Processing}
+\subsection{ThermoML Archive retrieval and processing}
+\label{section:thermoml-archive-retrieval}
 
-A tarball archive of the ThermoML Archive was obtained from the the NIST TRC on 13 Sep 2014.
+A tarball archive snapshot of the ThermoML Archive was obtained from the the NIST TRC on 13 Sep 2014.
+{\color{red}[JDC: Because readers cannot easily extract a specific daily snapshot, I think we also want to make the archive subset we used in this paper available as Supplementary Information.]}
 To explore the content of this archive, we created a Python (version 2.7.9) tool (ThermoPyL: \url{https://github.com/choderalab/ThermoPyL}) that formats the XML content into a spreadsheet-like format accessible via the Pandas (version 0.15.2) library.  
 First, we obtained the XML schema (\url{http://media.iupac.org/namespaces/ThermoML/ThermoML.xsd}) defining the layout of the data.
 This schema was converted into a Python object via PyXB 1.2.4 (\url{http://pyxb.sourceforge.net/}).
-Finally, this schema and Pandas was used to extract the data and apply the successive data filters described in Section~\ref{section:filtering-thermoml}.  
+Finally, this schema was used to extract the data into Pandas~\cite{pandas} dataframes, and the successive filters data filters described in Section~\ref{section:filtering-thermoml} were applied.  
 
 \subsection{Simulation}
-Using an automated tool, boxes of 1000 molecules were constructed using PackMol version 14-225~\cite{martinez2009packmol}.
-AM1-BCC~\cite{am1bcc1,am1bcc2} charges were generated using OpenEye Toolkit 2014-6-6 \cite{openeye}, using the {\tt oequacpac.OEAssignPartialCharges} module with the {\tt OECharges\_AM1BCCSym} option, which utilizes a conformational expansion procedure prior to charge fitting to minimize artifacts from intramolecular contacts.  
-The selected conformer was then processed using antechamber in AmberTools~14~\cite{amber14}.  
-OpenMM simulations were performed using the AMBER prmtop and inpcrd files.  
-Simulation code used libraries gaff2xml~0.7, OpenMM~6.3~\cite{eastman2012openmm}, and MDTraj~1.3~\cite{mcgibbon2014mdtraj}.  
-The follow code can be used to install the necessary prerequisites:
+\label{section:simulation}
 
+\subsubsection{Preparation}
+\label{section:preparation}
+
+Simulation boxes containing 1000 molecules were constructed using PackMol version 14-225~\cite{martinez2009packmol} wrapped in an automated tool.
+{\color{red}[JDC: What density was used during the packmol step?]}
+{\color{red}[JDC: Remind readers how they can obtain the tool?]}
+AM1-BCC~\cite{am1bcc1,am1bcc2} charges were generated with the OpenEye Python Toolkit version 2014-6-6 \cite{openeye}, using the {\tt oequacpac.OEAssignPartialCharges} module with the {\tt OECharges\_AM1BCCSym} option, which utilizes a conformational expansion procedure prior to charge fitting to minimize artifacts from intramolecular contacts.  
+The selected conformer was then processed using {\tt antechamber} (with {\tt parmchk2}) and {\tt tleap} in AmberTools~14~\cite{amber14} to produce {\tt prmtop} and {\tt inpcrd} files, which were then read into OpenMM using the {\tt simtk.openmm.app} module.
+Simulation code used libraries gaff2xml~0.7~\cite{gaff2xml}, OpenMM~6.3~\cite{eastman2012openmm}, and MDTraj~1.3~\cite{mcgibbon2014mdtraj}.  
+
+The following shell commands can be used to install the necessary prerequisites via the {\tt conda} package manager for Python:
 %\begin{lstlisting}
-conda config --add channels http://conda.binstar.org/omnia
-
-conda install "gaff2xml>=0.7" "pymbar>=2.1" "mdtraj>=1.3" "openmm>=6.3" packmol
+\shellcmd{conda config --add channels http://conda.binstar.org/omnia}
+\shellcmd{conda install "gaff2xml>=0.7" "pymbar>=2.1" "mdtraj>=1.3" "openmm>=6.3" packmol}
 %\end{lstlisting}
+{\color{red}[JDC: Maybe we can move these instructions on installing the exact versions to the Appendix or SI, where we can go into one-column mode?  Also, we probably want to specify how to get the \emph{exact} versions using == rather than the \emph{latest} versions using >=.]}
+
+\subsubsection{Equilibration and production}
 
 Boxes were first minimized and equilibrated for $10^7$ steps with an equilibration timestep of 0.4 fs and a collision rate of 5 ps$^{-1}$.  
 Production simulations were performed with OpenMM~6.2~\cite{eastman2012openmm} using a Langevin integrator (with collision rate 1 ps$^{-1}$) and a 1~fs timestep, as we found that timesteps of 2~fs timestep or greater led to a significant timestep dependence in computed equilibrium densities (Table~\ref{figure:timestep}).  
@@ -201,15 +215,32 @@ Production simulations were performed with OpenMM~6.2~\cite{eastman2012openmm} u
 Pressure control to 1 atm was achieved with a Monte Carlo barostat utilizing molecular scaling and automated step size adjustment during equilibration, with volume moves attempted every 25 steps.  
 The particle mesh Ewald (PME) method~\cite{Darden1993} was used with a long-range cutoff of 0.95~nm and a long-range isotropic dispersion correction. 
 {\color{red}[JDC: Can we report the automatically-selected PME parameters to aid reproducibility in other codes?]}
-Simulations were continued until density standard errors were less than $2 \times 10^{-4}$ g / mL, as estimated using the equilibration detection module in pymbar 2.1~\cite{shirts2008statistically}.  
-The burn-in period of the production simulation was automatically selected using pymbar and discarded.  
-Trajectory analysis was performed using OpenMM~6.3~\cite{eastman2012openmm} and MDTraj~1.3~\cite{mcgibbon2014mdtraj}.  
+
+Simulations were continued until automatic analysis showed standard errors in densities were less than $2 \times 10^{-4}$ g / mL.
+Automatic analysis was run every {\color{red}X ps of simulation time}, and utilized the {\tt detectEquilibration} method in the timeseries module of pymbar 2.1~\cite{shirts2008statistically} to automatically trim the initial portion of the simulation with strong far-from-equilibrium behavior by maximizing the number of effectively uncorrelated samples in the remainder of the production simulation as determined by autocorrelation analysis.
+Statistical errors were computed after subsampling the data to produce effectively uncorrelated equilibrium samples by $\delta^2 \rho \approx \var{\rho} / N_\mathrm{eff}$, where $\var{\rho}$ is the sample variance of the density and $N_\mathrm{eff}$ is the number of effectively uncorrelated samples.  
+{\color{red}[JDC: I've tried to clarify this. Can you check if I did this correctly?]}
+
 Instantaneous densities were stored every 250~fs, while trajectory snapshots were stored every 5~ps.  
+
+\subsubsection{Data analysis}
+
+Trajectory analysis was performed using OpenMM~6.3~\cite{eastman2012openmm} and MDTraj~1.3~\cite{mcgibbon2014mdtraj}.  
 {\color{red}[JDC: Did we plan to make this data available somewhere, or is it sufficient to put out the scripts?]}
-Static dielectric constants were calculated using the dipole fluctuation approach \cite{horn2004}, with box dipoles calculated from trajectory files using MDTraj 1.3 \cite{mcgibbon2014mdtraj}.
+
+Mass density $\rho$ was computed via the relation,
+\begin{eqnarray}
+\rho = \left\langle \frac{M}{V} \right\rangle \label{equation:mass-density} ,
+ \end{eqnarray}
+where $M$ is the total mass of all particles in the system and $V$ is the instantaneous volume of the simulation box.
+Statistical uncertainties were computed as described above for automatic analysis of production simulations.
+
+Static dielectric constants were calculated using the dipole fluctuation approach appropriate for PME with conducting (``tin-foil'') boundary conditions~\cite{horn2004}, with the total system box dipole $\mu$ computed from trajectory snapshots using MDTraj 1.3~\cite{mcgibbon2014mdtraj}.
+{\color{red}[JDC: I think the TIP4P-Ew paper cites the source of this equation, which we should cite as well.]}
 \begin{eqnarray}
 \epsilon = 1 + \frac{4\pi}{3} \frac{\langle \mu \cdot \mu \rangle - \langle \mu \rangle \cdot \langle \mu \rangle}{\langle V \rangle k_B T} \label{equation:dielectric_calculation}
 \end{eqnarray}
+{\color{red}[JDC: Describe how statistical errors were computed.]}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % RESULTS
@@ -220,27 +251,24 @@ Static dielectric constants were calculated using the dipole fluctuation approac
 \subsection{Extracting neat liquid measurements from the NIST TRC ThermoML Archive}
 \label{section:filtering-thermoml}
 
-We retrieved a copy of the ThermoML Archive from the NIST TRC (\url{http://trc.nist.gov/ThermoML.html} accessed 13 Sep 2014) and performed a number of sequential filtering steps to produce an extract of the ThermoML Archive relevant for benchmarking forcefields describing small organic molecules.  
-%{\color{red}[JDC: This is the date I had on the {\tt ThermoML.tar.gz} archive in GitHub. We should check to make sure this is accurate.]}
-% This date is consistent with the timeline of our first discussion with Kenneth, which happen on 8/21/2014
+As described in Section~\ref{section:thermoml-archive-retrieval}, we retrieved a copy of the ThermoML Archive and performed a number of sequential filtering steps to produce an ThermoML extract relevant for benchmarking forcefields describing small organic molecules.  
 As our aim is to explore neat liquid data with functional groups relevant to biopolymers and drug-like molecules, we applied the following ordered filters, starting with all data containing density or static dielectric constants: 
 \begin{enumerate}
  \item The measured solution contains only a single component (e.g.~no binary mixtures)
- \item The molecule contains only the druglike elements (defined here as H, N, C, O, S, P, F, Cl, Br)
+ \item The molecule contains only druglike elements (defined here as H, N, C, O, S, P, F, Cl, Br)
  \item The molecule has $\le$ 10 heavy atoms
- \item The measurement was performed in a biophysically relevant temperature range [K] $(270 \le T \le 330)$
- \item The measurement was performed at ambient pressure [kPA] $(100 \le P \le 102)$
- \item Measured densities below 300 kg m$^{-3}$ were discarded to eliminate gas-phase measurements
+ \item The measurement was performed in a biophysically relevant temperature range $(270 \le T$ [K] $\le 330)$
+ \item The measurement was performed at ambient pressure $(100 \le P$ [kPA]  $\le 102)$
+ \item Measured mass densities  $\le$ 300 kg m$^{-3}$ were discarded to eliminate gas-phase measurements
  \item The temperature and pressure were rounded to nearby values (as described below), averaging all measurements within each group of like conditions
  \item Only conditions (molecule, temperature, pressure) for which \emph{both} density and dielectric constants were available were retained
 \end{enumerate}
-The temperature and pressure rounding step was motivated by common data reporting variations; for example, an experiment performed at water's freezing point at ambient pressure might be entered as either 101.325~kPA or 100~kPA, with a temperature of either 273~K or 273.15~K.  
-Therefore all pressures within the range [kPA] $(100 \le P \le 102)$ were rounded to exactly one atmosphere.  
-Temperatures were rounded to one decimal place. 
-%{\color{red}[JDC: Does this reflect the accuracy of reporting ambient temperatures?]}
-% KAB: AFAIK, based on conversations with Kenneth this was a reasonable compromise.  
+The temperature and pressure rounding step was motivated by common data reporting variations; for example, an experiment performed at the freezing temperature of water and ambient pressure might be entered as either 101.325~kPA or 100~kPA, with a temperature of either 273~K or 273.15~K.  
+Therefore all pressures within the range [kPA] $(100 \le P \le 102)$ were rounded to exactly 1 atm (101.325 kPa).  
+Temperatures were rounded to one decimal place in K. 
+
 The application of these filters (Table~\ref{table:ThermoMLSummary}) leaves 245 conditions---where a \emph{condition} here indicates a (molecule, temperature, pressure) tuple---for which both density and dielectric data are available.  
-The functional groups present in the resulting dataset are summarized in Table~\ref{table:FunctionalGroups}; see Methods for further description of the software pipeline used.  
+The functional groups present in the resulting dataset are summarized in Table~\ref{table:FunctionalGroups}; see Section~\ref{section:thermoml-archive-retrieval} for further description of the software pipeline used.  
 
 %{\color{red}[JDC: It might be useful to point the users to the scripts that were used to do this extraction.
 %Also, can we automate the downloading of the complete up-to-date archive, perhaps with Kenneth's help in identifying the least intrusive way to do so?]}
@@ -318,11 +346,10 @@ The functional groups represented in these compounds (as identified by the progr
 
 \subsubsection{Mass density}
 
-Mass density has been widely used for parameterizing and testing forcefields, particularly the Lennard-Jones parameters representing dispersive and repulsive interactions~\cite{jorgensen1983comparison, jorgensen1984optimized}.
+Mass densities of bulk liquids have been widely used for parameterizing and testing forcefields, particularly the Lennard-Jones parameters representing dispersive and repulsive interactions~\cite{jorgensen1983comparison, jorgensen1984optimized}.
 We therefore used the present ThermoML extract as a benchmark of the GAFF/AM1-BCC forcefield (Fig.~\ref{figure:Density}).  
-We estimate the mass density via $\rho = \langle \frac{M}{V} \rangle$.
 
-Overall, the densities show reasonable accuracy, with a root-mean square (RMS) relative error over all measurements of 2.8$\pm$0.1\% (with one standard error of the mean determined by bootstrapping over all measurements), especially encouraging given that this forcefield was not designed with the intention of modeling bulk liquid properties of organic molecules~\cite{gaff}
+Overall, the densities show reasonable accuracy, with a root-mean square (RMS) relative error over all measurements of 2.8$\pm$0.1\% (with one standard error of the mean determined by bootstrapping over all measurements), especially encouraging given that this forcefield was not designed with the intention of modeling bulk liquid properties of organic molecules~\cite{gaff,gaff2}
 This is reasonably consistent with previous studies reporting agreement of 4\% on a different benchmark set~\cite{caleman2011force}.
 %{\color{red}[JDC: Did that previous study report an uncertainty?]}  
 %KAB: Previous study does not appear to have an uncertainty, at least according to Table 2 in said work.
