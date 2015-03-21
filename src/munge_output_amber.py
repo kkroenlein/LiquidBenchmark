@@ -14,7 +14,7 @@ fixed_block_length = 20  # 200 ps blocks for dielectric error bar block averagin
 prmtop_filenames = glob.glob(DATA_PATH + "/tleap/*.prmtop")
 filename_munger = lambda filename: os.path.splitext(os.path.split(filename)[1])[0].split("_")
 data = []
-for prmtop_filename in prmtop_filenames[0:2]:
+for prmtop_filename in prmtop_filenames:
     cas, n_molecules, temperature = filename_munger(prmtop_filename)
     print(cas, temperature)
     dcd_filename = DATA_PATH + "/production/%s_%s_%s_production.dcd" % (cas, n_molecules, temperature)

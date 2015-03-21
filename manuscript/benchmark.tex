@@ -26,7 +26,7 @@
 \usepackage[font=sf]{floatrow}
 
 % Rework captions to use sans serif font.
-\makeatletter
+\makeatletter	
 \renewcommand\@make@capt@title[2]{%
  \@ifx@empty\float@link{\@firstofone}{\expandafter\href\expandafter{\float@link}}%
   {\sf\textbf{#1}}\sf\@caption@fignum@sep#2\quad
@@ -264,7 +264,7 @@ As our aim is to explore neat liquid data with functional groups relevant to bio
  \item The molecule has $\le$ 10 heavy atoms
  \item The measurement was performed in a biophysically relevant temperature range $(270 \le T$ [K] $\le 330)$
  \item The measurement was performed at ambient pressure $(100 \le P$ [kPA]  $\le 102)$
- \item Measured mass densities  $\le$ 300 kg m$^{-3}$ were discarded to eliminate gas-phase measurements
+ \item Only measurements in liquid phase were retained
  \item The temperature and pressure were rounded to nearby values (as described below), averaging all measurements within each group of like conditions
  \item Only conditions (molecule, temperature, pressure) for which \emph{both} density and dielectric constants were available were retained
 \end{enumerate}
@@ -289,14 +289,14 @@ The functional groups present in the resulting dataset are summarized in Table~\
  &  \multicolumn{2}{c}{\bf Number of measurements remaining} \\ \cline{2-3}
 {\bf Filter step} &  {\bf Mass density} &  {\bf Static dielectric} \\ 
 \hline
-1.  single component   &               130074 &                                     1649 \\
-2.  only druglike elements  &               120410 &                                     1649 \\
-3.  $\le$10 heavy atoms        &                67897 &                                     1567 \\
-4.  $(270 \le T \le 330)$ [K]  &                36827 &                                      962 \\
-5.  ambient pressure           &                13598 &                                      461 \\
-6.  liquid state       &                13573 &                                      461 \\
-7.  aggregate T, P     &                 3573 &                                      432 \\
-8.  density and dielectric &                  245 &                                      245 \\
+1.  Single Component   &               130074 &                                     1649 \\
+2.  Druglike Elements  &               120410 &                                     1649 \\
+3.  Heavy Atoms        &                67897 &                                     1567 \\
+4.  Temperature        &                36827 &                                      962 \\
+5.  Pressure           &                13598 &                                      461 \\
+6.  Liquid state       &                13534 &                                      461 \\
+7.  Aggregate T, P     &                 3557 &                                      432 \\
+8.  Density+Dielectric &                  245 &                                      245 \\
 \hline
 \end{tabular}
 \caption{{\bf Successive filtration of the ThermoML Archive.}

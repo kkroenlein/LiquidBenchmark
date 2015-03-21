@@ -71,7 +71,7 @@ X = X[X["Pressure, kPa"] < 102.]
 
 counts_data["4.  Pressure"] = X.count()[experiments]
 
-X = X[~(X["Mass density, kg/m3"] <= 300)]  # Any density cutoff between 200 and 400 Kg / m3 gives same results.
+X = X[X.phase == "Liquid"]
 
 counts_data["5.  Liquid state"] = X.count()[experiments]
 
