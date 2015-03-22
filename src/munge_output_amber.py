@@ -25,6 +25,8 @@ for prmtop_filename in prmtop_filenames:
         continue
     if traj.unitcell_lengths is None: continue
     rho = pd.read_csv(csv_filename)["Density (g/mL)"].values * 1000.  # g / mL -> kg /m3
+    initial_traj_length = len(traj)
+    initial_density_length = len(rho)
     [t0, g, Neff] = pymbar.timeseries.detectEquilibration(rho)
     mu = rho[t0:].mean()
     sigma = rho[t0:].std() * Neff ** -0.5
@@ -37,7 +39,7 @@ for prmtop_filename in prmtop_filenames:
     block_length = dipole_errorbars.find_block_size(traj, charges, temperature)
     dielectric_sigma = dipole_errorbars.bootstrap(traj, charges, temperature, block_length, num_bootstrap)
     formula = cirpy.resolve(cas, "formula")
-    data.append(dict(cas=cas, temperature=temperature, density=mu, density_sigma=sigma, Neff=Neff, n_frames=traj.n_frames, dielectric=dielectric, dielectric_sigma=dielectric_sigma, dielectric_sigma_fixedblock=dielectric_sigma_fixedblock, block_length=block_length, formula=formula))
+    data.append(dict(cas=cas, temperature=temperature, n_trimmed=t0, inefficiency=g, initial_traj_length=initial_traj_length, initial_density_length=initial_density_length, density=mu, density_sigma=sigma, Neff=Neff, n_frames=traj.n_frames, dielectric=dielectric, dielectric_sigma=dielectric_sigma, dielectric_sigma_fixedblock=dielectric_sigma_fixedblock, block_length=block_length, formula=formula))
     print(data[-1])
 
 data = pd.DataFrame(data)
