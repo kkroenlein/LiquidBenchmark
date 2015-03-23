@@ -213,7 +213,7 @@ The particle mesh Ewald (PME) method~\cite{Darden1993} was used with a long-rang
 Simulations were continued until automatic analysis showed standard errors in densities were less than $2 \times 10^{-4}$ g / mL.
 Automatic analysis was run every 1 ns of simulation time, and utilized the {\tt detectEquilibration} method in the timeseries module of pymbar 2.1~\cite{shirts2008statistically} to automatically trim the initial portion of the simulation with strong far-from-equilibrium behavior by maximizing the number of effectively uncorrelated samples in the remainder of the production simulation as determined by autocorrelation analysis.
 Statistical errors were computed after subsampling the data to produce effectively uncorrelated equilibrium samples by $\delta^2 \rho \approx \var{\rho} / N_\mathrm{eff}$, where $\var{\rho}$ is the sample variance of the density and $N_\mathrm{eff}$ is the number of effectively uncorrelated samples.  
-With this protocol, we found starting trajectory lengths of $X \pm Y$ frames (250 fs each), discarded regions of $X \pm Y$, and statistical inefficiencies of $X \pm Y$ (mean $\pm$ standard deviation).  
+With this protocol, we found starting trajectory lengths of $14000 \pm 11000$ frames (250 fs each), discarded regions of $1800 \pm 5600$, and statistical inefficiencies of $30 \pm 34$ (mean $\pm$ standard deviation).  
 
 Instantaneous densities were stored every 250~fs, while trajectory snapshots were stored every 5~ps.  
 
@@ -522,6 +522,8 @@ Numerous additional physical properties contained in ThermoML---including activi
 
 \section{Conclusions}
 
+High quality datasets and 
+
 \begin{itemize}
 \item  ThermoML is a potentially useful resource for the forcefield community
 \item  We have curated a subset of the ThermoML Data Archive for neat liquids with druglike atoms, with thousands of densities and hundreds of dielectrics
@@ -538,7 +540,6 @@ Numerous additional physical properties contained in ThermoML---including activi
 
 We thank Vijay S.~Pande (Stanford University), Lee-Ping Wang (Stanford University), Peter Eastman (Stanford University), Robert McGibbon (Stanford University), Jason Swails (Rutgers University), David L.~Mobley (University of California, Irvine), Christopher I.~Bayly (OpenEye Software), Michael R. Shirts (University of Virginia), and members of Chodera lab for helpful discussions.  
 Support for JMB was provided by the Tri-Institutional Training Program in Computational Biology and Medicine (via NIH training grant 1T32GM083937).
-{\color{red}[JDC: Need support acknowledgments for Patrick and Bas.]}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DISCLAIMERS
@@ -549,6 +550,12 @@ Support for JMB was provided by the Tri-Institutional Training Program in Comput
 This contribution of the National Institute of Standards and Technology (NIST) is not subject to copyright in the United States.  
 Products or companies named here are cited only in the interest of complete technical description, and neither constitute nor imply endorsement by NIST or by the U.S.~government.  
 Other products may be found to serve as well.
+
+\clearpage
+
+\section{TOC Figure}
+
+\includegraphics[width=\columnwidth]{./figures/scheme/toc_figure.png}
 
 \clearpage
 
