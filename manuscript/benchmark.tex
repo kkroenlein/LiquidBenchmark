@@ -192,19 +192,12 @@ Finally, this schema was used to extract the data into Pandas~\cite{pandas} data
 \subsubsection{Preparation}
 \label{section:preparation}
 
-Simulation boxes containing 1000 molecules were constructed using PackMol version 14-225~\cite{martinez2009packmol} wrapped in an automated tool.
-{\color{red}[JDC: What density was used during the packmol step?]}
-{\color{red}[JDC: Remind readers how they can obtain the tool?]}
+Simulation boxes containing 1000 molecules were constructed using PackMol version 14-225~\cite{martinez2009packmol, packmolurl} wrapped in an automated tool.
+Packmol boxes volumes were chosen to accomodate twice the van der Waals volumne of the enclosed atoms.  
 AM1-BCC~\cite{am1bcc1,am1bcc2, velez2014time} charges were generated with the OpenEye Python Toolkit version 2014-6-6 \cite{openeye}, using the {\tt oequacpac.OEAssignPartialCharges} module with the {\tt OECharges\_AM1BCCSym} option, which utilizes a conformational expansion procedure prior to charge fitting to minimize artifacts from intramolecular contacts.  
 The selected conformer was then processed using {\tt antechamber} (with {\tt parmchk2}) and {\tt tleap} in AmberTools~14~\cite{amber14} to produce {\tt prmtop} and {\tt inpcrd} files, which were then read into OpenMM using the {\tt simtk.openmm.app} module.
 Simulation code used libraries gaff2xml~0.7~\cite{gaff2xml}, OpenMM~6.3~\cite{eastman2012openmm}, and MDTraj~1.3~\cite{mcgibbon2014mdtraj}.  
-
-The following shell commands can be used to install the necessary prerequisites via the {\tt conda} package manager for Python:
-%\begin{lstlisting}
-\shellcmd{conda config --add channels http://conda.binstar.org/omnia}
-\shellcmd{conda install "gaff2xml>=0.7" "pymbar>=2.1" "mdtraj>=1.3" "openmm>=6.3" packmol}
-%\end{lstlisting}
-{\color{red}[JDC: Maybe we can move these instructions on installing the exact versions to the Appendix or SI, where we can go into one-column mode?  Also, we probably want to specify how to get the \emph{exact} versions using == rather than the \emph{latest} versions using >=.]}
+Exact commands to install various dependencies can be found in section SI-X.  
 
 \subsubsection{Equilibration and production}
 
@@ -217,9 +210,9 @@ The particle mesh Ewald (PME) method~\cite{Darden1993} was used with a long-rang
 {\color{red}[JDC: Can we report the automatically-selected PME parameters to aid reproducibility in other codes?]}
 
 Simulations were continued until automatic analysis showed standard errors in densities were less than $2 \times 10^{-4}$ g / mL.
-Automatic analysis was run every {\color{red}X ps of simulation time}, and utilized the {\tt detectEquilibration} method in the timeseries module of pymbar 2.1~\cite{shirts2008statistically} to automatically trim the initial portion of the simulation with strong far-from-equilibrium behavior by maximizing the number of effectively uncorrelated samples in the remainder of the production simulation as determined by autocorrelation analysis.
+Automatic analysis was run every 1 ns of simulation time, and utilized the {\tt detectEquilibration} method in the timeseries module of pymbar 2.1~\cite{shirts2008statistically} to automatically trim the initial portion of the simulation with strong far-from-equilibrium behavior by maximizing the number of effectively uncorrelated samples in the remainder of the production simulation as determined by autocorrelation analysis.
 Statistical errors were computed after subsampling the data to produce effectively uncorrelated equilibrium samples by $\delta^2 \rho \approx \var{\rho} / N_\mathrm{eff}$, where $\var{\rho}$ is the sample variance of the density and $N_\mathrm{eff}$ is the number of effectively uncorrelated samples.  
-{\color{red}[JDC: I've tried to clarify this. Can you check if I did this correctly?]}
+With this protocol, we found starting trajectory lengths of $X \pm Y$ frames (250 fs each), discarded regions of $X \pm Y$, and statistical inefficiencies of $X \pm Y$ (mean $\pm$ standard deviation).  
 
 Instantaneous densities were stored every 250~fs, while trajectory snapshots were stored every 5~ps.  
 
@@ -227,6 +220,8 @@ Instantaneous densities were stored every 250~fs, while trajectory snapshots wer
 
 Trajectory analysis was performed using OpenMM~6.3~\cite{eastman2012openmm} and MDTraj~1.3~\cite{mcgibbon2014mdtraj}.  
 {\color{red}[JDC: Did we plan to make this data available somewhere, or is it sufficient to put out the scripts?]}
+{\color{red}[KAB: I think our data is too big, we're on the order of 50GB.]}
+
 
 Mass density $\rho$ was computed via the relation,
 \begin{eqnarray}
@@ -234,8 +229,7 @@ Mass density $\rho$ was computed via the relation,
  \end{eqnarray}
 where $M$ is the total mass of all particles in the system and $V$ is the instantaneous volume of the simulation box.
 
-Static dielectric constants were calculated using the dipole fluctuation approach appropriate for PME with conducting (``tin-foil'') boundary conditions~\cite{horn2004}, with the total system box dipole $\mu$ computed from trajectory snapshots using MDTraj 1.3~\cite{mcgibbon2014mdtraj}.
-{\color{red}[JDC: I think the TIP4P-Ew paper cites the source of this equation, which we should cite as well.]}
+Static dielectric constants were calculated using the dipole fluctuation approach appropriate for PME with conducting (``tin-foil'') boundary conditions~\cite{horn2004, neumann1983dipole}, with the total system box dipole $\mu$ computed from trajectory snapshots using MDTraj 1.3~\cite{mcgibbon2014mdtraj}.
 \begin{eqnarray}
 \epsilon = 1 + \frac{4\pi}{3} \frac{\langle \mu \cdot \mu \rangle - \langle \mu \rangle \cdot \langle \mu \rangle}{\langle V \rangle k_B T} \label{equation:dielectric_calculation}
 \end{eqnarray}
@@ -245,7 +239,7 @@ All reported uncertainties represent an estimate of one standard deviation of th
 
 \subsubsection{Code availability}
 
-{\color{red}All custom code is available from XXX.}
+Data analysis and figure creation code for this work is available at \url{https://github.com/choderalab/LiquidBenchmark}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % RESULTS
@@ -302,8 +296,6 @@ The functional groups present in the resulting dataset are summarized in Table~\
 \caption{{\bf Successive filtration of the ThermoML Archive.}
 A set of successive filters were applied to all measurements in the ThermoML Archive (accessed 13 Sep 2014) that contained either mass density or static dielectric constant measurements.
 Each column reports the number of measurements remaining after successive application of the corresponding filtration step.
-%{\color{red}[JDC: Are all of these filters actually applied sequentially?  If not, I think we should rework this table to match the order in which filters are applied successively in the text.]}
-% KAB: This is the actual order the filters are applied.  
 }
 \label{table:ThermoMLSummary}
 \end{table}
@@ -356,14 +348,11 @@ We therefore used the present ThermoML extract as a benchmark of the GAFF/AM1-BC
 
 Overall, the densities show reasonable accuracy, with a root-mean square (RMS) relative error over all measurements of 2.8$\pm$0.1\%, especially encouraging given that this forcefield was not designed with the intention of modeling bulk liquid properties of organic molecules~\cite{gaff,gaff2}
 This is reasonably consistent with previous studies reporting agreement of 4\% on a different benchmark set~\cite{caleman2011force}.
-%{\color{red}[JDC: Did that previous study report an uncertainty?]}  
-%KAB: Previous study does not appear to have an uncertainty, at least according to Table 2 in said work.
 
-{\color{red}[JDC: Discuss outliers from Fig.~\ref{figure:AllDensities} here.  There must be more things we can say about densities.  
-Some of the densities are quite good, while others (e.g.~water, sulfolane, dimethylcarbonate) seem poor, with systematic bias toward higher densities than experiment.  
-We know, for example, for sulfolane, hypervalent sulfur atoms are a challenge for GAFF (from SAMPL challenges), and dimethyl carbonate has \emph{three} oxygens, which had a vdW issue also observed in a previous SAMPL (and maybe addressed in the dielectric paper?).
-We can also point out that densities at different temperatures for a given molecule seem to be biased in a consistent way.  
-Perhaps we could start by producing a figure showing OpenEye OEDepict images of the outliers, or embed those images in Fig.~\ref{figure:AllDensities}?]}
+For a given compound, the errors are roughly similar at different temperatures (Fig. SI ~\ref{figure:AllDensities}).  Overall, the predictions give an average density of $947 \pm 9$ $kg / m^3$, while the measurements give an average density of $928 \pm 8$ $kg / m^3$.  
+
+The largest density errors occur for 1,4-dioxane, 2,5,8-trioxanonane, 2-aminoethanol, dimethyl carbonate, formamide, and water.  The absolute error on these poor predictions is on the order of 50 $kg / m^3$, which is substantially higher than the measurement error ($\le 8$ $kg / m^3$; see SI Fig.~\ref{figure:ErrorAnalysisDensity}).  
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIGURE: DENSITY COMPARISON
@@ -418,7 +407,6 @@ Considering all predictions in the present work leads to polarizability correcti
 
 \caption{{\bf Measured (ThermoML) versus predicted (GAFF/AM1-BCC) inverse static dielectrics (a).}
 Simulation error bars represent one standard error of the mean estimated via circular block averaging \cite{sheppard_2015_15681} with block sizes automatically selected to maximize the error \cite{flyvbjerg1989error}.  
-%{\color{red}[JDC: Why are we using block averaging here?  Why didn't we just use {\tt timeseries.py}. We should not be using block averaging, especially without a justification that 200 ps is a reasonable block size for every specific system and condition  Let's talk about this.]}
 Experimental error bars indicate the larger of standard deviation between independently reported measurements and the authors reported standard deviations; for some measurements, neither uncertainty estimate is available.  
 See SI Fig.~\ref{figure:ErrorAnalysisDensity} for further discussion of error.  
 The inverse dielectric constant $\epsilon^{-1}$ is plotted instead of $\epsilon$ because $\epsilon^{-1}$ is directly proportional to the Coulomb interaction energy between point charges embedded in a dielectric material [e.g. $U(r) \propto q_1 q_2 / r \propto \epsilon^{-1}$].
@@ -434,11 +422,13 @@ The inverse dielectric constant $\epsilon^{-1}$ is plotted instead of $\epsilon$
 
 \subsection{Mass densities}
 
-\color{red}
-JDC: Can we say anything about mass densities?
-For example, how accurate do we expect mass densities need to be?
-Are there other properties we expect to be highly correlated to mass densities?
+Our simulations have indicated the presence of systematic densities biases with magnitudes larger than the measurement error.  
+Correcting these errors may be a low-hanging fruit for future forcefield refinements.
+As an example of the feasiblity of improved accuracy in densities, a recent three-point water model was able to recapitulate water density with errors of less than 5 $kg \ m^3$ over temperature range [280 K, 320 K].
+This improved accuracy in density prediction was obtained alongside accurate predictions of other experimental observables, including static dielectric constant.  
+We suspect that such accuracy might be obtainable for GAFF-like forcefields across some portion of chemical space.  
 
+\color{red}
 For example, I suspect that the total system enthalpy (and therefore enthalpy per molecule) will be highly sensitive to total mass density.
 For a given forcefield, the sensitivity to a density error at fixed volume (NVT) is 
 \begin{eqnarray}
@@ -481,14 +471,9 @@ While this behavior is well-known and results from missing physics of polarizabi
 
 \caption{{\bf Typical experimental static dielectric constants of some nonpolar compounds.}
 (a). Measured static dielectric constants of various nonpolar or symmetric molecules~\cite{d1990dielectric, haynes2011crc}.  
-Fixed-charge forcefields give $\epsilon \approx 1$ for each species; for example, we calculated $\epsilon = 1.003 \pm 0.0002$ for octane. {\color{red}[JDC: Sig figs issue.]}  
+Fixed-charge forcefields give $\epsilon \approx 1$ for each species; for example, we calculated $\epsilon = 1.0030 \pm 0.0002$ for octane.
 (b).  A congeneric series of chloro-substituted methanes have static dielectric constants between 2 and 13.  
 Reported dielectric constants are at near-ambient temperatures.  
-%{\color{red}[Can we use a better citable source for these numbers instead of Wikipedia?  Also, what temperatures/pressures are these measurements cited at?  Maybe we can just say ``near ambient''?]}
-%{\color{red}[JDC: We should not use PNG files for figure graphics---only vector graphics (when possible).  Can you use a vector graphics PDF instead?]}
-%KAB: I can't make this figure with vector graphics, as it involved a screenshot from an online chemical editor.  
-%{\color{red}[JDC: Can we show both experimental and GAFF/AM1-BCC computed dielectric constants for some of these compounds?]}
-%KAB: now reporting the calculated value for octane, the only one in our list.
 }
 \label{figure:nonpolars}
 
@@ -520,8 +505,7 @@ To estimate the magnitude of error expected, for each molecule in the latest (Fe
 We used took the cavity radius $a$ to be the half the maximum interatomic distance and calculated $\mu = \sum_i q_i r_i$ using the provided mol2 coordinates and AM1-BCC charges.  
 This calculation predicts a mean error of $-0.91 \pm0.07$ kcal / mol for the 643 molecules (where the standard error is computed from bootstrapping over FreeSolv compound measurements), 
 suggesting that the missing atomic polarizabilty unrepresentable by fixed point charge forcefields could contribute substantially to errors in predicted transfer and solvation properties of druglike molecules.  
-We also conjecture that 
-{\color{red}[JDC: Unfinished thought?]}
+We conjecture that this missing physics will be important in the upcoming (2015) SAAMPLE challenge \cite{newman2009practical}, which will examine transfer free energies in several low dielectric media. 
 
 Given their ease of measurement and direct connection to long-range electrostatic interactions, static dielectric constants have high potential utility as primary data for forcefield parameterization efforts.  
 Although this will require the use of forcefields with explicit treatment of atomic polarizability, the inconsistency of fixed-charge models in low-dielectric media is sufficiently alarming to motivate further study of polarizable forcefields.  In particular, continuum methods~\cite{truchon2010using, truchon2009integrated, truchon2008accurate}, point dipole methods~\cite{Ponder2010, ren2004temperature}, and Drude methods~\cite{lamoureux2003modeling, anisimov2005determination} have been maturing rapidly.  Finding the optimal balance of accuracy and performance remains an open question; however, the use of experimentally-parameterized direct polarization methods~\cite{wang2013systematic} may provide polarizability physics at a cost not much greater than fixed charge forcefields.
@@ -533,7 +517,6 @@ The present work has focused on the neat liquid density and dielectric measureme
 While liquid mass densities and static dielectric constants have already been widely used in forcefield work, several aspects of ThermoML make it a unique resource for the forcefield community.  
 First, the aggregation, support, and dissemination of ThermoML datasets through the ThermoML Archive is supported by NIST, whose mission makes these tasks a long-term priority.  
 Second, the ThermoML Archive is actively growing, through partnerships with several journals, and new experimental measurements published in these journals are critically examined by the TRC and included in the archive.  
-{\color{red}[JDC: Is the number of journal here also expanding?]}
 Finally, the files in the ThermoML Archive are portable and machine readable via a formal XML schema, allowing facile access to hundreds of thousands of measurements.  
 Numerous additional physical properties contained in ThermoML---including activity coefficients, diffusion constants, boiling point temperatures, critical pressures and densities, coefficients of expansion, speed of sound measurements, viscosities, excess molar enthalpies, heat capacities, and volumes---for neat phases and mixtures represent a rich dataset of high utility for forcefield validation and parameterization.
 
@@ -589,7 +572,11 @@ The references may be split in two as well, depending on journal.
 
 \begin{itemize}
  \item Figure: Timestep-dependence of density
- \item Figure: Error analysis for ThermoML dataset
+ \item Figure: Error analysis (density) for ThermoML dataset
+ \item Figure: Error analysis (static dielectric constant) for ThermoML dataset
+ \item Figure: Density
+ \item Figure: Static Dielectric Constant
+ \item Commands to install dependencies
  \item Table (CSV File): ThermoML Dataset used in present analysis.
 \end{itemize}
 
@@ -739,7 +726,7 @@ Measured (blue) and simulated (green) densities are shown in units of kg/m$^3$.
 Measured (blue), simulated (green), and polarizability-corrected simulated (red) static dielectric constants are shown for all compounds.
 Note that dielectric constants, rather than inverse dielectric constants, are plotted here.
 {\color{red}[JDC: Let's plot these as in Fig.~\ref{figure:Density} and Fig.~\ref{figure:Dielectric}, maybe only four plots across so they are larger and more legible.  We can also shorten ``name = compound'' to just ``compound''.]
-KAB: We should discuss this more before I rebuild this figure several times.}
+KAB: We should discuss this more before I rebuild this figure several times--it's not clear what you're asking.}
 }
 \label{figure:AllDielectrics}
 
@@ -783,6 +770,20 @@ KAB: We should discuss this more before I rebuild this figure several times.}
 
 \clearpage
 
+
+\subsection{Dependency Installation}
+
+The following shell commands can be used to install the necessary prerequisites via the {\tt conda} package manager for Python:
+\begin{lstlisting}
+\shellcmd{conda config --add channels http://conda.binstar.org/omnia}
+\shellcmd{conda install "gaff2xml==0.6.3" "pymbar==2.1" "mdtraj==1.3" "openmm==6.3" packmol}
+%\end{lstlisting}
+
+Note that this command installs the exact versions used in the present study.  
+However, for authors interested in extending the present work, we suggust using the most up-to-date versions available instead.  
+
+
+\clearpage
 
 
 \bibliography{benchmark}
