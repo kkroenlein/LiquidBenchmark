@@ -200,6 +200,7 @@ Simulation code used libraries gaff2xml~0.7~\cite{gaff2xml}, OpenMM~6.3~\cite{ea
 Exact commands to install various dependencies can be found in section SI-X.  
 
 \subsubsection{Equilibration and production}
+\label{section:production}
 
 Boxes were first minimized and equilibrated for $10^7$ steps with an equilibration timestep of 0.4 fs and a collision rate of 5 ps$^{-1}$.  
 Production simulations were performed with OpenMM~6.2~\cite{eastman2012openmm} using a Langevin integrator (with collision rate 1 ps$^{-1}$) and a 1~fs timestep, as we found that timesteps of 2~fs timestep or greater led to a significant timestep dependence in computed equilibrium densities (Table~\ref{figure:timestep}).  
@@ -427,17 +428,10 @@ Correcting these errors may be a low-hanging fruit for future forcefield refinem
 As an example of the feasiblity of improved accuracy in densities, a recent three-point water model was able to recapitulate water density with errors of less than 5 $kg \ m^3$ over temperature range [280 K, 320 K].
 This improved accuracy in density prediction was obtained alongside accurate predictions of other experimental observables, including static dielectric constant.  
 We suspect that such accuracy might be obtainable for GAFF-like forcefields across some portion of chemical space.  
+A key challenge for the field is to demarcate the fundamental limit of fixed-charge forcefields for predicting orthogonal classes of experimental observables.
+For example, is it possible to achieve a relative density error of $10^{-4}$ without sacrificing accuracy of other properties such as enthalpies?
+In our opinion, the best way to answer such questions is to systematically build forcefields with the goal of predicting various properties to within their known experimental uncertainties, similar to what has been done for water \cite{horn2004, wang2014building}.
 
-\color{red}
-For example, I suspect that the total system enthalpy (and therefore enthalpy per molecule) will be highly sensitive to total mass density.
-For a given forcefield, the sensitivity to a density error at fixed volume (NVT) is 
-\begin{eqnarray}
-\frac{\partial \langle U \rangle}{\partial \rho} &=& \frac{\partial \langle U \rangle}{\partial V} \frac{\partial V}{\partial \rho} = - \frac{\partial \langle U \rangle}{\partial V} M \rho^{-2} 
-\end{eqnarray}
-Of course, it's possible the forcefield is parameterized to give a reasonable enthalpy per molecule (related to the enthalpy of vaporization) even though the density has larger deviations.
-But are there other properties we can think of that may be disrupted?
-Cavity formation free energies?
-\color{black}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FITTING FORCEFIELDS TO DIELECTRIC CONSTANTS
@@ -505,7 +499,7 @@ To estimate the magnitude of error expected, for each molecule in the latest (Fe
 We used took the cavity radius $a$ to be the half the maximum interatomic distance and calculated $\mu = \sum_i q_i r_i$ using the provided mol2 coordinates and AM1-BCC charges.  
 This calculation predicts a mean error of $-0.91 \pm0.07$ kcal / mol for the 643 molecules (where the standard error is computed from bootstrapping over FreeSolv compound measurements), 
 suggesting that the missing atomic polarizabilty unrepresentable by fixed point charge forcefields could contribute substantially to errors in predicted transfer and solvation properties of druglike molecules.  
-We conjecture that this missing physics will be important in the upcoming (2015) SAAMPLE challenge \cite{newman2009practical}, which will examine transfer free energies in several low dielectric media. 
+We conjecture that this missing physics will be important in the upcoming (2015) SAMPL challenge \cite{newman2009practical}, which will examine transfer free energies in several low dielectric media. 
 
 Given their ease of measurement and direct connection to long-range electrostatic interactions, static dielectric constants have high potential utility as primary data for forcefield parameterization efforts.  
 Although this will require the use of forcefields with explicit treatment of atomic polarizability, the inconsistency of fixed-charge models in low-dielectric media is sufficiently alarming to motivate further study of polarizable forcefields.  In particular, continuum methods~\cite{truchon2010using, truchon2009integrated, truchon2008accurate}, point dipole methods~\cite{Ponder2010, ren2004temperature}, and Drude methods~\cite{lamoureux2003modeling, anisimov2005determination} have been maturing rapidly.  Finding the optimal balance of accuracy and performance remains an open question; however, the use of experimentally-parameterized direct polarization methods~\cite{wang2013systematic} may provide polarizability physics at a cost not much greater than fixed charge forcefields.
@@ -619,8 +613,7 @@ To probe the systematic error from finite time-step integration, we examined the
 (b).  The relative error, as compared to the reference value, is shown for several choices of timestep.  
 Error bars represent stand errors of the mean, with the number of effective samples estimated using pymbar's statistical inefficiency routine \cite{shirts2008statistically}.  
 The reference value is estimated by linear extrapolation to 0 fs using the 0.5 fs and 1.0 fs data points; the linear extrapolation is shown as black lines.  
-We find a 2~fs timestep leads to systematic biases in the density on the order of 0.19\%, while 1 fs reduces the systematic bias to approximately 0.13\%---we therefore selected a 1~fs timestep for the present work, where we aimed to achieve three digits of accuracy in density predictions.
-{\color{red}[JDC: This is really weird. Absent big numerical errors, this timestep dependence should be monotonic.  Was this using the GPU in mixed precision?]}
+We find a 2~fs timestep leads to systematic biases in the density on the order of 0.13\%, while 1 fs reduces the systematic bias to approximately 0.03\%---we therefore selected a 1~fs timestep for the present work, where we aimed to achieve three digits of accuracy in density predictions.
 }
 \label{figure:timestep}
 

@@ -18,4 +18,4 @@ table["error"] = table.mu - table.mu[0.5]
 table["relerr"] = (table.mu - table.mu[0.5]) / table.mu[0.5]
 table
 print table.to_latex()
-table.to_csv("../../tables/timestep_dependence.csv")
+table.to_csv("../../../tables/timestep_dependence.csv")

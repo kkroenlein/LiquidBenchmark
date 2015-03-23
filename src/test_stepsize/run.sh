@@ -1,3 +1,4 @@
+# Meant for a machine with 3 GPUs, e.g. jak
 export CUDA_VISIBLE_DEVICES=0
 python production_amber.py 0.5&
 
