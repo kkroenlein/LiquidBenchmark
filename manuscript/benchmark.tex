@@ -101,10 +101,6 @@ Neat Liquid Densities and Static Dielectric Constants}
 \email{julie.behr@choderalab.org}
 \affiliation{Tri-Institutional Program in Computational Biology and Medicine, Weill Cornell Medical College, New York, NY}
 
-\author{Patrick B. Grinaway }
-\email{patrick.grinaway@choderalab.org}
-\affiliation{Graduate Program in Physiology, Biophysics, and Systems Biology, Weill Cornell Medical College, New York, NY}
-
 \author{Ari\"{e}n S. Rustenburg}
 \email{bas.rustenburg@choderalab.org}
 \affiliation{Graduate Program in Physiology, Biophysics, and Systems Biology, Weill Cornell Medical College, New York, NY}
@@ -195,9 +191,9 @@ Finally, this schema was used to extract the data into Pandas~\cite{pandas} data
 
 Simulation boxes containing 1000 molecules were constructed using PackMol version 14-225~\cite{martinez2009packmol, packmolurl} wrapped in an automated tool.
 Packmol boxes volumes were chosen to accomodate twice the van der Waals volumne of the enclosed atoms.  
-AM1-BCC~\cite{am1bcc1,am1bcc2, velez2014time} charges were generated with the OpenEye Python Toolkit version 2014-6-6 \cite{openeye}, using the {\tt oequacpac.OEAssignPartialCharges} module with the {\tt OECharges\_AM1BCCSym} option, which utilizes a conformational expansion procedure prior to charge fitting to minimize artifacts from intramolecular contacts.  
+AM1-BCC~\cite{am1bcc1,am1bcc2, velez2014time} charges were generated with the OpenEye Python Toolkit version 2015-2-3 \cite{openeye}, using the {\tt oequacpac.OEAssignPartialCharges} module with the {\tt OECharges\_AM1BCCSym} option, which utilizes a conformational expansion procedure prior to charge fitting to minimize artifacts from intramolecular contacts.  
 The selected conformer was then processed using {\tt antechamber} (with {\tt parmchk2}) and {\tt tleap} in AmberTools~14~\cite{amber14} to produce {\tt prmtop} and {\tt inpcrd} files, which were then read into OpenMM using the {\tt simtk.openmm.app} module.
-Simulation code used libraries gaff2xml~0.7~\cite{gaff2xml}, OpenMM~6.3~\cite{eastman2012openmm}, and MDTraj~1.3~\cite{mcgibbon2014mdtraj}.  
+Simulation code used libraries gaff2xml~0.6.4~\cite{gaff2xml}, OpenMM~6.3~\cite{eastman2012openmm}, and MDTraj~1.3~\cite{mcgibbon2014mdtraj}.  
 Exact commands to install various dependencies can be found in section \ref{section:commands}.
 
 \subsubsection{Equilibration and production}
@@ -287,14 +283,15 @@ The functional groups present in the resulting dataset are summarized in Table~\
  &  \multicolumn{2}{c}{\bf Number of measurements remaining} \\ \cline{2-3}
 {\bf Filter step} &  {\bf Mass density} &  {\bf Static dielectric} \\ 
 \hline
-1.  Single Component   &               130074 &                                     1649 \\
-2.  Druglike Elements  &               120410 &                                     1649 \\
-3.  Heavy Atoms        &                67897 &                                     1567 \\
-4.  Temperature        &                36827 &                                      962 \\
-5.  Pressure           &                13598 &                                      461 \\
-6.  Liquid state       &                13534 &                                      461 \\
-7.  Aggregate T, P     &                 3557 &                                      432 \\
-8.  Density+Dielectric &                  245 &                                      245 \\
+1.  Single Component   &               136212 &                                     1651 \\
+2.  Druglike Elements  &               125953 &                                     1651 \\
+3.  Heavy Atoms        &                71595 &                                     1569 \\
+4.  Temperature        &                38821 &                                      964 \\
+5.  Pressure           &                14103 &                                      461 \\
+6.  Liquid state       &                14033 &                                      461 \\
+7.  Aggregate T, P     &                 3592 &                                      432 \\
+8.  Density+Dielectric &                  246 &                                      246 \\
+
 \hline
 \end{tabular}
 \caption{{\bf Successive filtration of the ThermoML Archive.}
@@ -539,7 +536,7 @@ suggesting that non-polarizable forcefields may show unacceptable biases in cert
 
 \section{Acknowledgements}
 
-We thank Vijay S.~Pande (Stanford University), Lee-Ping Wang (Stanford University), Peter Eastman (Stanford University), Robert McGibbon (Stanford University), Jason Swails (Rutgers University), David L.~Mobley (University of California, Irvine), Christopher I.~Bayly (OpenEye Software), Michael R. Shirts (University of Virginia), and members of Chodera lab for helpful discussions.  
+We thank Patrick B.~Grinaway (MSKCC), Vijay S.~Pande (Stanford University), Lee-Ping Wang (Stanford University), Peter Eastman (Stanford University), Robert McGibbon (Stanford University), Jason Swails (Rutgers University), David L.~Mobley (University of California, Irvine), Christopher I.~Bayly (OpenEye Software), Michael R. Shirts (University of Virginia), and members of Chodera lab for helpful discussions.  
 Support for JMB was provided by the Tri-Institutional Training Program in Computational Biology and Medicine (via NIH training grant 1T32GM083937).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -754,7 +751,7 @@ Note that dielectric constants, rather than inverse dielectric constants, are pl
 The following shell commands can be used to install the necessary prerequisites via the {\tt conda} package manager for Python:
 \begin{lstlisting}
 \shellcmd{conda config --add channels http://conda.binstar.org/omnia}
-\shellcmd{conda install "gaff2xml==0.6.3" "pymbar==2.1" "mdtraj==1.3" "openmm==6.3" packmol}
+\shellcmd{conda install "gaff2xml==0.6.4" "pymbar==2.1" "mdtraj==1.3" "openmm==6.3" packmol}
 %\end{lstlisting}
 
 Note that this command installs the exact versions used in the present study.  
