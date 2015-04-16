@@ -537,7 +537,7 @@ suggesting that non-polarizable forcefields may show unacceptable biases in cert
 \section{Acknowledgements}
 
 We thank Patrick B.~Grinaway (MSKCC), Vijay S.~Pande (Stanford University), Lee-Ping Wang (Stanford University), Peter Eastman (Stanford University), Robert McGibbon (Stanford University), Jason Swails (Rutgers University), David L.~Mobley (University of California, Irvine), Christopher I.~Bayly (OpenEye Software), Michael R. Shirts (University of Virginia), and members of Chodera lab for helpful discussions.  
-Support for JMB was provided by the Tri-Institutional Training Program in Computational Biology and Medicine (via NIH training grant 1T32GM083937).
+Support for JMB was provided by the Tri-Institutional Training Program in Computational Biology and Medicine (via NIH training grant 1T32GM083937).  KAB was supported in part by Starr Foundation grant I8-A8-058.  JDC and KAB acknowledge partial support from NIH grant P30 CA008748.  KAB, JLB, ASR, and JDC acknowledge the generous support of this research by the Sloan Kettering Institute.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DISCLAIMERS
@@ -749,9 +749,10 @@ Note that dielectric constants, rather than inverse dielectric constants, are pl
 \label{section:commands}
 
 The following shell commands can be used to install the necessary prerequisites via the {\tt conda} package manager for Python:
-\begin{lstlisting}
-\shellcmd{conda config --add channels http://conda.binstar.org/omnia}
-\shellcmd{conda install "gaff2xml==0.6.4" "pymbar==2.1" "mdtraj==1.3" "openmm==6.3" packmol}
+
+\begin{lstlisting}[language=bash]
+$ conda config --add channels http://conda.binstar.org/omnia
+$ conda install "gaff2xml==0.6.4" "pymbar==2.1" "mdtraj==1.3" "openmm==6.3" packmol
 %\end{lstlisting}
 
 Note that this command installs the exact versions used in the present study.  
