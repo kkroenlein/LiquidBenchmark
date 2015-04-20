@@ -5,9 +5,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 
-sns.set(font_scale=1.2)
 sns.set_palette("bright")
 sns.set_style("whitegrid")
+sns.set(font_scale=1.2)
 
 
 expt = pd.read_csv("./tables/data_with_metadata.csv")
@@ -30,17 +30,29 @@ pred["expt_dielectric_std"] = expt["Relative permittivity at zero frequency_unce
 pred = pred.reset_index()
 
 
-
-
 # HACK TO PLOT DATA THAT LACKS ERRORBARS!
 pred.expt_density_std = pred.expt_density_std.fillna(0.0)
+names = pred.name.unique()
+name_dict = {name:i for i, name in enumerate(names)}
+pred["name_ind"] = pred.name.map(lambda x: name_dict[x])
 
-g = sns.FacetGrid(pred, col="name", col_wrap=6, size=3.5)
-g.map(plt.errorbar, "temperature", "expt_density", "expt_density_std", fmt='.', color='b', label="Expt")
-g.map(plt.errorbar, "temperature", "density", "density_sigma", fmt='.', color='g', label="MD")
-g.set_ylabels("Density [kg / m^3")
-legend(loc=4)
-plt.savefig("./manuscript/figures/densities_versus_temperature_all.pdf", bbox_inches="tight")
+num_groups = 5
+num_cols = 3
+DENSITY_BUFFER = 10.
+PANEL_SIZE = 4.0
+pred["name_group"] = pred.name_ind % num_groups
+
+for name_group, pred_i in pred.groupby("name_group"):
+    g = sns.FacetGrid(pred_i, col="name", col_wrap=num_cols, xlim=[270, 330], ylim=[pred.density.min() - DENSITY_BUFFER, pred.density.max() + DENSITY_BUFFER], size=PANEL_SIZE, sharex=False, sharey=False)
+    g.map(plt.errorbar, "temperature", "expt_density", "expt_density_std", fmt='.', color='b', label="Expt")
+    g.map(plt.errorbar, "temperature", "density", "density_sigma", fmt='.', color='g', label="MD")
+    g.set_ylabels("Density [kg m$^{-3}$]")
+    g.set_xlabels("Temperature [K]")
+    legend(loc=4)
+    g.set_titles(col_template="{col_name}")
+    g.set_xticklabels(labels=np.arange(270, 340, 10))
+    plt.draw()    
+    plt.savefig("./manuscript/figures/densities_versus_temperature_part%d.pdf" % name_group, bbox_inches="tight")
 
 
 # HACK TO PLOT DATA THAT LACKS ERRORBARS!
@@ -51,13 +63,26 @@ pred["corrected_dielectric_sigma"] = pred.dielectric_sigma
 #pred["dielectric_sigma"] = 0.0
 # End HACKERY
 
-g = sns.FacetGrid(pred, col="name", col_wrap=6, size=3.5)
-g.set(yscale="log")
-g.map(plt.errorbar, "temperature", "expt_dielectric", "expt_dielectric_std", fmt='.', color='b', label="Expt")
-g.map(plt.errorbar, "temperature", "dielectric", "dielectric_sigma", fmt='.', color='g', label="MD")
-g.map(plt.errorbar, "temperature", "corrected_dielectric", "corrected_dielectric_sigma", fmt='.', color='r', label="Corr.")
-g.set(yticks=[0.5, 0,6, 0.7, 0.8, 0.9] + range(1, 10) + range(10, 100, 10) + range(100, 1000, 100))
-g.set(ylim=(0.5, 200))
-g.set_ylabels("Dielectric")
-legend(loc=4)
-plt.savefig("./manuscript/figures/dielectric_versus_temperature_all.pdf", bbox_inches="tight")
+# Add dataframe columns for inverse static dielectric and associated error bars
+pred["inv_expt_dielectric"] = pred.expt_dielectric ** -1.
+pred["inv_dielectric"] = pred.dielectric ** -1.
+pred["inv_corrected_dielectric"] = pred.corrected_dielectric ** -1.
+pred["inv_expt_dielectric_std"] = pred.expt_dielectric_std * pred.expt_dielectric ** -2.
+pred["inv_dielectric_sigma"] = pred.dielectric_sigma * pred.dielectric ** -2.
+pred["inv_corrected_dielectric_sigma"] = pred.corrected_dielectric_sigma * pred.corrected_dielectric ** -2.
+
+
+for name_group, pred_i in pred.groupby("name_group"):
+    g = sns.FacetGrid(pred_i, col="name", col_wrap=num_cols, xlim=[270, 330], ylim=[1.0, 150.], size=PANEL_SIZE, sharex=False, sharey=False)
+    g.map(plt.errorbar, "temperature", "inv_expt_dielectric", "inv_expt_dielectric_std", fmt='.', color='b', label="Expt")
+    g.map(plt.errorbar, "temperature", "inv_dielectric", "inv_dielectric_sigma", fmt='.', color='g', label="MD")
+    g.map(plt.errorbar, "temperature", "inv_corrected_dielectric", "inv_corrected_dielectric_sigma", fmt='.', color='r', label="Corr.")
+    g.set_ylabels("Inverse Dielectric Constant")
+    g.set_xlabels("Temperature [K]")
+    legend(loc=2)  # Upper Left
+    g.set_titles(col_template="{col_name}")
+    g.set(ylim=(0., 1.05))
+    plt.draw()    
+    plt.savefig("./manuscript/figures/dielectric_versus_temperature_part%d.pdf" % name_group, bbox_inches="tight")
+
+

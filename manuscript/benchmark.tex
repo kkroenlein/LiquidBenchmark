@@ -36,6 +36,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{caption}
 \usepackage{dcolumn}
 \usepackage{boxedminipage}
 \usepackage{verbatim}
@@ -681,9 +682,9 @@ Panel (b) shows the same information as (a) but as a function of the measurement
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIGURE: DENSITIES VS TEMPERATURE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure*}
+\begin{figure*}[alldensity]
 
-\includegraphics[width=\textwidth]{./figures/densities_versus_temperature_all.pdf}
+\includegraphics[width=\textwidth]{./figures/densities_versus_temperature_part0.pdf}
 
 \caption{{\bf Comparison of simulated and experimental densities for all compounds.} 
 Measured (blue) and simulated (green) densities are shown in units of kg/m$^3$.
@@ -692,60 +693,140 @@ Measured (blue) and simulated (green) densities are shown in units of kg/m$^3$.
 
 \end{figure*}
 
+\begin{figure*}[alldensity]
+
+
+\ContinuedFloat
+
+\includegraphics[width=\textwidth]{./figures/densities_versus_temperature_part1.pdf}
+
+\caption{{\bf Comparison of simulated and experimental densities for all compounds.} 
+Measured (blue) and simulated (green) densities are shown in units of kg/m$^3$.
+\label{figure:AllDensities}
+}
+
+\end{figure*}
+
+\begin{figure*}[alldensity]
+
+\ContinuedFloat
+
+\includegraphics[width=\textwidth]{./figures/densities_versus_temperature_part2.pdf}
+
+\caption{{\bf Comparison of simulated and experimental densities for all compounds.} 
+Measured (blue) and simulated (green) densities are shown in units of kg/m$^3$.
+\label{figure:AllDensities}
+}
+
+\end{figure*}
+
+
+\begin{figure*}[alldensity]
+
+\ContinuedFloat
+
+\includegraphics[width=\textwidth]{./figures/densities_versus_temperature_part3.pdf}
+
+\caption{{\bf Comparison of simulated and experimental densities for all compounds.} 
+Measured (blue) and simulated (green) densities are shown in units of kg/m$^3$.
+\label{figure:AllDensities}
+}
+
+\end{figure*}
+
+
+\begin{figure*}[alldensity]
+
+\ContinuedFloat
+
+\includegraphics[width=\textwidth]{./figures/densities_versus_temperature_part4.pdf}
+
+\caption{{\bf Comparison of simulated and experimental densities for all compounds.} 
+Measured (blue) and simulated (green) densities are shown in units of kg/m$^3$.
+\label{figure:AllDensities}
+}
+
+\end{figure*}
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIGURE: DIELECTRIC VS TEMPERATURE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{figure*}
+\begin{figure*}[alldielectric]
 
-\includegraphics[width=\textwidth]{./figures/dielectric_versus_temperature_all.pdf}
+\includegraphics[width=\textwidth]{./figures/dielectric_versus_temperature_part0.pdf}
 
 \caption{{\bf Comparison of simulated and experimental static dielectric constants for all compounds.}
 Measured (blue), simulated (green), and polarizability-corrected simulated (red) static dielectric constants are shown for all compounds.
-Note that dielectric constants, rather than inverse dielectric constants, are plotted here.
-{\color{red}[JDC: Let's plot these as in Fig.~\ref{figure:Density} and Fig.~\ref{figure:Dielectric}, maybe only four plots across so they are larger and more legible.  We can also shorten ``name = compound'' to just ``compound''.]}
-{\color{blue}[KAB: We should discuss this more---it's not clear what you're asking.]
 }
-}
+
 \label{figure:AllDielectrics}
 
 \end{figure*}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% FIGURE: DIELECTRIC VIRTUAL CHEMISTRY
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% \begin{figure}
-% 
-% \includegraphics[width=\columnwidth]{./figures/dielectric_virtual_chemistry_gaff.pdf}
-% 
-% \includegraphics[width=\columnwidth]{./figures/dielectric_virtual_chemistry_opls.pdf}
-% 
-% \caption{{\bf Atomic polarizability corrections for the Virtual Chemistry dataset.}
-% A comparison of measured (\emph{blue}) and simulated dielectric constants from the Virtual Chemistry dataset~\cite{caleman2011force, van2012gromacs}.   with (\emph{red}) and without (\emph{green}) atomic polarizability corrections are shown.
-% The predicted (GAFF and OPLS) and measured values were scraped from the virtual chemistry web site (\url{http://virtualchemistry.org/}); static dielectric corrections were calculated as above. 
-% {\color{red}[JDC: Plot needs to be adjusted to be more legible if we decide to keep it.]}
-% }
-% \label{figure:VirtualChemistry}
-% \end{figure}
+\begin{figure*}[alldielectric]
+
+\ContinuedFloat
+
+\includegraphics[width=\textwidth]{./figures/dielectric_versus_temperature_part1.pdf}
+
+\caption{{\bf Comparison of simulated and experimental static dielectric constants for all compounds.}
+Measured (blue), simulated (green), and polarizability-corrected simulated (red) static dielectric constants are shown for all compounds.
+}
+
+\label{figure:AllDielectrics}
+
+\end{figure*}
+
+\begin{figure*}[alldielectric]
+
+\ContinuedFloat
+
+\includegraphics[width=\textwidth]{./figures/dielectric_versus_temperature_part2.pdf}
+
+\caption{{\bf Comparison of simulated and experimental static dielectric constants for all compounds.}
+Measured (blue), simulated (green), and polarizability-corrected simulated (red) static dielectric constants are shown for all compounds.
+}
+
+\label{figure:AllDielectrics}
+
+\end{figure*}
+
+\begin{figure*}[alldielectric]
+
+\ContinuedFloat
+
+\includegraphics[width=\textwidth]{./figures/dielectric_versus_temperature_part3.pdf}
+
+\caption{{\bf Comparison of simulated and experimental static dielectric constants for all compounds.}
+Measured (blue), simulated (green), and polarizability-corrected simulated (red) static dielectric constants are shown for all compounds.
+}
+
+\label{figure:AllDielectrics}
+
+\end{figure*}
+
+\begin{figure*}[alldielectric]
+
+\ContinuedFloat
+
+\includegraphics[width=\textwidth]{./figures/dielectric_versus_temperature_part4.pdf}
+
+\caption{{\bf Comparison of simulated and experimental static dielectric constants for all compounds.}
+Measured (blue), simulated (green), and polarizability-corrected simulated (red) static dielectric constants are shown for all compounds.
+}
+
+\label{figure:AllDielectrics}
+
+\end{figure*}
 
 
-%\subsection{Dielectric Uncertainty}
-%Following the discussion in \cite{horn2004}, we note that the static dielectric can be expressed as 
 
-%$$\epsilon_0 = 1 + \frac{4\pi}{3k_B} \frac{\langle (M - \langle M\rangle)^2\rangle}{\langle V \rangle \langle T \rangle}$$
 
-%We note that the dipole moment can be separated into vector components and expanded to give
 
-%$$\epsilon_0 = 1 + \frac{4\pi}{3k_B} \frac{\langle M_x^2 \rangle + \langle M_y^2 \rangle + \langle M_z^2 \rangle - \langle M_x \rangle^2 - \langle M_y \rangle^2 - \langle M_z \rangle^2}{\langle V \rangle \langle T \rangle}$$
-
-%We approximate the uncertainty using error propagation, e.g. $\delta(f)^2 \approx \sum_i (\frac{\partial f}{\partial x_i})^2 \delta(x_i)^2$
-
-%$$\delta(\epsilon_0)^2 = \frac{4\pi}{3k_B}[(\frac{M}{T V^2})^2 \delta(V)^2 + (\frac{M}{T^2 V})^2 \delta(T)^2 + (\frac{1}{T V})^2 \delta(M)^2]$$
-
-%$$ = \frac{4\pi}{3k_B}(\frac{M}{TV})^2[(\frac{\delta(V)^2}{V^2} + \frac{\delta(T)^2}{T^2} + \frac{\delta(M)^2}{M^2}]$$
-
-%$$\delta(M)^2 = \delta(\langle M_x^2 \rangle)^2 + \delta(\langle M_y^2 \rangle)^2 + \delta(\langle M_z^2 \rangle)^2 + \delta(\langle M_x \rangle)^2 + \delta(\langle M_y \rangle)^2 + \delta(\langle M_z \rangle)^2 $$
 
 \clearpage
 
