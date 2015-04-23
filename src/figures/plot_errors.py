@@ -12,6 +12,10 @@ x = data["Mass density, kg/m3_uncertainty_author_weighted"]
 y = data["Mass density, kg/m3_uncertainty_std"]
 z = data["Mass density, kg/m3_uncertainty_author_median"]
 
+x = x / 1000.  # Convert kg / m3 to g / mL
+y = y / 1000.  # Convert kg / m3 to g / mL
+z = z / 1000.  # Convert kg / m3 to g / mL
+
 ind = x.dropna().index.intersection(y.dropna().index)
 x, y = x[ind], y[ind]
 z = z[ind]
@@ -25,7 +29,11 @@ plt.legend(loc=0)
 
 plt.xlabel("Author Uncertainty")
 plt.ylabel("Standard Deviation of Measurements")
-plt.title("Error Estimates: Density [kg / m^3]")
+plt.title("Error Estimates: Density [g / mL]")
+
+plt.xscale('log')
+plt.yscale('log')
+
 plt.savefig("./manuscript/figures/error_analysis_density.pdf", bbox_inches="tight")
 
 
@@ -47,12 +55,20 @@ plt.legend(loc=0)
 plt.xlabel("Author Uncertainty")
 plt.ylabel("Standard Deviation of Measurements")
 plt.title("Error Estimates: Relative permittivity at zero frequency")
+
+plt.xscale('log')
+plt.yscale('log')
+
 plt.savefig("./manuscript/figures/error_analysis_dielectric.pdf", bbox_inches="tight")
 
 
 x = data["Mass density, kg/m3_uncertainty_author_weighted"]
 y = data["Mass density, kg/m3_uncertainty_std"]
 z = data["Mass density, kg/m3_uncertainty_author_median"]
+
+x = x / 1000.  # Convert kg / m3 to g / mL
+y = y / 1000.  # Convert kg / m3 to g / mL
+z = z / 1000.  # Convert kg / m3 to g / mL
 
 plt.figure()
 plt.plot(z, 'o', label="Median(author)")  # plot this first so that weighted overwrites
@@ -61,8 +77,10 @@ plt.plot(y, 'o', label="std()")
 
 plt.xlabel("Measurment Index")
 plt.ylabel("Error Estimate")
-plt.title("Error Estimates: Density [kg / m^3]")
+plt.title("Error Estimates: Density [g / mL]")
 plt.legend(loc=0)
+
+plt.yscale('log')
 
 plt.savefig("./manuscript/figures/error_analysis_density_index.pdf", bbox_inches="tight")
 
@@ -83,6 +101,8 @@ plt.xlabel("Measurement Index")
 plt.ylabel("Error Estimate")
 plt.title("Error Estimates: Relative permittivity at zero frequency")
 plt.legend(loc=0)
+
+plt.yscale('log')
 
 plt.savefig("./manuscript/figures/error_analysis_dielectric_index.pdf", bbox_inches="tight")
 

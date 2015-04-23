@@ -11,8 +11,6 @@ sns.set_style("whitegrid")
 sns.set(font_scale=1.2)
 
 
-expt0 = pd.read_csv("./tables/data_dielectric.csv")
-
 expt = pd.read_csv("./tables/data_with_metadata.csv")
 expt["temperature"] = expt["Temperature, K"]
 
@@ -33,16 +31,49 @@ pred["expt_density_std"] = expt["Mass density, kg/m3_uncertainty_bestguess"]
 pred["expt_dielectric_std"] = expt["Relative permittivity at zero frequency_uncertainty_bestguess"]
 
 
-q = abs(pred.density - pred.expt_density)
-q.sort()
-cas = q.reset_index()[-20:].cas.unique()
 
-expt0[expt0.cas.isin(cas)].components.unique()
+yerr = pred["expt_dielectric_std"].replace(np.nan, 0.0)
+xerr = pred["dielectric_sigma"].replace(np.nan, 0.0)
+
+plt.figure()
+
+plt.xlabel("Predicted (GAFF)")
+plt.ylabel("Experiment (ThermoML)")
+title("Static Dielectric Constant")
+
+MIN = 1
+MAX = 300
+
+plt.plot([MIN, MAX], [MIN, MAX], 'k')  # Guide
 
 
-pred.density.mean()
-pred.density.std()
-pred.density.std() / sqrt(len(pred))
+x, y = pred["dielectric"], pred["expt_dielectric"]
+ols_model = sm.OLS(y, x)
+ols_results = ols_model.fit()
+r2 = ols_results.rsquared
+plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='.', label="GAFF")
+xscale('log')
+yscale('log')
 
-pred.expt_density.mean()
-pred.expt_density.std() / sqrt(len(pred))
+xlim((MIN, MAX))
+ylim((MIN, MAX))
+plt.legend(loc=0)
+plt.gca().set_aspect('equal', adjustable='box')
+plt.draw()
+plt.savefig("./manuscript/figures/dielectrics_thermoml_nocorr_logscale.pdf", bbox_inches="tight")
+
+
+x, y = pred["corrected_dielectric"], pred["expt_dielectric"]
+ols_model = sm.OLS(y, x)
+ols_results = ols_model.fit()
+r2 = ols_results.rsquared
+plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='.', label="Corrected")
+xscale('log')
+yscale('log')
+
+xlim((MIN, MAX))
+ylim((MIN, MAX))
+plt.legend(loc=0)
+plt.gca().set_aspect('equal', adjustable='box')
+plt.draw()
+plt.savefig("./manuscript/figures/dielectrics_thermoml_logscale.pdf", bbox_inches="tight")

@@ -81,7 +81,7 @@ X.dropna(axis=1, how='all', inplace=True)
 
 
 X["Pressure, kPa"] = 101.325  # Assume everything within range is comparable.  
-X["Temperature, K"] = X["Temperature, K"].apply(lambda x: x.round(1))  # Round at the 0.1 digit.  
+X["Temperature, K"] = X["Temperature, K"].apply(lambda x: np.round(x, 1))  # Round at the 0.1 digit.  
 
 X.to_csv("./tables/full_filtered_data.csv")
 
