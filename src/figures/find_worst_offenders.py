@@ -40,7 +40,7 @@ cas = q.reset_index()[-20:].cas.unique()
 expt0[expt0.cas.isin(cas)].components.unique()
 
 
-
+pred.density.mean()
 pred.density.std()
 pred.density.std() / sqrt(len(pred))
 

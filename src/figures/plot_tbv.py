@@ -35,22 +35,55 @@ for (formula, grp) in pred.groupby("formula"):
     x, y = grp["density"], grp["expt_density"]
     xerr = grp["density_sigma"]
     yerr = grp["expt_density_std"].replace(np.nan, 0.0)
+    x = x / 1000.  # Convert kg / m3 to g / mL
+    y = y / 1000.  # Convert kg / m3 to g / mL
+    xerr = xerr / 1000.  # Convert kg / m3 to g / mL
+    yerr = yerr / 1000.  # Convert kg / m3 to g / mL
     plt.errorbar(x, y, xerr=xerr, yerr=yerr, fmt='.', label=formula)
 
-plt.plot([600, 1400], [600, 1400], 'k')
-plt.xlim((600, 1400))
-plt.ylim((600, 1400))
+plt.plot([.600, 1.400], [.600, 1.400], 'k')
+plt.xlim((.600, 1.400))
+plt.ylim((.600, 1.400))
 plt.xlabel("Predicted (GAFF)")
 plt.ylabel("Experiment (ThermoML)")
 plt.gca().set_aspect('equal', adjustable='box')
 plt.draw()
+
 x, y = pred["density"], pred["expt_density"]
 relative_rms = (((x - y) / x)**2).mean()** 0.5
 cv = sklearn.cross_validation.Bootstrap(len(x), train_size=len(x) - 1, n_iter=100)
 relative_rms_grid = np.array([(((x[ind] - y[ind]) / x[ind])**2).mean()** 0.5 for ind, _ in cv])
 relative_rms_err = relative_rms_grid.std()
-plt.title("Density [kg / m^3] (relative rms: %.3f $\pm$ %.3f)" % (relative_rms, relative_rms_err))
+plt.title("Density [g / mL] (relative rms: %.3f $\pm$ %.3f)" % (relative_rms, relative_rms_err))
 plt.savefig("./manuscript/figures/densities_thermoml.pdf", bbox_inches="tight")
+
+
+plt.figure()
+for (formula, grp) in pred.groupby("formula"):
+    x, y = grp["density"], grp["expt_density"]
+    xerr = grp["density_sigma"]
+    yerr = grp["expt_density_std"].replace(np.nan, 0.0)
+    x = x / 1000.  # Convert kg / m3 to g / mL
+    y = y / 1000.  # Convert kg / m3 to g / mL
+    xerr = xerr / 1000.  # Convert kg / m3 to g / mL
+    yerr = yerr / 1000.  # Convert kg / m3 to g / mL
+    plt.errorbar(x - y, y, xerr=xerr, yerr=yerr, fmt='.', label=formula)
+
+plt.xlim((-0.1, 0.1))
+plt.ylim((.600, 1.400))
+plt.xlabel("Predicted - Experiment")
+plt.ylabel("Experiment (ThermoML)")
+plt.gca().set_aspect('auto', adjustable='box')
+plt.draw()
+
+x, y = pred["density"], pred["expt_density"]
+relative_rms = (((x - y) / x)**2).mean()** 0.5
+cv = sklearn.cross_validation.Bootstrap(len(x), train_size=len(x) - 1, n_iter=100)
+relative_rms_grid = np.array([(((x[ind] - y[ind]) / x[ind])**2).mean()** 0.5 for ind, _ in cv])
+relative_rms_err = relative_rms_grid.std()
+plt.title("Density [g / mL] (relative rms: %.3f $\pm$ %.3f)" % (relative_rms, relative_rms_err))
+plt.savefig("./manuscript/figures/densities_differences_thermoml.pdf", bbox_inches="tight")
+
 
 
 yerr = pred["expt_dielectric_std"].replace(np.nan, 0.0)

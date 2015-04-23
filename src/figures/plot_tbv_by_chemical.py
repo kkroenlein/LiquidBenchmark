@@ -38,15 +38,18 @@ pred["name_ind"] = pred.name.map(lambda x: name_dict[x])
 
 num_groups = 5
 num_cols = 3
-DENSITY_BUFFER = 10.
+DENSITY_BUFFER = 10. / 1000.  # Convert kg / m3 to g / mL
 PANEL_SIZE = 4.0
 pred["name_group"] = pred.name_ind % num_groups
+
+for col in ["expt_density", "expt_density_std", "density", "density_sigma"]:
+    pred[col] = pred[col] / 1000.  # Convert kg / m3 to g / mL
 
 for name_group, pred_i in pred.groupby("name_group"):
     g = sns.FacetGrid(pred_i, col="name", col_wrap=num_cols, xlim=[270, 330], ylim=[pred.density.min() - DENSITY_BUFFER, pred.density.max() + DENSITY_BUFFER], size=PANEL_SIZE, sharex=False, sharey=False)
     g.map(plt.errorbar, "temperature", "expt_density", "expt_density_std", fmt='.', color='b', label="Expt")
     g.map(plt.errorbar, "temperature", "density", "density_sigma", fmt='.', color='g', label="MD")
-    g.set_ylabels("Density [kg m$^{-3}$]")
+    g.set_ylabels("Density [g / mL]")
     g.set_xlabels("Temperature [K]")
     legend(loc=4)
     g.set_titles(col_template="{col_name}")
