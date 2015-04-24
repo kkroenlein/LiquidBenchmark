@@ -204,7 +204,7 @@ Exact commands to install various dependencies can be found in section \ref{sect
 \label{section:production}
 
 Boxes were first minimized and equilibrated for $10^7$ steps with an equilibration timestep of 0.4 fs and a collision rate of 5 ps$^{-1}$.  
-Production simulations were performed with OpenMM~6.2~\cite{eastman2012openmm} using a Langevin integrator (with collision rate 1 ps$^{-1}$) and a 1~fs timestep, as we found that timesteps of 2~fs timestep or greater led to a significant timestep dependence in computed equilibrium densities (Fig.~\ref{figure:timestep}).  
+Production simulations were performed with OpenMM~6.3~\cite{eastman2012openmm} using a Langevin integrator (with collision rate 1 ps$^{-1}$) and a 1~fs timestep, as we found that timesteps of 2~fs timestep or greater led to a significant timestep dependence in computed equilibrium densities (Fig.~\ref{figure:timestep}).  
 
 Pressure control at 1 atm was achieved with a Monte Carlo barostat utilizing molecular scaling and automated step size adjustment during equilibration, with volume moves attempted every 25 steps.  
 The particle mesh Ewald (PME) method~\cite{Darden1993} was used with a long-range cutoff of 0.95~nm and a long-range isotropic dispersion correction. 
@@ -263,7 +263,7 @@ The temperature and pressure rounding step was motivated by common data reportin
 Therefore all pressures within the range [kPA] $(100 \le P \le 102)$ were rounded to exactly 1 atm (101.325 kPa).  
 Temperatures were rounded to one decimal place in K. 
 
-The application of these filters (Table~\ref{table:ThermoMLSummary}) leaves 245 conditions---where a \emph{condition} here indicates a (molecule, temperature, pressure) tuple---for which both density and dielectric data are available.  
+The application of these filters (Table~\ref{table:ThermoMLSummary}) leaves 246 conditions---where a \emph{condition} here indicates a (molecule, temperature, pressure) tuple---for which both density and dielectric data are available.  
 The functional groups present in the resulting dataset are summarized in Table~\ref{table:FunctionalGroups}; see Section~\ref{section:thermoml-archive-retrieval} for further description of the software pipeline used.  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -323,7 +323,7 @@ tertiary amine                                      &   3 \\
 \bottomrule
 \end{tabular}
 \caption{{\bf Functional groups present in filtered dataset.}  
-The filtered ThermoML dataset contained 245 distinct (molecule, temperature, pressure) conditions, spanning 45 unique compounds.
+The filtered ThermoML dataset contained 246 distinct (molecule, temperature, pressure) conditions, spanning 45 unique compounds.
 The functional groups represented in these compounds (as identified by the program {\tt checkmol} v0.5~\cite{haider2010functionality}) is summarized here.
 }
 \label{table:FunctionalGroups}
@@ -383,7 +383,7 @@ As a measure of the dielectric response, the static dielectric constant of neat 
 We therefore compare simulations against the measurements in our ThermoML extract (Fig.~\ref{figure:Dielectric}).  
 Overall, we find the dielectric constants to be qualitatively reasonable, but with clear deviations from experiment particularly for nonpolar liquids. 
 This is not surprising given the complete neglect of electronic polarization which will be the dominant contribution for such liquids.
-In particular, GAFF/AM1-BCC systematically underestimates the dielectric constants for nonpolar liquids, with the predictions of $\epsilon \approx 1.0 \pm 0.05$ being substantially smaller than the measured $\epsilon \approx 2$.  
+In particular, GAFF/AM1-BCC systematically underestimates the dielectric constants for nonpolar liquids, with the predictions of $\epsilon \approx 1.0 $ being substantially smaller than the measured $\epsilon \approx 2$.  
 Because this deviation likely stems from the lack of an explicit treatment of electronic polarization, we used a simple empirical polarization model that computes the molecular electronic polarizability $\alpha$ a sum of elemental atomic polarizability contributions~\cite{bosque2002polarizabilities}.
 
 %\begin{equation} \label{eq:sales}
@@ -413,7 +413,8 @@ Simulation error bars represent one standard error of the mean estimated via cir
 Experimental error bars indicate the larger of standard deviation between independently reported measurements and the authors reported standard deviations; for some measurements, neither uncertainty estimate is available.  
 See Fig.~\ref{figure:ErrorAnalysisDensity} for further discussion of error.  
 Plots of dielectric constant versus temperature grouped by chemical species are available in Fig.~\ref{figure:AllDielectrics}.
-The inverse dielectric constant $\epsilon^{-1}$ is plotted instead of $\epsilon$ because $\epsilon^{-1}$ is directly proportional to the Coulomb interaction energy between point charges embedded in a dielectric material [e.g. $U(r) \propto q_1 q_2 / r \propto \epsilon^{-1}$].  
+The inverse dielectric constant $\epsilon^{-1}$ is plotted instead of $\epsilon$ because $\epsilon^{-1}$ is directly proportional to the Coulomb interaction energy between point charges embedded in a dielectric material 
+[e.g. $U(r) = \epsilon^{-1} \frac{q_1 q_2}{r} \propto \epsilon^{-1}$].  
 For nonpolar liquids, it is clear that the forcefield predicts electrostatic interactions that are substantially biased by missing polarizability.
 }
 \label{figure:Dielectric}
@@ -530,7 +531,7 @@ Numerous additional physical properties contained in ThermoML---including activi
 
 High quality, machine-readable datasets of physicochemical measurements will be required for the construction of next-generation small molecule forcefields.  
 Here we have discussed the NIST/TRC ThermoML archive as a growing source of physicochemical measurements that may be useful for the forcefield community.
-From the NIST/TRC ThermoML archive, we selected a dataset of 245 ambient, neat liquid systems for which both densities and static dielectric constants are available.  
+From the NIST/TRC ThermoML archive, we selected a dataset of 246 ambient, neat liquid systems for which both densities and static dielectric constants are available.  
 Using this dataset, we benchmarked GAFF/AM1-BCC, one of the most popular small molecule forcefields.
 We find systematic biases in densities and particularly static dielectric constants.
 Element-based empirical polarizabilty models are able to account for much of the systematic differences between GAFF/AM1-BCC and experiment.  
@@ -596,7 +597,7 @@ Other products may be found to serve as well.
 To probe the systematic error from finite time-step integration, we examined the timestep dependence of butyl acrylate density.  
 (a).  The density is shown for several choices of timestep.  
 (b).  The relative error, as compared to the reference value, is shown for several choices of timestep.  
-Error bars represent stand errors of the mean, with the number of effective samples estimated using pymbar's statistical inefficiency routine \cite{shirts2008statistically}.  
+Error bars represent standard errors of the mean, with the number of effective samples estimated using pymbar's statistical inefficiency routine \cite{shirts2008statistically}.  
 The reference value is estimated by linear extrapolation to 0 fs using the 0.5 fs and 1.0 fs data points; the linear extrapolation is shown as black lines.  
 We find a 2~fs timestep leads to systematic biases in the density on the order of 0.13\%, while 1 fs reduces the systematic bias to approximately 0.08\%---we therefore selected a 1~fs timestep for the present work, where we aimed to achieve three digits of accuracy in density predictions.
 }
@@ -628,7 +629,7 @@ We find a 2~fs timestep leads to systematic biases in the density on the order o
 }
 
 \caption{{\bf Assessment of experimental error: Density}
-To assess the experimental error in our ThermoML extract, we compared three difference estimates of uncertainty.  
+To assess the experimental error in our ThermoML extract, we compared three different estimates of uncertainty.  
 In the first approach (Weighted), we computed the standard deviation of the optimally weighted average of the measurements, using the uncertainties reported by authors ($\sigma_{Weighted} = [\sum_k \sigma_k^{-2}]^{-0.5}$).
 This uncertainty estimator places the highest weights on measurements with small uncertainties and is therefore easily dominated by small outliers and uncertainty under-reporting.
 In the second approach (Median), we estimated the median of the uncertainties reported by authors; this statistic should be robust to small and large outliers of author-reported uncertainties.
@@ -665,7 +666,7 @@ Panel (b) shows the same information as (a) but as a function of the measurement
 }
 
 \caption{{\bf Assessment of experimental error: Static Dielectric Constant}
-To assess the experimental error in our ThermoML extract, we compared three difference estimates of uncertainty.  
+To assess the experimental error in our ThermoML extract, we compared three different estimates of uncertainty.  
 In the first approach (Weighted), we computed the standard deviation of the optimally weighted average of the measurements, using the uncertainties reported by authors ($\sigma_{Weighted} = [\sum_k \sigma_k^{-2}]^{-0.5}$).
 This uncertainty estimator places the highest weights on measurements with small uncertainties and is therefore easily dominated by small outliers and uncertainty under-reporting.
 In the second approach (Median), we estimated the median of the uncertainties reported by authors; this statistic should be robust to small and large outliers of author-reported uncertainties.
