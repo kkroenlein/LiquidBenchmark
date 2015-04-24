@@ -134,7 +134,7 @@ While experimental measurements of fundamental physical properties offer a strai
 These formats require substantial human effort to compile benchmark datasets which are prone to accumulation of human errors, hindering the development of reproducible benchmarks of forcefield accuracy.
 Here, we examine the feasibility of benchmarking atomistic forcefields against the NIST ThermoML data archive of physicochemical measurements, which aggregates thousands of experimental measurements in a portable, machine-readable, self-annotating format. 
 As a proof of concept, we present a detailed benchmark of the generalized Amber small molecule forcefield (GAFF) using the AM1-BCC charge model against measurements (specifically bulk liquid densities and static dielectric constants at ambient pressure) automatically extracted from the archive, and discuss the extent of available data.  
-The results of this benchmark highlight a general problem with fixed-charge forcefields in the representation of liquids of low dielectric.\\
+The results of this benchmark highlight a general problem with fixed-charge forcefields in the representation low dielectric environments such as those seen in binding cavities or biological membranes.  
 
 \emph{Keywords: molecular mechanics forcefields; forcefield parameterization; forcefield accuracy; forcefield validation; mass density; static dielectric constant; biomolecular simulation}
 
@@ -365,6 +365,7 @@ The largest density errors occur for 1,4-dioxane, 2,5,8-trioxanonane, 2-aminoeth
 \caption{{\bf Comparison of liquid densities between experiment and simulation.}
 (a).  Liquid density measurements extracted from ThermoML are compared against densities predicted using the GAFF / AM1-BCC small molecule fixed-charge forcefield.
 Color groupings represent identical chemical species, although the color map repeats itself due to the large (45) number of unique compounds.
+Plots of density versus temperature grouped by chemical species are available in Fig.~\ref{figure:AllDensities}.
 Simulation error bars represent one standard error of the mean, with the number of effective (uncorrelated) samples estimated using pymbar.  
 Experimental error bars indicate the standard deviation between independently reported measurements, when available, or author-reported standard deviations in ThermoML entries; for some measurements, neither uncertainty estimate is available.  
 See Fig.~\ref{figure:ErrorAnalysisDensity} for further discussion of error.  (b).  The same plot, but with the residual (predicted minus experiment) on the x axis.  Note that the error bars are all smaller than the symbols.  
@@ -411,7 +412,9 @@ Averaging all liquids in the present work leads to polarizability corrections to
 Simulation error bars represent one standard error of the mean estimated via circular block averaging \cite{sheppard_2015_15681} with block sizes automatically selected to maximize the error \cite{flyvbjerg1989error}.  
 Experimental error bars indicate the larger of standard deviation between independently reported measurements and the authors reported standard deviations; for some measurements, neither uncertainty estimate is available.  
 See Fig.~\ref{figure:ErrorAnalysisDensity} for further discussion of error.  
-The inverse dielectric constant $\epsilon^{-1}$ is plotted instead of $\epsilon$ because $\epsilon^{-1}$ is directly proportional to the Coulomb interaction energy between point charges embedded in a dielectric material [e.g. $U(r) \propto q_1 q_2 / r \propto \epsilon^{-1}$].
+Plots of dielectric constant versus temperature grouped by chemical species are available in Fig.~\ref{figure:AllDielectrics}.
+The inverse dielectric constant $\epsilon^{-1}$ is plotted instead of $\epsilon$ because $\epsilon^{-1}$ is directly proportional to the Coulomb interaction energy between point charges embedded in a dielectric material [e.g. $U(r) \propto q_1 q_2 / r \propto \epsilon^{-1}$].  
+For nonpolar liquids, it is clear that the forcefield predicts electrostatic interactions that are substantially biased by missing polarizability.
 }
 \label{figure:Dielectric}
 \end{figure}
@@ -530,8 +533,8 @@ Here we have discussed the NIST/TRC ThermoML archive as a growing source of phys
 From the NIST/TRC ThermoML archive, we selected a dataset of 245 ambient, neat liquid systems for which both densities and static dielectric constants are available.  
 Using this dataset, we benchmarked GAFF/AM1-BCC, one of the most popular small molecule forcefields.
 We find systematic biases in densities and particularly static dielectric constants.
-Element-based empirical polarizabilty models are able to account for much of the systematic differences between GAFF/AM1-BCC and experiment, 
-suggesting that non-polarizable forcefields may show unacceptable biases in certain situations---possibly including the upcoming 2015 SAMPL challenge for transfer free energies.  
+Element-based empirical polarizabilty models are able to account for much of the systematic differences between GAFF/AM1-BCC and experiment.  
+Non-polarizable forcefields may show unacceptable biases when predicting transfer and binding properties of non-polar environments such as binding cavities or membranes.  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ACKNOWLEDGMENTS
