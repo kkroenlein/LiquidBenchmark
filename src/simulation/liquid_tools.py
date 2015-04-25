@@ -77,11 +77,13 @@ class AmberMixtureSystem(object):
         
         return self._smiles_strings
 
-    def run(self):
+    def run(self, just_build=False):
+        """Build mol2 monomers, packmol boxes, inpcrd files, equilibrate, and run production."""
         self.build_monomers()
         self.build_boxes()
-        self.equilibrate()
-        self.production()
+        if not just_build:
+            self.equilibrate()
+            self.production()
 
     def build_monomers(self):
         """Generate GAFF mol2 and frcmod files for each chemical."""
