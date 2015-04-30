@@ -8,7 +8,7 @@ import simtk.openmm as mm
 from simtk import unit as u
 
 from density_simulation_parameters import *
-import gaff2xml
+import openmoltools
 
 from pymbar import timeseries as ts
 import pandas as pd
@@ -73,15 +73,17 @@ class AmberMixtureSystem(object):
     def smiles_strings(self):
         self._smiles_strings = []
         for mlc in self.cas_strings:
-            self._smiles_strings.append(gaff2xml.cirpy.resolve(mlc, 'smiles'))
+            self._smiles_strings.append(openmoltools.cirpy.resolve(mlc, 'smiles'))
         
         return self._smiles_strings
 
-    def run(self):
+    def run(self, just_build=False):
+        """Build mol2 monomers, packmol boxes, inpcrd files, equilibrate, and run production."""
         self.build_monomers()
         self.build_boxes()
-        self.equilibrate()
-        self.production()
+        if not just_build:
+            self.equilibrate()
+            self.production()
 
     def build_monomers(self):
         """Generate GAFF mol2 and frcmod files for each chemical."""
@@ -89,17 +91,17 @@ class AmberMixtureSystem(object):
             mol2_filename = self.gaff_mol2_filenames[k]
             frcmod_filename = self.frcmod_filenames[k]
             if not (os.path.exists(mol2_filename) and os.path.exists(frcmod_filename)):
-                gaff2xml.openeye.smiles_to_antechamber(smiles_string, mol2_filename, frcmod_filename)
+                openmoltools.openeye.smiles_to_antechamber(smiles_string, mol2_filename, frcmod_filename)
 
 
     def build_boxes(self):
         """Build an initial box with packmol and use it to generate AMBER files."""
         if not os.path.exists(self.box_pdb_filename):
-            packed_trj = gaff2xml.packmol.pack_box([md.load(mol2) for mol2 in self.gaff_mol2_filenames], self.n_monomers)
+            packed_trj = openmoltools.packmol.pack_box([md.load(mol2) for mol2 in self.gaff_mol2_filenames], self.n_monomers)
             packed_trj.save(self.box_pdb_filename)
 
         if not (os.path.exists(self.inpcrd_filename) and os.path.exists(self.prmtop_filename)):
-            tleap_cmd = gaff2xml.amber.build_mixture_prmtop(self.gaff_mol2_filenames, self.frcmod_filenames, self.box_pdb_filename, self.prmtop_filename, self.inpcrd_filename)
+            tleap_cmd = openmoltools.amber.build_mixture_prmtop(self.gaff_mol2_filenames, self.frcmod_filenames, self.box_pdb_filename, self.prmtop_filename, self.inpcrd_filename)
 
 
     def equilibrate(self):

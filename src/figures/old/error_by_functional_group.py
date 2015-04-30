@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import os
 import subprocess
-import gaff2xml
+import openmoltools
 
 X = pd.read_csv("./tables/data_dielectric.csv")
 
@@ -18,9 +18,9 @@ data = []
 for k, smiles in enumerate(X.smiles.unique()):
     filename = "./mol2/%d.mol2" % k
     if not os.path.exists(filename):
-        oemol = gaff2xml.openeye.smiles_to_oemol(smiles)
-        oemol = gaff2xml.openeye.generate_conformers(oemol, strictStereo=False)
-        gaff2xml.openeye.molecule_to_mol2(oemol, filename)
+        oemol = openmoltools.openeye.smiles_to_oemol(smiles)
+        oemol = openmoltools.openeye.generate_conformers(oemol, strictStereo=False)
+        openmoltools.openeye.molecule_to_mol2(oemol, filename)
     checkmol = subprocess.check_output(["checkmol", filename])
     data.append(dict(smiles=smiles, checkmol=checkmol))
 

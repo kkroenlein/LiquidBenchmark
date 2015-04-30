@@ -5,7 +5,8 @@ from simtk import unit as u
 import os
 
 #DATA_PATH = os.path.join(os.environ["HOME"], "liquid_benchmark_3_14/")
-DATA_PATH = os.path.join(os.environ["HOME"], "liquid_benchmark_4_8/")
+#DATA_PATH = os.path.join(os.environ["HOME"], "liquid_benchmark_4_8/")
+DATA_PATH = os.path.join(os.environ["HOME"], "liquid_benchmark_4_24/")
 
 MOLECULES_PER_BOX = 1000
 
