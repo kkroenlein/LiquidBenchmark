@@ -1,12 +1,12 @@
 """
-Test building mol2 files using latest gaff2xml build.
+Test building mol2 files using latest openmoltools build.
 """
 import pandas as pd
 import chemistry
 from simtk import unit as u
 from liquid_tools import AmberMixtureSystem
 from density_simulation_parameters import MOLECULES_PER_BOX, DATA_PATH
-import gaff2xml
+import openmoltools
 
 data = pd.read_csv("../../tables/data_dielectric.csv")
 
@@ -14,7 +14,7 @@ for k0, k1, components, smiles, cas, temperature, pressure, density, perm in dat
     print(k0, k1, components, smiles, cas, temperature, pressure, density)
     mol2_filename = "./tmpmol2/%s.mol2" % cas
     frcmod_filename = "./tmpmol2/%s.frcmod" % cas
-    gaff2xml.openeye.smiles_to_antechamber(smiles, mol2_filename, frcmod_filename)
+    openmoltools.openeye.smiles_to_antechamber(smiles, mol2_filename, frcmod_filename)
 
 
 

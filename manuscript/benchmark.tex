@@ -197,7 +197,7 @@ Simulation boxes containing 1000 molecules were constructed using PackMol versio
 Packmol box volumes were chosen to accommodate twice the van der Waals volume of the enclosed atoms.  
 AM1-BCC~\cite{am1bcc1,am1bcc2, velez2014time} charges were generated with the OpenEye Python Toolkit version 2015-2-3 \cite{openeye}, using the {\tt oequacpac.OEAssignPartialCharges} module with the {\tt OECharges\_AM1BCCSym} option, which utilizes a conformational expansion procedure (using {\tt oeomega.OEOmega}) prior to charge fitting to minimize artifacts from intramolecular contacts.  
 The {\tt OEOmega} selected conformer was then processed using {\tt antechamber} (with {\tt parmchk2}) and {\tt tleap} in AmberTools~14~\cite{amber14} to produce {\tt prmtop} and {\tt inpcrd} files, which were then read into OpenMM using the {\tt simtk.openmm.app} module.
-Simulation code used libraries gaff2xml~0.6.4~\cite{gaff2xml}, OpenMM~6.3~\cite{eastman2012openmm}, and MDTraj~1.3~\cite{mcgibbon2014mdtraj}.  
+Simulation code used libraries openmoltools~0.6.4~\cite{openmoltools}, OpenMM~6.3~\cite{eastman2012openmm}, and MDTraj~1.3~\cite{mcgibbon2014mdtraj}.  
 Exact commands to install various dependencies can be found in section \ref{section:commands}.
 
 \subsubsection{Equilibration and production}
@@ -213,7 +213,7 @@ PME grid and spline parameters were automatically selected using the default set
 Simulations were continued until automatic analysis showed standard errors in densities were less than $2 \times 10^{-4}$ g / mL.
 Automatic analysis was run every 1 ns of simulation time, and utilized the {\tt detectEquilibration} method in the timeseries module of pymbar 2.1~\cite{shirts2008statistically} to automatically trim the initial portion of the simulation with strong far-from-equilibrium behavior by maximizing the number of effectively uncorrelated samples in the remainder of the production simulation as determined by autocorrelation analysis.
 Statistical errors were computed after subsampling the data to produce effectively uncorrelated equilibrium samples by $\delta^2 \rho \approx \var{\rho} / N_\mathrm{eff}$, where $\var{\rho}$ is the sample variance of the density and $N_\mathrm{eff}$ is the number of effectively uncorrelated samples.  
-With this protocol, we found starting trajectory lengths of $15000 \pm 12000$ frames (250 fs each), discarded regions of $2200 \pm 8700$, and statistical inefficiencies of $30 \pm 31$ (mean $\pm$ standard deviation).  
+With this protocol, we found starting trajectory lengths of $15000 \pm 14000$ frames (250 fs each), discarded regions of $2400 \pm 9400$, and statistical inefficiencies of $31 \pm 40$ (mean $\pm$ standard deviation).  
 
 Instantaneous densities were stored every 250~fs, while trajectory snapshots were stored every 5~ps.  
 
@@ -340,7 +340,7 @@ The functional groups represented in these compounds (as identified by the progr
 Mass densities of bulk liquids have been widely used for parameterizing and testing forcefields, particularly the Lennard-Jones parameters representing dispersive and repulsive interactions~\cite{jorgensen1983comparison, jorgensen1984optimized}.
 We therefore used the present ThermoML extract as a benchmark of the GAFF/AM1-BCC forcefield (Fig.~\ref{figure:Density}).  
 
-Overall, the densities show reasonable accuracy, with a root-mean square (RMS) relative error over all measurements of 2.9$\pm$0.1\%, especially encouraging given that this forcefield was not designed with the intention of modeling bulk liquid properties of organic molecules~\cite{gaff,gaff2}
+Overall, the densities show reasonable accuracy, with a root-mean square (RMS) relative error over all measurements of 3.0$\pm$0.1\%, especially encouraging given that this forcefield was not designed with the intention of modeling bulk liquid properties of organic molecules~\cite{gaff,gaff2}
 This is reasonably consistent with previous studies reporting agreement of 4\% on a different benchmark set~\cite{caleman2011force}.
 
 For a given compound, the errors are roughly similar at different temperatures (Fig. ~\ref{figure:AllDensities}).  Overall, the predictions give an average density of $.948 \pm 0.009$ $g / mL$, while the measurements give an average density of $.928 \pm 0.008$ $g / mL$.  
@@ -839,10 +839,10 @@ The following shell commands can be used to install the necessary prerequisites 
 
 \begin{lstlisting}[language=bash]
 $ conda config --add channels http://conda.binstar.org/omnia
-$ conda install "gaff2xml==0.6.4" "pymbar==2.1" "mdtraj==1.3" "openmm==6.3" packmol
+$ conda install "openmoltools" "pymbar==2.1" "mdtraj==1.3" "openmm==6.3" packmol
 %\end{lstlisting}
 
-Note that this command installs the exact versions used in the present study.  
+Note that this command installs the exact versions used in the present study, with the exception of openmoltools for which only a more recent package is available.  
 However, for authors interested in extending the present work, we suggust using the most up-to-date versions available instead, which involves replace the equality symbols == with >=.
 
 

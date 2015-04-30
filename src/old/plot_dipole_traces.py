@@ -1,5 +1,5 @@
 import chemistry
-from gaff2xml import cirpy
+from openmoltools import cirpy
 import mdtraj as md
 import pymbar
 import os

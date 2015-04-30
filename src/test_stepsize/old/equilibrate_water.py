@@ -1,4 +1,4 @@
-import gaff2xml
+import openmoltools
 import mdtraj as md
 from simtk.openmm import app
 import simtk.openmm as mm
@@ -25,7 +25,7 @@ pdb_filename = "./%s.pdb" % cas
 box_pdb_filename = "./box.pdb"
 
 monomer_pdb_filenames = [pdb_filename]
-packed_trj = gaff2xml.packmol.pack_box(monomer_pdb_filenames, [n_monomers])
+packed_trj = openmoltools.packmol.pack_box(monomer_pdb_filenames, [n_monomers])
 packed_trj.save(box_pdb_filename)
 
 out_pdb_filename = "./equil/equil.pdb"

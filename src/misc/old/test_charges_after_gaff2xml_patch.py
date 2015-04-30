@@ -2,15 +2,15 @@ import glob, os, chemistry
 import networkx
 import mdtraj as md
 
-filenames = glob.glob("/home/kyleb/lb_benchmark_gaff2xml/tleap/*.prmtop")
-#filenames = glob.glob("/home/kyleb/lb_benchmark_gaff2xml/tleap/57-55-6_1000_313.2*.prmtop")
-filenames = glob.glob("/home/kyleb/lb_benchmark_gaff2xml/tleap/121182*.prmtop")
-#filenames = glob.glob("/home/kyleb/lb_benchmark_gaff2xml/tleap/126492-54-4_1000_315*.prmtop")
+filenames = glob.glob("/home/kyleb/lb_benchmark_openmoltools/tleap/*.prmtop")
+#filenames = glob.glob("/home/kyleb/lb_benchmark_openmoltools/tleap/57-55-6_1000_313.2*.prmtop")
+filenames = glob.glob("/home/kyleb/lb_benchmark_openmoltools/tleap/121182*.prmtop")
+#filenames = glob.glob("/home/kyleb/lb_benchmark_openmoltools/tleap/126492-54-4_1000_315*.prmtop")
 
 for filename in filenames:
     base = os.path.splitext(os.path.split(filename)[-1])[0]
-    prmtop_filename = "/home/kyleb/lb_benchmark_gaff2xml/tleap/" + base + ".prmtop"
-    inpcrd_filename = "/home/kyleb/lb_benchmark_gaff2xml/tleap/" + base + ".inpcrd"
+    prmtop_filename = "/home/kyleb/lb_benchmark_openmoltools/tleap/" + base + ".prmtop"
+    inpcrd_filename = "/home/kyleb/lb_benchmark_openmoltools/tleap/" + base + ".inpcrd"
     print(prmtop_filename, inpcrd_filename)
     prmtop0 = chemistry.load_file(prmtop_filename)
     t0 = md.load(inpcrd_filename, top=prmtop_filename)
