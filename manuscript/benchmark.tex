@@ -162,13 +162,14 @@ There are also outstanding questions of generalizability of these targeted pertu
 Addressing these questions requires establishing community agreement upon shared benchmarks that can be easily replicated among laboratories to test proposed forcefield enhancements and expanded as the body of experimental data grows.
 
 A key barrier to establishing reproducible and extensible forcefield accuracy benchmarks is that many experimental datasets are heterogeneous, paywalled, and unavailable in machine-readable formats (although notable counterexamples exist, e.g.~the RCSB~\cite{Berman2000}, FreeSolv~\cite{freesolv}, and the BMRB~\cite{Ulrich2008}).  
-While this inconvenience is relatively minor for benchmarking forcefield accuracy for a single target system (e.g.~water), it becomes prohibitive for studies spanning the relevant chemical space.  
+While this inconvenience is relatively minor for benchmarking forcefield accuracy for a single target system (e.g.~water), it becomes prohibitive for studies spanning the large relevant chemical spaces, such as forcefields intended to describe a large variety of druglike small organic molecules.  
 
-In addition to inconvenience, the number and kind of human-induced errors are legion.
-A USGS study on the reported literature values of a single property---the octanol-water partition coefficient of the pesticide DDT---found that a single measurement had been reported in ~\cite{usgs-ddt-report}.
-Additional 
+In addition to inconvenience, the number and kind of human-induced errors that can corrupt hand-compiled benchmarks are legion.
+A USGS case study examining reported literature values of the aqueous solubility and octanol-water partition coefficients for DDT and its persistent metabolite DDE provide incredible insight into the potential issues associated with compiling literature values for physicochemical properties of molecules of lesser importance for environmental and human health~\cite{usgs-ddt-report}.
+{\color{red}[JDC: More.]}
 
 To ameliorate problems of data archival, the NIST Thermodynamics Research Center (TRC) has developed a IUPAC standard XML-based format---ThermoML~\cite{frenkel2006xml}---for storing physicochemical measurements, uncertainties, and metadata.
+{\color{red}[JDC: Aren't there several ThermoML extension papers to cite as well?]}
 Experimental researchers publishing measurements in several journals (J.~Chem.~Eng.~Data, J.~Chem.~Therm., Fluid Phase Equil., Therm.~Acta, and Int.~J.~Therm.) are guided through a data archival process that involves sanity checks, conversion to a standard machine-readable format, and archival at the TRC (\url{http://trc.nist.gov/ThermoML.html}).  
 
 Here, we examine the ThermoML archive as a potential source for a reproducible, extensible accuracy benchmark of biomolecular forcefields.
@@ -209,9 +210,10 @@ Below, we describe the operation of the various stages of this pipeline and thei
 
 Simulation boxes containing 1000 molecules were constructed using PackMol version 14-225~\cite{martinez2009packmol, packmolurl} wrapped in the Python automation library openmoltools.
 In order to ensure stable automated equilibration, PackMol box volumes were chosen to accommodate twice the van der Waals volume of the enclosed atoms.  
-{\color{red}[JDC: Did you really use standard van der Waals radii, or did you use the $\sigma$ parameter of Lennard-Jones?]}
+{\color{red}[JDC: Did you use standard van der Waals radii, or did you use the $\sigma$ parameter of Lennard-Jones?]}
 
-{\color{red}[JDC: Missing statement and citation about GAFF forcefield parameterization here.]}
+For this illustrative benchmark, we utilized the generalized Amber small molecule forcefield (GAFF)~\cite{gaff,gaff2} with the AM1-BCC charge model~\cite{am1bcc1,am1bcc2}, which we shall refer to as the GAFF/AM1-BCC forcefield.
+{\color{red}[JDC: Missing statement about how the GAFF forcefield parameterization was applied (via antechamber?) here.]}
 
 Canonical AM1-BCC~\cite{am1bcc1,am1bcc2, velez2014time} charges were generated with the OpenEye Python Toolkit version 2015-2-3 \cite{openeye}, using the {\tt oequacpac.OEAssignPartialCharges} module with the {\tt OECharges\_AM1BCCSym} option, which utilizes a conformational expansion procedure (using {\tt oeomega.OEOmega} \cite{hawkins2012conformer}) prior to charge fitting to minimize artifacts from intramolecular contacts.  
 The {\tt OEOmega} selected conformer was then processed using {\tt antechamber} (with {\tt parmchk2}) and {\tt tleap} in AmberTools~14~\cite{amber14} to produce Amber-format {\tt prmtop} and {\tt inpcrd} files, which were then read into OpenMM to perform molecular simulations using the {\tt simtk.openmm.app} module.
@@ -240,17 +242,21 @@ Instantaneous densities were stored every 250~fs, while trajectory snapshots wer
 \subsubsection{Data analysis and statistical error estimation}
 
 Trajectory analysis was performed using OpenMM~6.3~\cite{eastman2012openmm} and MDTraj~1.3~\cite{mcgibbon2014mdtraj}.  
+
+{\bf Mass density.}
 Mass density $\rho$ was computed via the relation,
 \begin{eqnarray}
 \rho = \left\langle \frac{M}{V} \right\rangle \label{equation:mass-density} ,
  \end{eqnarray}
 where $M$ is the total mass of all particles in the system and $V$ is the instantaneous volume of the simulation box.
 
+{\bf Static dielectric constants.}
 Static dielectric constants were calculated using the dipole fluctuation approach appropriate for PME with conducting (``tin-foil'') boundary conditions~\cite{horn2004, neumann1983dipole}, with the total system box dipole $\mu$ computed from trajectory snapshots using MDTraj 1.3~\cite{mcgibbon2014mdtraj}.
 \begin{eqnarray}
 \epsilon = 1 + \frac{4\pi}{3} \frac{\langle \mu \cdot \mu \rangle - \langle \mu \rangle \cdot \langle \mu \rangle}{\langle V \rangle k_B T} \label{equation:dielectric_calculation}
 \end{eqnarray}
 
+{\bf Statistical uncertainties.}
 Statistical uncertainties were computed by bootstrapping uncorrelated samples following discarding the automatically-determined initial portion of the simulation to equilibration, as described in Section~\ref{section:production}.
 All reported uncertainties represent an estimate of one standard deviation of the mean unless otherwise reported.
 
@@ -290,6 +296,8 @@ The functional groups present in the resulting dataset are summarized in Table~\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TABLE: DENSITY AND STATIC DIELECTRIC
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+{\color{red}[JDC: Bas has a nice way of auto-formatting numbers like in these tables.]}
 
 \begin{table}
 \begin{tabular}{lrr}
