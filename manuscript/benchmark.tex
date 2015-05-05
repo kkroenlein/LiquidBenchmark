@@ -235,8 +235,9 @@ Equilibration and production simulations utilized a Monte Carlo barostat with a 
 The particle mesh Ewald (PME) method with conducting boundary conditions~\cite{Darden1993} was used with a long-range cutoff of 0.95~nm and a long-range isotropic dispersion correction. 
 PME grid and spline parameters were automatically selected using the default settings in OpenMM 6.3 for the CUDA platform~\cite{eastman2012openmm}.
 
-Simulations were continued until automatic analysis showed standard errors in densities were less than $2 \times 10^{-4}$ g / mL.
-Automatic analysis was run every 1 ns of simulation time, and utilized the {\tt detectEquilibration} method in the timeseries module of pymbar 2.1~\cite{shirts2008statistically} to automatically trim the initial portion of the simulation with strong far-from-equilibrium behavior by maximizing the number of effectively uncorrelated samples in the remainder of the production simulation as determined by autocorrelation analysis.
+{\bf Automatic termination criteria.}
+Production simulations were continued until automatic analysis showed standard errors in densities were less than $2 \times 10^{-4}$ g / mL.
+Automatic analysis of the production simulation data was run every 1 ns of simulation time, and utilized the {\tt detectEquilibration} method in the timeseries module of pymbar 2.1~\cite{shirts2008statistically} to automatically discard the initial portion of the production simulation containing strong far-from-equilibrium behavior by maximizing the number of effectively uncorrelated samples in the remainder of the production simulation as determined by autocorrelation analysis using the fast adaptive statistical inefficiency computation method as implemented in the {\tt timeseries.computeStatisticalInefficiency} method of pymbar 2.1 (where the algorithm is described in~\cite{chodera2007}).
 Statistical errors were computed after subsampling the data to produce effectively uncorrelated equilibrium samples by $\delta^2 \rho \approx \var{\rho} / N_\mathrm{eff}$, where $\var{\rho}$ is the sample variance of the density and $N_\mathrm{eff}$ is the number of effectively uncorrelated samples.  
 With this protocol, we found starting trajectory lengths of $15000 \pm 14000$ frames (250 fs each), discarded regions of $2400 \pm 9400$, and statistical inefficiencies of $31 \pm 40$ (mean $\pm$ standard deviation).  
 {\color{red}[JDC: Standard deviations are not very useful here since they are often larger than the mean and these distributions are highly non-normal.  Suggest you quote 95\% confidence intervals or quartiles instead of standard deviations.]}
@@ -257,17 +258,23 @@ where $M$ is the total mass of all particles in the system and $V$ is the instan
 {\bf Static dielectric constants.}
 Static dielectric constants were calculated using the dipole fluctuation approach appropriate for PME with conducting (``tin-foil'') boundary conditions~\cite{horn2004, neumann1983dipole}, with the total system box dipole $\mu$ computed from trajectory snapshots using MDTraj 1.3~\cite{mcgibbon2014mdtraj}.
 \begin{eqnarray}
-\epsilon = 1 + \frac{4\pi}{3} \frac{\langle \mu \cdot \mu \rangle - \langle \mu \rangle \cdot \langle \mu \rangle}{\langle V \rangle k_B T} \label{equation:dielectric_calculation}
+\epsilon = 1 + \beta \frac{4\pi}{3} \frac{\langle \mu \cdot \mu \rangle - \langle \mu \rangle \cdot \langle \mu \rangle}{\langle V \rangle} \label{equation:dielectric_calculation}
 \end{eqnarray}
+where $\beta \equiv k_B T$ is the inverse temperature.
+
+{\bf Computation of expectations.}
+Expectations were estimated by computing sample means over the production simulation after discarding the initial far-from-equilibrium portion to equilibration (as described in {\bf Automatic termination criteria} above).
 
 {\bf Statistical uncertainties.}
-Statistical uncertainties were computed by bootstrapping uncorrelated samples following discarding the automatically-determined initial portion of the simulation to equilibration, as described in Section~\ref{section:production}.
-All reported uncertainties represent an estimate of one standard deviation of the mean unless otherwise reported.
+The portion of the production simulation not discarded to equilibration was subsampled according to the statistical inefficiency of the property under consideration to generate an effectively uncorrelated dataset.
+Statistical uncertainties were computed by bootstrapping these uncorrelated samples.
+All reported uncertainties represent an estimate of one standard deviation of the mean unless otherwise stated.
+{\color{red}[JDC: Check that this is accurate}
 
 \subsubsection{Code availability}
 
-Data analysis, intermediate data (everything but trajectories), and figure creation code for this work is available at \url{https://github.com/choderalab/LiquidBenchmark}.  
-{\color{red}[JDC: I feel like we should also give pointers to the various other domain-specific tools, like OpenMM, openmoltools, and MDTraj.]}
+Data analysis, all intermediate data (except configurational trajectories, due to their large size), and figure creation code for this work is available at \url{https://github.com/choderalab/LiquidBenchmark}.  
+{\color{red}[JDC: Should we also give pointers to the various other domain-specific tools, like OpenMM, openmoltools, and MDTraj?  Or to the Appendix where you describe how to install everything?]}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % RESULTS
@@ -301,8 +308,6 @@ The functional groups present in the resulting dataset are summarized in Table~\
 % TABLE: DENSITY AND STATIC DIELECTRIC
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-{\color{red}[JDC: Bas has a nice way of auto-formatting numbers like in these tables.]}
-
 \begin{table}
 \begin{tabular}{lrr}
 \hline
@@ -323,6 +328,7 @@ The functional groups present in the resulting dataset are summarized in Table~\
 \caption{{\bf Successive filtration of the ThermoML Archive.}
 A set of successive filters were applied to all measurements in the ThermoML Archive that contained either mass density or static dielectric constant measurements.
 Each column reports the number of measurements remaining after successive application of the corresponding filtration step.
+{\color{red}[JDC: Bas has a nice way of auto-formatting numbers, like 136 212.]}
 }
 \label{table:ThermoMLSummary}
 \end{table}
@@ -373,13 +379,27 @@ The functional groups represented in these compounds (as identified by the progr
 Mass densities of bulk liquids have been widely used for parameterizing and testing forcefields, particularly the Lennard-Jones parameters representing dispersive and repulsive interactions~\cite{jorgensen1983comparison, jorgensen1984optimized}.
 We therefore used the present ThermoML extract as a benchmark of the GAFF/AM1-BCC forcefield (Fig.~\ref{figure:Density}).  
 
-Overall, the densities show reasonable accuracy, with a root-mean square (RMS) relative error over all measurements of 3.0$\pm$0.1\%, especially encouraging given that this forcefield was not designed with the intention of modeling bulk liquid properties of organic molecules~\cite{gaff,gaff2}
+{\bf Overall accuracy.}
+Overall, the densities show reasonable accuracy, with a root-mean square (RMS) relative error over all measurements of 3.0$\pm$0.1\%, especially encouraging given that this forcefield was not designed with the intention of modeling bulk liquid properties of organic molecules~\cite{gaff,gaff2}.
 This is reasonably consistent with previous studies reporting agreement of 4\% on a different benchmark set~\cite{caleman2011force}.
 
-For a given compound, the errors are roughly similar at different temperatures (Fig. ~\ref{figure:AllDensities}).  Overall, the predictions give an average density of $.948 \pm 0.009$ $g / mL$, while the measurements give an average density of $.928 \pm 0.008$ $g / mL$.  
+{\bf Temperature-dependence.}
+For a given compound, the errors are roughly similar at different temperatures (Fig.~\ref{figure:AllDensities}).  
+{\color{red}[JDC: Should you cite Fig.~\ref{figure:Density}B here?  Constant bias as a function of temperature would look like vertical lines, right?  Are there other things we could say here about the remarkable fact that some of the series in Fig.~\ref{figure:Density}B are vertical (good temperature-dependent behavior even if bias), some are horizontal (simulation has much larger temperature-dependence than experiment); and some are diagonal (wrong temperature dependence)?  I also find it remarkable that essentially none of the molecules have wacky-looking trend lines in this plot, such as a line of two different slopes.]}
 
-The largest density errors occur for 1,4-dioxane, 2,5,8-trioxanonane, 2-aminoethanol, dimethyl carbonate, formamide, and water.  The absolute error on these poor predictions is on the order of 0.05 $g / mL$, which is substantially higher than the measurement error ($\le 0.008$ $g / mL$; see Fig.~\ref{figure:ErrorAnalysisDensity}).  We note that our benchmark uses a GAFF model for water, as our purpose is to test the AM1-BCC charges.  For production simulations, however, it is advisable to use one of the parameterized water models.  
+Overall, the predictions give an average density of $0.948 \pm 0.009$ g/mL, while the measurements give an average density of $0.928 \pm 0.008$ g/mL.  
+{\color{red}[JDC: What is the utility of quoting the average density and its standard error?  Not quite following what the point is.]}
 
+{\bf Outliers.}
+The largest density errors occur for a number of oxygen-containing compounds: 1,4-dioxane; 2,5,8-trioxanonane; 2-aminoethanol; dimethyl carbonate; formamide; and water.  
+{\color{red}[JDC: Could we make a figure of just these compounds, along with their average errors?]}
+The absolute error on these poor predictions is on the order of 0.05  g/mL, which is substantially higher than the measurement error ($\le0.008$ g/mL; see Fig.~\ref{figure:ErrorAnalysisDensity}).  
+{\color{red}[JDC: We discussed plotting the error as a function of the number of oxygens, since it appears that some of the extreme outliers may have LJ issues with their oxygens.]}
+
+We note that our benchmark includes a GAFF/AM1-BCC model for water due to our desire to automate benchmarks against a forcefield capable of modeling a large variety of small molecular liquids.
+Water---an incredibly important solvent in biomolecular systems---is generally treated with a special-purpose model (such as TIP3P~\cite{jorgensen1983comparison} or TIP4P-Ew~\cite{horn2004}) parameterized to fit a large quantity of thermophysical data.
+As expected, the GAFF/AM1-BCC model performs poorly in reproducing liquid densities for this very special solvent.
+We conclude that it remains highly advisable that the field continue to use specialized water models when possible.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIGURE: DENSITY COMPARISON
