@@ -229,7 +229,7 @@ Exact commands to install various dependencies can be found in Appendix~\ref{sec
 \label{section:production}
 
 Simulation boxes were first minimized {\color{red}[JDC: Describe minimization procedure?]} and equilibrated for $10^7$ steps with an equilibration timestep of 0.4 fs and a collision rate of 5 ps$^{-1}$.  
-Production simulations were performed with OpenMM~6.3~\cite{eastman2012openmm} using a Langevin integrator (with collision rate 1 ps$^{-1}$) and a 1~fs timestep, as we found that timesteps of 2~fs timestep or greater led to a significant timestep dependence in computed equilibrium densities (Fig.~\ref{figure:timestep}).  
+Production simulations were performed with OpenMM~6.3~\cite{eastman2012openmm} using a Langevin Leapfrog integrator~\cite{izaguirre-sweet-pande:psb:2010:langevin-leapfrog} (with collision rate 1 ps$^{-1}$) and a 1~fs timestep, as we found that timesteps of 2~fs timestep or greater led to a significant timestep dependence in computed equilibrium densities (Fig.~\ref{figure:timestep}).  
 
 Equilibration and production simulations utilized a Monte Carlo barostat with a control pressure of 1 atm, utilizing molecular scaling and automated step size adjustment during equilibration, with volume moves attempted every 25 steps.  
 The particle mesh Ewald (PME) method with conducting boundary conditions~\cite{Darden1993} was used with a long-range cutoff of 0.95~nm and a long-range isotropic dispersion correction. 
