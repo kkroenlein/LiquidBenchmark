@@ -383,7 +383,7 @@ We therefore used the present ThermoML extract as a benchmark of the GAFF/AM1-BC
 Overall, the densities show reasonable accuracy, with a root-mean square (RMS) relative error over all measurements of 3.0$\pm$0.1\%, especially encouraging given that this forcefield was not designed with the intention of modeling bulk liquid properties of organic molecules~\cite{gaff,gaff2}.
 This is reasonably consistent with previous studies reporting agreement of 4\% on a different benchmark set~\cite{caleman2011force}.
 
-{\bf Temperature-dependence.}
+{\bf Temperature dependence.}
 For a given compound, the errors are roughly similar at different temperatures (Fig.~\ref{figure:AllDensities}).  
 {\color{red}[JDC: Should you cite Fig.~\ref{figure:Density}B here?  Constant bias as a function of temperature would look like vertical lines, right?  Are there other things we could say here about the remarkable fact that some of the series in Fig.~\ref{figure:Density}B are vertical (good temperature-dependent behavior even if bias), some are horizontal (simulation has much larger temperature-dependence than experiment); and some are diagonal (wrong temperature dependence)?  I also find it remarkable that essentially none of the molecules have wacky-looking trend lines in this plot, such as a line of two different slopes.]}
 
@@ -431,9 +431,20 @@ See Fig.~\ref{figure:ErrorAnalysisDensity} for further discussion of error.  (b)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{Static dielectric constant}
+\label{section:results:static-dielectric-constant}
 
+{\bf Overall accuracy.}
 As a measure of the dielectric response, the static dielectric constant of neat liquids provides a critical benchmark of the accuracy electrostatic treatment in forcefield models.  
-We therefore compare simulations against the measurements in our ThermoML extract (Fig.~\ref{figure:Dielectric}).  
+Discussing the accuracy in terms the ability of GAFF/AM1-BCC to reproduce the static dielectric constant $\epsilon$ is not necessarily meaningful because of the way that the solvent dielectric $\epsilon$ enters into the Coulomb potential between two point charges separated by a distance $r$,
+\begin{eqnarray}
+U(r) = \frac{q_1 q_2}{\epsilon \, r} \propto \frac{1}{\epsilon} .
+\end{eqnarray}
+It is evident that $1/\epsilon$ is a much more meaningful quantity to compare than $\epsilon$ directly, as a 5\% error in $1/\epsilon$ will cause a 5\% error in the Coulomb potential between two point charges (assuming a uniform dielectric), while a 5\% error in $\epsilon$ will have a much more complex $\epsilon$-dependent effect on the Coulomb potential.
+We therefore compare simulations against tmeasurements in our ThermoML extract on the $1/\epsilon$ scale in Fig.~\ref{figure:Dielectric}.  
+
+{\color{red}[JDC: Can you provide any statistics about the overall error here, maybe also broken up into the error in high-dielectric and low-dielectric regimes?]}
+
+{\bf GAFF/AM1-BCC systematically underestimates the dielectric constants of nonpolar liquids.}
 Overall, we find the dielectric constants to be qualitatively reasonable, but with clear deviations from experiment particularly for nonpolar liquids. 
 This is not surprising given the complete neglect of electronic polarization which will be the dominant contribution for such liquids.
 In particular, GAFF/AM1-BCC systematically underestimates the dielectric constants for nonpolar liquids, with the predictions of $\epsilon \approx 1.0 $ being substantially smaller than the measured $\epsilon \approx 2$.  
@@ -465,10 +476,9 @@ Averaging all liquids in the present work leads to polarizability corrections to
 Simulation error bars represent one standard error of the mean estimated via circular block averaging \cite{sheppard_2015_15681} with block sizes automatically selected to maximize the error \cite{flyvbjerg1989error}.  
 Experimental error bars indicate the larger of standard deviation between independently reported measurements and the authors reported standard deviations; for some measurements, neither uncertainty estimate is available.  
 See Fig.~\ref{figure:ErrorAnalysisDensity} for further discussion of error.  
-Plots of dielectric constant versus temperature grouped by chemical species are available in Fig.~\ref{figure:AllDielectrics}.
-The inverse dielectric constant $\epsilon^{-1}$ is plotted instead of $\epsilon$ because $\epsilon^{-1}$ is directly proportional to the Coulomb interaction energy between point charges embedded in a dielectric material 
-[e.g. $U(r) = \epsilon^{-1} \frac{q_1 q_2}{r} \propto \epsilon^{-1}$].  
+See Section~\ref{section:results:static-dielectric-constant} for explanation of why inverse dielectric constant (rather than dielectric constant) is plotted. 
 For nonpolar liquids, it is clear that the forcefield predicts electrostatic interactions that are substantially biased by missing polarizability.
+Plots of dielectric constant versus temperature grouped by chemical species are available in Fig.~\ref{figure:AllDielectrics}.
 }
 \label{figure:Dielectric}
 \end{figure}
@@ -556,6 +566,7 @@ such that, for an error of $\Delta \epsilon$ departing from the true static diel
 \end{equation}
 For example, the solvation of water ($a = 1.93$~\AA, $\mu = 2.2$~D) in a low dielectric medium such as tetrachloromethane or benzene ($\epsilon \sim 2.2$, but $\Delta \epsilon = -1.2$) gives an error of $\Delta \Delta G \sim -2$ kcal/mol.
 
+{\bf Implications for transfer free energies.}
 As another example, consider the transfer of small druglike molecules from a nonpolar solvent (such as cyclohexane) to water, a property often measured to indicate the expected degree of lipophilicity of a compound.
 To estimate the magnitude of error expected, for each molecule in the latest (Feb. 20) FreeSolv database~\cite{freesolv, freesolv_github}, we estimated the expected error in computed transfer free energies should GAFF/AM1-BCC be used to model the nonpolar solvent cyclohexane using the Onsager model (Eq.~\ref{equation:onsager-error}).
 We used took the cavity radius $a$ to be the half the maximum interatomic distance and calculated $\mu = \sum_i q_i r_i$ using the provided mol2 coordinates and AM1-BCC charges.  
@@ -563,6 +574,7 @@ This calculation predicts a mean error of $-0.91 \pm0.07$ kcal / mol for the 643
 suggesting that the missing atomic polarizabilty unrepresentable by fixed point charge forcefields could contribute substantially to errors in predicted transfer and solvation properties of druglike molecules.  
 We conjecture that this missing physics will be important in the upcoming (2015) SAMPL challenge \cite{newman2009practical}, which will examine transfer free energies in several low dielectric media. 
 
+{\bf Utility in parameterization.}
 Given their ease of measurement and direct connection to long-range electrostatic interactions, static dielectric constants have high potential utility as primary data for forcefield parameterization efforts.  
 Although this will require the use of forcefields with explicit treatment of atomic polarizability, the inconsistency of fixed-charge models in low-dielectric media is sufficiently alarming to motivate further study of polarizable forcefields.  In particular, continuum methods~\cite{truchon2010using, truchon2009integrated, truchon2008accurate}, point dipole methods~\cite{Ponder2010, ren2004temperature}, and Drude methods~\cite{lamoureux2003modeling, anisimov2005determination} have been maturing rapidly.  Finding the optimal balance of accuracy and performance remains an open question; however, the use of experimentally-parameterized direct polarization methods~\cite{wang2013systematic} may provide polarizability physics at a cost not much greater than fixed charge forcefields.
 
