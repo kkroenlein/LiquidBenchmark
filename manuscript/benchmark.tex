@@ -170,8 +170,9 @@ numerical data can be mistranscribed, transposed, or incorrectly converted among
 This occurs to such a degree that the authors note ``strings of erroneous data compose as much as 41--73 percent of the total data``~\cite{usgs-ddt-report}.
 Given the incredible importance of these properties for human health and the environment, the quality of physicochemical datasets of far lesser importance is highly suspect.
 
-To ameliorate problems of data archival, the NIST Thermodynamics Research Center (TRC) has developed a IUPAC standard XML-based format---ThermoML~\cite{frenkel2003thermoml, frenkel2006xml, chirico2013improvement}---for storing physicochemical measurements, uncertainties, and metadata.
-Experimental researchers publishing measurements in several journals (J.~Chem.~Eng.~Data, J.~Chem.~Therm., Fluid Phase Equil., Therm.~Acta, and Int.~J.~Therm.) are guided through a data archival process that involves sanity checks, conversion to a standard machine-readable format, and archival at the TRC (\url{http://trc.nist.gov/ThermoML.html}).  
+To ameliorate problems of data archival, the NIST Thermodynamics Research Center (TRC) has developed an IUPAC standard XML-based format---ThermoML~\cite{frenkel2003thermoml, frenkel2006xml, chirico2013improvement}---for storing physicochemical measurements, uncertainties, and metadata.
+%{\color{red}[KK: The conjugation on "data archival" feels odd; are you sure that's correct.]}
+Manuscripts containing new experimental measurements submitted to several journals (J.~Chem.~Eng.~Data, J.~Chem.~Therm., Fluid Phase Equil., Therm.~Acta, and Int.~J.~Therm.) are guided through a data archival process that involves sanity checks, conversion to a standard machine-readable format, and archival at the TRC (\url{http://trc.nist.gov/ThermoML.html}).  
 
 Here, we examine the ThermoML archive as a potential source for a reproducible, extensible accuracy benchmark of biomolecular forcefields.
 In particular, we concentrate on two important physical property measurements easily computable in many simulation codes---neat liquid density and static dielectric constant measurements---with the goal of developing a standard benchmark for validating these properties in fixed-charge forcefields of drug-like molecules and biopolymer residue analogues.  
@@ -229,12 +230,12 @@ Exact commands to install various dependencies can be found in Appendix~\ref{sec
 Simulation boxes were first minimized using the L-BFGS algorithm \cite{liu1989limited} and equilibrated for $10^7$ steps with an equilibration timestep of 0.4 fs and a collision rate of 5 ps$^{-1}$.  
 Production simulations were performed with OpenMM~6.3~\cite{eastman2012openmm} using a Langevin Leapfrog integrator~\cite{izaguirre-sweet-pande:psb:2010:langevin-leapfrog} (with collision rate 1 ps$^{-1}$) and a 1~fs timestep, as we found that timesteps of 2~fs timestep or greater led to a significant timestep dependence in computed equilibrium densities (Fig.~\ref{figure:timestep}).  
 
-Equilibration and production simulations utilized a Monte Carlo barostat with a control pressure of 1 atm, utilizing molecular scaling and automated step size adjustment during equilibration, with volume moves attempted every 25 steps.  
+Equilibration and production simulations utilized a Monte Carlo barostat with a control pressure of 1 atm (101.325 kPa), utilizing molecular scaling and automated step size adjustment during equilibration, with volume moves attempted every 25 steps.  
 The particle mesh Ewald (PME) method with conducting boundary conditions~\cite{Darden1993} was used with a long-range cutoff of 0.95~nm and a long-range isotropic dispersion correction. 
 PME grid and spline parameters were automatically selected using the default settings in OpenMM 6.3 for the CUDA platform~\cite{eastman2012openmm}.
 
 {\bf Automatic termination criteria.}
-Production simulations were continued until automatic analysis showed standard errors in densities were less than $2 \times 10^{-4}$ g / mL.
+Production simulations were continued until automatic analysis showed standard errors in densities were less than $2 \times 10^{-4}$ g / $cm^{3}$.
 Automatic analysis of the production simulation data was run every 1 ns of simulation time, and utilized the {\tt detectEquilibration} method in the timeseries module of pymbar 2.1~\cite{shirts2008statistically} to automatically discard the initial portion of the production simulation containing strong far-from-equilibrium behavior by maximizing the number of effectively uncorrelated samples in the remainder of the production simulation as determined by autocorrelation analysis using the fast adaptive statistical inefficiency computation method as implemented in the {\tt timeseries.computeStatisticalInefficiency} method of pymbar 2.1 (where the algorithm is described in~\cite{chodera2007}).
 Statistical errors were computed after subsampling the data to produce effectively uncorrelated equilibrium samples by $\delta^2 \rho \approx \var{\rho} / N_\mathrm{eff}$, where $\var{\rho}$ is the sample variance of the density and $N_\mathrm{eff}$ is the number of effectively uncorrelated samples.  
 With this protocol, we found starting trajectory lengths of $12000$ $(8000, 16000)$ frames (250 fs each), discarded regions of $28$  $(0, 460)$, and statistical inefficiencies of $20$ $(15, 28)$; reported numbers indicate (median, (25\%, 75\%)).  
@@ -257,7 +258,7 @@ Static dielectric constants were calculated using the dipole fluctuation approac
 \begin{eqnarray}
 \epsilon = 1 + \beta \frac{4\pi}{3} \frac{\langle \mu \cdot \mu \rangle - \langle \mu \rangle \cdot \langle \mu \rangle}{\langle V \rangle} \label{equation:dielectric_calculation}
 \end{eqnarray}
-where $\beta \equiv k_B T$ is the inverse temperature.
+where $\beta \equiv 1 / k_B T$ is the inverse temperature.
 
 {\bf Computation of expectations.}
 Expectations were estimated by computing sample means over the production simulation after discarding the initial far-from-equilibrium portion to equilibration (as described in {\bf Automatic termination criteria} above).
@@ -381,7 +382,7 @@ Mass densities of bulk liquids have been widely used for parameterizing and test
 We therefore used the present ThermoML extract as a benchmark of the GAFF/AM1-BCC forcefield (Fig.~\ref{figure:Density}).  
 
 {\bf Overall accuracy.}
-Overall, the densities show reasonable accuracy, with a root-mean square (RMS) relative error over all measurements of 3.0$\pm$0.1\%, especially encouraging given that this forcefield was not designed with the intention of modeling bulk liquid properties of organic molecules~\cite{gaff,gaff2}.
+Overall, the densities show reasonable accuracy, with a root-mean square (RMS) relative error over all measurements of (3.0$\pm$0.1)\%, especially encouraging given that this forcefield was not designed with the intention of modeling bulk liquid properties of organic molecules~\cite{gaff,gaff2}.
 This is reasonably consistent with previous studies reporting agreement of 4\% on a different benchmark set~\cite{caleman2011force}.
 
 {\bf Temperature dependence.}
@@ -398,7 +399,7 @@ It is possible that these systematic density offsets indicate correctable biases
 The largest density errors occur for a number of oxygen-containing compounds: 1,4-dioxane; 2,5,8-trioxanonane; 2-aminoethanol; dimethyl carbonate; formamide; and water (Fig.~\ref{figure:AllDensities}).
 %{\color{red}[JDC: Could we make a figure of just these compounds, along with their average errors?]}
 % The reader can use the existing SI figure.  This paper isn't about specific functional groups.  
-The absolute error on these poor predictions is on the order of 0.05  g/mL, which is substantially higher than the measurement error ($\le0.008$ g/mL; see Fig.~\ref{figure:ErrorAnalysisDensity}).  
+The absolute error on these poor predictions is on the order of 0.05  g/$cm^{3}$, which is substantially higher than the measurement error ($\le0.008$ g/$cm^{3}$; see Fig.~\ref{figure:ErrorAnalysisDensity}).  
 %{\color{red}[JDC: We discussed plotting the error as a function of the number of oxygens, since it appears that some of the extreme outliers may have LJ issues with their oxygens.]}
 % I am postponinng the functional group analysis until a later paper where we have more than 40 molecules.  
 
@@ -501,7 +502,7 @@ Plots of dielectric constant versus temperature grouped by chemical species are 
 
 Our simulations have indicated the presence of systematic density biases with magnitudes larger than the measurement error.  
 Correcting these errors may be a low-hanging fruit for future forcefield refinements.
-As an example of the feasibility of improved accuracy in densities, a recent three-point water model was able to recapitulate water density with errors of less than 0.005 g / mL over temperature range [280 K, 320 K] \cite{wang2014building}.
+As an example of the feasibility of improved accuracy in densities, a recent three-point water model was able to recapitulate water density with errors of less than 0.005 g / $cm^{3}$ over temperature range [280 K, 320 K] \cite{wang2014building}.
 This improved accuracy in density prediction was obtained alongside accurate predictions of other experimental observables, including static dielectric constant.  
 We suspect that such accuracy might be obtainable for GAFF-like forcefields across some portion of chemical space.  
 A key challenge for the field is to demarcate the fundamental limit of fixed-charge forcefields for predicting orthogonal classes of experimental observables.
@@ -572,13 +573,13 @@ such that, for an error of $\Delta \epsilon$ departing from the true static diel
 \begin{equation} \label{equation:onsager-error}
 \Delta \Delta G = -\frac{\mu^2}{a^3} \left[ \frac{(\epsilon+\Delta \epsilon) - 1}{2 (\epsilon+\Delta \epsilon) + 1} - \frac{\epsilon - 1}{2 \epsilon + 1} \right] 
 \end{equation}
-For example, the solvation of water ($a = 1.93$~\AA, $\mu = 2.2$~D) in a low dielectric medium such as tetrachloromethane or benzene ($\epsilon \sim 2.2$, but $\Delta \epsilon = -1.2$) gives an error of $\Delta \Delta G \sim -2$ kcal/mol.
+For example, the solvation of water ($a = 1.93$~\AA, $\mu = 2.2$~D) in a low dielectric medium such as tetrachloromethane or benzene ($\epsilon \sim 2.2$, but $\Delta \epsilon = -1.2$) gives an error of $\Delta \Delta G \sim -8 kJ/mol$ (-2 kcal/mol).
 
 {\bf Implications for transfer free energies.}
 As another example, consider the transfer of small druglike molecules from a nonpolar solvent (such as cyclohexane) to water, a property often measured to indicate the expected degree of lipophilicity of a compound.
 To estimate the magnitude of error expected, for each molecule in the latest (Feb. 20) FreeSolv database~\cite{freesolv, freesolv_github}, we estimated the expected error in computed transfer free energies should GAFF/AM1-BCC be used to model the nonpolar solvent cyclohexane using the Onsager model (Eq.~\ref{equation:onsager-error}).
 We used took the cavity radius $a$ to be the half the maximum interatomic distance and calculated $\mu = \sum_i q_i r_i$ using the provided mol2 coordinates and AM1-BCC charges.  
-This calculation predicts a mean error of $-0.91 \pm0.07$ kcal / mol for the 643 molecules (where the standard error is computed from bootstrapping over FreeSolv compound measurements), 
+This calculation predicts a mean error of ($-3.8 \pm 0.3$) kJ / mol [($-0.91 \pm0.07$) kcal / mol] for the 643 molecules (where the standard error is computed from bootstrapping over FreeSolv compound measurements), 
 suggesting that the missing atomic polarizabilty unrepresentable by fixed point charge forcefields could contribute substantially to errors in predicted transfer and solvation properties of druglike molecules.  
 We conjecture that this missing physics will be important in the upcoming (2015) SAMPL challenge \cite{newman2009practical}, which will examine transfer free energies in several low dielectric media. 
 
@@ -709,7 +710,7 @@ In the second approach (Median), we estimated the median of the uncertainties re
 In the third approach (Std), we calculated at the standard deviation of independent measurements reported in the ThermoML extract, completely avoiding the author-reported uncertainties.
 Plot (a) compares the three uncertainty estimates.
 We see that author-reported uncertainties appear to be substantially smaller than the scatter between the observed measurements.
-A simple psychological explanation might be that because density measurements are more routine, the authors simply report the accuracy limit of their hardware (e.g. 0.0001 g / mL for a Mettler Toledo DM40~\cite{mettlertoledo}).  
+A simple psychological explanation might be that because density measurements are more routine, the authors simply report the accuracy limit of their hardware (e.g. 0.0001 g / $cm^{3}$ for a Mettler Toledo DM40~\cite{mettlertoledo}).  
 However, this hardware limit is not achieved due to inconsistencies in sample preparation; see Appendix in Ref.~\cite{chirico2013improvement}.  
 Panel (b) shows the same information as (a) but as a function of the measurement index, rather than as a scatter plot---because not all measurements have author-supplied uncertainties, panel (c) contains slightly more data points than (a, b).  
 %{\color{red}[JDC: Should discuss with Kenneth what kind of story to make out of this, and what to say in the main manuscript body.]}
@@ -761,7 +762,7 @@ Panel (b) shows the same information as (a) but as a function of the measurement
 \includegraphics[width=\textwidth]{./figures/densities_versus_temperature_part0.pdf}
 
 \caption{{\bf Comparison of simulated and experimental densities for all compounds.} 
-Measured (blue) and simulated (green) densities are shown in units of g / mL.
+Measured (blue) and simulated (green) densities are shown in units of g / $cm^{3}$.
 \label{figure:AllDensities}
 }
 
@@ -775,7 +776,7 @@ Measured (blue) and simulated (green) densities are shown in units of g / mL.
 \includegraphics[width=\textwidth]{./figures/densities_versus_temperature_part1.pdf}
 
 \caption{{\bf Comparison of simulated and experimental densities for all compounds.} 
-Measured (blue) and simulated (green) densities are shown in units of g / mL.
+Measured (blue) and simulated (green) densities are shown in units of g / $cm^{3}$.
 \label{figure:AllDensities}
 }
 
@@ -788,7 +789,7 @@ Measured (blue) and simulated (green) densities are shown in units of g / mL.
 \includegraphics[width=\textwidth]{./figures/densities_versus_temperature_part2.pdf}
 
 \caption{{\bf Comparison of simulated and experimental densities for all compounds.} 
-Measured (blue) and simulated (green) densities are shown in units of g / mL.
+Measured (blue) and simulated (green) densities are shown in units of g / $cm^{3}$.
 \label{figure:AllDensities}
 }
 
@@ -802,7 +803,7 @@ Measured (blue) and simulated (green) densities are shown in units of g / mL.
 \includegraphics[width=\textwidth]{./figures/densities_versus_temperature_part3.pdf}
 
 \caption{{\bf Comparison of simulated and experimental densities for all compounds.} 
-Measured (blue) and simulated (green) densities are shown in units of g / mL.
+Measured (blue) and simulated (green) densities are shown in units of g / $cm^{3}$.
 \label{figure:AllDensities}
 }
 
@@ -816,7 +817,7 @@ Measured (blue) and simulated (green) densities are shown in units of g / mL.
 \includegraphics[width=\textwidth]{./figures/densities_versus_temperature_part4.pdf}
 
 \caption{{\bf Comparison of simulated and experimental densities for all compounds.} 
-Measured (blue) and simulated (green) densities are shown in units of g / mL.
+Measured (blue) and simulated (green) densities are shown in units of g / $cm^{3}$.
 \label{figure:AllDensities}
 }
 
