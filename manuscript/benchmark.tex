@@ -237,6 +237,7 @@ PME grid and spline parameters were automatically selected using the default set
 {\bf Automatic termination criteria.}
 Production simulations were continued until automatic analysis showed standard errors in densities were less than $2 \times 10^{-4}$ g / $cm^{3}$.
 Automatic analysis of the production simulation data was run every 1 ns of simulation time, and utilized the {\tt detectEquilibration} method in the timeseries module of pymbar 2.1~\cite{shirts2008statistically} to automatically discard the initial portion of the production simulation containing strong far-from-equilibrium behavior by maximizing the number of effectively uncorrelated samples in the remainder of the production simulation as determined by autocorrelation analysis using the fast adaptive statistical inefficiency computation method as implemented in the {\tt timeseries.computeStatisticalInefficiency} method of pymbar 2.1 (where the algorithm is described in~\cite{chodera2007}).
+This approach is essentially the same as the fixed-width procedure described in \cite{brooks2011handbook} eq. 7.12, with $n^*$ equal to 1 ns and the $n^{-1}$ term ignored because $n \approx 1000$.  
 Statistical errors were computed after subsampling the data to produce effectively uncorrelated equilibrium samples by $\delta^2 \rho \approx \var{\rho} / N_\mathrm{eff}$, where $\var{\rho}$ is the sample variance of the density and $N_\mathrm{eff}$ is the number of effectively uncorrelated samples.  
 With this protocol, we found starting trajectory lengths of $12000$ $(8000, 16000)$ frames (250 fs each), discarded regions of $28$  $(0, 460)$, and statistical inefficiencies of $20$ $(15, 28)$; reported numbers indicate (median, (25\%, 75\%)).  
 
@@ -264,11 +265,8 @@ where $\beta \equiv 1 / k_B T$ is the inverse temperature.
 Expectations were estimated by computing sample means over the production simulation after discarding the initial far-from-equilibrium portion to equilibration (as described in {\bf Automatic termination criteria} above).
 
 {\bf Statistical uncertainties.}
-The portion of the production simulation not discarded to equilibration was subsampled according to the statistical inefficiency of the property under consideration to generate an effectively uncorrelated dataset.
-Statistical uncertainties were computed by bootstrapping these uncorrelated samples.
-All reported uncertainties represent an estimate of one standard deviation of the mean unless otherwise stated.
-%{\color{red}[JDC: Check that this is accurate}
-% KAB: should be correct
+For density uncertainties, the Markov chain standard error (MCSE) was estimated as $\frac{\sigma}{\sqrt{N_{eff}}}$, where $\sigma$ is the density standard deviation of the simulation not discarded to equilibration, $N_{eff} = \frac{N}{g}$ is the effective sample size, and $g$ is the statistical inefficiency as estimated from the density time series.
+For dielectric uncertainties, the portion of the production simulation not discarded to equilibration was used as input to a circular block bootstrapping procedure \cite{sheppard_2015_15681} with block sizes automatically selected to maximize the error \cite{flyvbjerg1989error}.
 
 \subsubsection{Code availability}
 
@@ -482,7 +480,7 @@ Taking the dataset as a whole, we find that the relative error in uncorrected di
 \includegraphics[width=\columnwidth]{./figures/dielectrics_thermoml.pdf}
 
 \caption{{\bf Measured (ThermoML) versus predicted (GAFF / AM1-BCC) inverse static dielectrics (a).}
-Simulation error bars represent one standard error of the mean estimated via circular block averaging \cite{sheppard_2015_15681} with block sizes automatically selected to maximize the error \cite{flyvbjerg1989error}.  
+Simulation error bars represent one standard error of the mean.  
 Experimental error bars indicate the larger of standard deviation between independently reported measurements and the authors reported standard deviations; for some measurements, neither uncertainty estimate is available.  
 See Fig.~\ref{figure:ErrorAnalysisDensity} for further discussion of error.  
 See Section~\ref{section:results:static-dielectric-constant} for explanation of why inverse dielectric constant (rather than dielectric constant) is plotted. 
