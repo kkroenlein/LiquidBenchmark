@@ -49,12 +49,12 @@ for name_group, pred_i in pred.groupby("name_group"):
     g = sns.FacetGrid(pred_i, col="name", col_wrap=num_cols, xlim=[270, 330], ylim=[pred.density.min() - DENSITY_BUFFER, pred.density.max() + DENSITY_BUFFER], size=PANEL_SIZE, sharex=False, sharey=False)
     g.map(plt.errorbar, "temperature", "expt_density", "expt_density_std", fmt='.', color='b', label="Expt")
     g.map(plt.errorbar, "temperature", "density", "density_sigma", fmt='.', color='g', label="MD")
-    g.set_ylabels("Density [g / mL]")
+    g.set_ylabels("Density [g / cm^3]")
     g.set_xlabels("Temperature [K]")
     legend(loc=4)
     g.set_titles(col_template="{col_name}")
     g.set_xticklabels(labels=np.arange(270, 340, 10))
-    plt.draw()    
+    plt.draw()
     plt.savefig("./manuscript/figures/densities_versus_temperature_part%d.pdf" % name_group, bbox_inches="tight")
 
 
@@ -85,7 +85,5 @@ for name_group, pred_i in pred.groupby("name_group"):
     legend(loc=2)  # Upper Left
     g.set_titles(col_template="{col_name}")
     g.set(ylim=(0., 1.05))
-    plt.draw()    
+    plt.draw()
     plt.savefig("./manuscript/figures/dielectric_versus_temperature_part%d.pdf" % name_group, bbox_inches="tight")
-
-
