@@ -163,7 +163,7 @@ A key barrier to establishing reproducible and extensible forcefield accuracy be
 While this inconvenience is relatively minor for benchmarking forcefield accuracy for a single target system (e.g.~water), it becomes prohibitive for studies spanning the large relevant chemical spaces, such as forcefields intended to describe a large variety of druglike small organic molecules.  
 
 In addition to inconvenience, the number and kind of human-induced errors that can corrupt hand-compiled benchmarks are legion.
-A USGS case study examining the reporting and use of literature values of the aqueous solubility ($S_w$) and octanol-water partition coefficients ($K_{ow}$) for DDT and its persistent metabolite DDE provides incredible insight into a variety of common errors~\cite{usgs-ddt-report}.
+A United States Geological Survey (USGS) case study examining the reporting and use of literature values of the aqueous solubility ($S_w$) and octanol-water partition coefficients ($K_{ow}$) for DDT and its persistent metabolite DDE provides incredible insight into a variety of common errors~\cite{usgs-ddt-report}.
 Secondary sources are often cited as primary sources---a phenomenon that occurred up to five levels deep in the case of DDT/DDE;
 citations for data are often incorrect, misattributed to unrelated publications, or omitted altogether;
 numerical data can be mistranscribed, transposed, or incorrectly converted among unit systems~\cite{usgs-ddt-report}.
@@ -211,6 +211,8 @@ Below, we describe the operation of the various stages of this pipeline and thei
 \subsubsection{Preparation}
 \label{section:preparation}
 
+Chemical names were parsed from the ThermoML extract and converted to both CAS and smiles strings using cirpy \cite{swain2012cirpy}.  Smiles strings were converted into molecular structures using the OpenEye Python Toolkit version 2015-2-3 \cite{openeye}, as wrapped in openmoltools.  
+
 Simulation boxes containing 1000 molecules were constructed using PackMol version 14-225~\cite{martinez2009packmol, packmolurl} wrapped in the Python automation library openmoltools.
 In order to ensure stable automated equilibration, PackMol box volumes were chosen to accommodate twice volume of the enclosed atoms, with atomic radii estimated as 1.06 \AA\ and 1.53 \AA\ for hydrogens and nonhydrogens, respectively.  
 
@@ -237,10 +239,15 @@ PME grid and spline parameters were automatically selected using the default set
 {\bf Automatic termination criteria.}
 Production simulations were continued until automatic analysis showed standard errors in densities were less than $2 \times 10^{-4}$ g / $cm^{3}$.
 Automatic analysis of the production simulation data was run every 1 ns of simulation time, and utilized the {\tt detectEquilibration} method in the timeseries module of pymbar 2.1~\cite{shirts2008statistically} to automatically discard the initial portion of the production simulation containing strong far-from-equilibrium behavior by maximizing the number of effectively uncorrelated samples in the remainder of the production simulation as determined by autocorrelation analysis using the fast adaptive statistical inefficiency computation method as implemented in the {\tt timeseries.computeStatisticalInefficiency} method of pymbar 2.1 (where the algorithm is described in~\cite{chodera2007}).
-Statistical errors were computed after subsampling the data to produce effectively uncorrelated equilibrium samples by $\delta^2 \rho \approx \var{\rho} / N_\mathrm{eff}$, where $\var{\rho}$ is the sample variance of the density and $N_\mathrm{eff}$ is the number of effectively uncorrelated samples.  
+This approach is essentially the same as the fixed-width procedure described by eq. 7.12 of ref. \cite{brooks2011handbook}, with $n^*$ equal to 4000 and the sequential testing correction ($n^{-1}$ term) ignored due to the large value of $n$.
+Statistical errors were computed by $\delta^2 \rho \approx \var{\rho} / N_\mathrm{eff}$, where $\var{\rho}$ is the sample variance of the density and $N_\mathrm{eff}$ is the number of effectively uncorrelated samples.  
 With this protocol, we found starting trajectory lengths of $12000$ $(8000, 16000)$ frames (250 fs each), discarded regions of $28$  $(0, 460)$, and statistical inefficiencies of $20$ $(15, 28)$; reported numbers indicate (median, (25\%, 75\%)).  
 
 Instantaneous densities were stored every 250~fs, while trajectory snapshots were stored every 5~ps.  
+
+\subsection{Timings}
+
+The wall time required for a given simulation depends on the number of atoms (3,000 - 29,000), the GPU used (GTX 680 or GTX Titan), and the time required for automated termination.  For butyl acrylate (21,000 atoms) on a GTX Titan, the wall-clock performance is approximately 80 ns / day.  Using 80 ns / day with approximately 3 ns of production simulation corresponds to 1 hour for the production segment of the simulation and 3 hours for the fixed equilibration portion of $10^7$ steps.  
 
 \subsubsection{Data analysis and statistical error estimation}
 
@@ -264,11 +271,8 @@ where $\beta \equiv 1 / k_B T$ is the inverse temperature.
 Expectations were estimated by computing sample means over the production simulation after discarding the initial far-from-equilibrium portion to equilibration (as described in {\bf Automatic termination criteria} above).
 
 {\bf Statistical uncertainties.}
-The portion of the production simulation not discarded to equilibration was subsampled according to the statistical inefficiency of the property under consideration to generate an effectively uncorrelated dataset.
-Statistical uncertainties were computed by bootstrapping these uncorrelated samples.
-All reported uncertainties represent an estimate of one standard deviation of the mean unless otherwise stated.
-%{\color{red}[JDC: Check that this is accurate}
-% KAB: should be correct
+For density uncertainties, the Markov chain standard error (MCSE) was estimated as $\frac{\sigma}{\sqrt{N_{eff}}}$, where $\sigma$ is the density standard deviation of the simulation not discarded to equilibration, $N_{eff} = \frac{N}{g}$ is the effective sample size, and $g$ is the statistical inefficiency as estimated from the density time series.
+For dielectric uncertainties, the portion of the production simulation not discarded to equilibration was used as input to a circular block bootstrapping procedure \cite{sheppard_2015_15681} with block sizes automatically selected to maximize the error \cite{flyvbjerg1989error}.
 
 \subsubsection{Code availability}
 
@@ -288,17 +292,17 @@ Data analysis, all intermediate data (except configurational trajectories, due t
 As described in Section~\ref{section:thermoml-archive-retrieval}, we retrieved a copy of the ThermoML Archive and performed a number of sequential filtering steps to produce an ThermoML extract relevant for benchmarking forcefields describing small organic molecules.  
 As our aim is to explore neat liquid data with functional groups relevant to biopolymers and drug-like molecules, we applied the following ordered filters, starting with all data containing density or static dielectric constants: 
 \begin{enumerate}
- \item The measured solution contains only a single component (e.g.~no binary mixtures)
+ \item The measured sample contains only a single component (e.g.~no binary mixtures)
  \item The molecule contains only druglike elements (defined here as H, N, C, O, S, P, F, Cl, Br)
- \item The molecule has $\le$ 10 heavy atoms
+ \item The molecule has $\le$ 10 non-hydrogen atoms
  \item The measurement was performed in a biophysically relevant temperature range $(270 \le T$ [K] $\le 330)$
- \item The measurement was performed at ambient pressure $(100 \le P$ [kPA]  $\le 102)$
+ \item The measurement was performed at ambient pressure $(100 \le P$ [kPa]  $\le 102)$
  \item Only measurements in liquid phase were retained
  \item The temperature and pressure were rounded to nearby values (as described below), averaging all measurements within each group of like conditions
  \item Only conditions (molecule, temperature, pressure) for which \emph{both} density and dielectric constants were available were retained
 \end{enumerate}
-The temperature and pressure rounding step was motivated by common data reporting variations; for example, an experiment performed at the freezing temperature of water and ambient pressure might be entered as either 101.325~kPA or 100~kPA, with a temperature of either 273~K or 273.15~K.  
-Therefore all pressures within the range [kPA] $(100 \le P \le 102)$ were rounded to exactly 1 atm (101.325 kPa).  
+The temperature and pressure rounding step was motivated by common data reporting variations; for example, an experiment performed at the freezing temperature of water and ambient pressure might be entered as either 101.325~kPa or 100~kPa, with a temperature of either 273~K or 273.15~K.  
+Therefore all pressures within the range [kPa] $(100 \le P \le 102)$ were rounded to exactly 1 atm (101.325 kPa).  
 Temperatures were rounded to one decimal place in K. 
 
 The application of these filters (Table~\ref{table:ThermoMLSummary}) leaves 246 conditions---where a \emph{condition} here indicates a (molecule, temperature, pressure) tuple---for which both density and dielectric data are available.  
@@ -327,10 +331,8 @@ The functional groups present in the resulting dataset are summarized in Table~\
 \end{tabular}
 \caption{{\bf Successive filtration of the ThermoML Archive.}
 A set of successive filters were applied to all measurements in the ThermoML Archive that contained either mass density or static dielectric constant measurements.
-Each column reports the number of measurements remaining after successive application of the corresponding filtration step.
-%{\color{red}[JDC: Bas has a nice way of auto-formatting numbers, like 136 212.]}
-% I think the table will be reformatted by the journal anyway, so it might not make sense to sink time into this now.
-% 
+Each column reports the number of measurements remaining after successive application of the corresponding filtration step.  
+The 246 final measurements correspond to 45 unique molecules measured at several temperature conditions.  
 }
 \label{table:ThermoMLSummary}
 \end{table}
@@ -482,7 +484,7 @@ Taking the dataset as a whole, we find that the relative error in uncorrected di
 \includegraphics[width=\columnwidth]{./figures/dielectrics_thermoml.pdf}
 
 \caption{{\bf Measured (ThermoML) versus predicted (GAFF / AM1-BCC) inverse static dielectrics (a).}
-Simulation error bars represent one standard error of the mean estimated via circular block averaging \cite{sheppard_2015_15681} with block sizes automatically selected to maximize the error \cite{flyvbjerg1989error}.  
+Simulation error bars represent one standard error of the mean.  
 Experimental error bars indicate the larger of standard deviation between independently reported measurements and the authors reported standard deviations; for some measurements, neither uncertainty estimate is available.  
 See Fig.~\ref{figure:ErrorAnalysisDensity} for further discussion of error.  
 See Section~\ref{section:results:static-dielectric-constant} for explanation of why inverse dielectric constant (rather than dielectric constant) is plotted. 
@@ -564,7 +566,7 @@ We hypothesize that this inconsistency in parameterization may lead to strange m
 How important is this effect?
 We expect it to be important wherever we encounter the transfer of a polar molecule (such as a peptide, native ligand, or a pharmaceutical small molecule) from a polar environment (such as the cytosol, interstitial fluid, or blood) into a non-polar environment (such as a biological membrane or non-polar binding site of an enzyme or receptor). Thus we expect this to be implicated in biological processes ranging from ligand binding to absorption and distribution within the body. To understand this conceptually, consider the transfer of a polar small-molecule transfer from the non-polar interior of a lipid bilayer to the aqueous and hence very polar cytosol.
 As a possible real-world example, we imagine that the missing atomic polarizability could be important in accurate transfer free energies involving low-dielectric solvents, such as the small-molecule transfer free energy from octanol or cyclohexane to water.  
-The Onsager model for solvation of a dipole $\mu$ of radius $a$ gives us a way to estimate the magnitude of error introduced by making an error $\Delta \epsilon$ the static dielectric constant of a solvent.
+The Onsager model for solvation of a dipole $\mu$ of radius $a$ gives us a way to estimate the magnitude of error introduced by making an error of $\Delta \epsilon$ in the static dielectric constant of a solvent.
 The free energy of dipole solvation is given by this model as
 \begin{equation} \label{eq:onsager}
 \Delta G = -\frac{\mu^2}{a^3}\frac{\epsilon - 1}{2 \epsilon + 1}
@@ -573,7 +575,7 @@ such that, for an error of $\Delta \epsilon$ departing from the true static diel
 \begin{equation} \label{equation:onsager-error}
 \Delta \Delta G = -\frac{\mu^2}{a^3} \left[ \frac{(\epsilon+\Delta \epsilon) - 1}{2 (\epsilon+\Delta \epsilon) + 1} - \frac{\epsilon - 1}{2 \epsilon + 1} \right] 
 \end{equation}
-For example, the solvation of water ($a = 1.93$~\AA, $\mu = 2.2$~D) in a low dielectric medium such as tetrachloromethane or benzene ($\epsilon \sim 2.2$, but $\Delta \epsilon = -1.2$) gives an error of $\Delta \Delta G \sim -8 kJ/mol$ (-2 kcal/mol).
+For example, the solvation of water ($a = 1.93$~\AA, $\mu = 2.2$~D) in a low dielectric medium such as tetrachloromethane or benzene ($\epsilon \sim 2.2$, but $\Delta \epsilon = -1.2$) gives an error of $\Delta \Delta G \sim -8$ kJ/mol (-2 kcal/mol).
 
 {\bf Implications for transfer free energies.}
 As another example, consider the transfer of small druglike molecules from a nonpolar solvent (such as cyclohexane) to water, a property often measured to indicate the expected degree of lipophilicity of a compound.
@@ -581,6 +583,7 @@ To estimate the magnitude of error expected, for each molecule in the latest (Fe
 We used took the cavity radius $a$ to be the half the maximum interatomic distance and calculated $\mu = \sum_i q_i r_i$ using the provided mol2 coordinates and AM1-BCC charges.  
 This calculation predicts a mean error of ($-3.8 \pm 0.3$) kJ / mol [($-0.91 \pm0.07$) kcal / mol] for the 643 molecules (where the standard error is computed from bootstrapping over FreeSolv compound measurements), 
 suggesting that the missing atomic polarizabilty unrepresentable by fixed point charge forcefields could contribute substantially to errors in predicted transfer and solvation properties of druglike molecules.  
+In other words, the use of a fixed-charge physics may lead to errors of $3.8$ kJ / mol in cyclohexane transfer free energies.  
 We conjecture that this missing physics will be important in the upcoming (2015) SAMPL challenge \cite{newman2009practical}, which will examine transfer free energies in several low dielectric media. 
 
 {\bf Utility in parameterization.}
@@ -673,7 +676,7 @@ To probe the systematic error from finite time-step integration, we examined the
 (b).  The relative error, as compared to the reference value, is shown for several choices of timestep.  
 Error bars represent standard errors of the mean, with the number of effective samples estimated using pymbar's statistical inefficiency routine \cite{shirts2008statistically}.  
 The reference value is estimated by linear extrapolation to 0 fs using the 0.5 fs and 1.0 fs data points; the linear extrapolation is shown as black lines.  
-We find a 2~fs timestep leads to systematic biases in the density on the order of 0.13\%, while 1 fs reduces the systematic bias to approximately 0.08\%---we therefore selected a 1~fs timestep for the present work, where we aimed to achieve three digits of accuracy in density predictions.
+We find a 2~fs timestep leads to systematic biases in the density on the order of 0.13\%, while 1 fs reduces the systematic bias to approximately 0.8\%---we therefore selected a 1~fs timestep for the present work, where we aimed to achieve three digits of accuracy in density predictions.
 }
 \label{figure:timestep}
 
@@ -710,8 +713,8 @@ In the second approach (Median), we estimated the median of the uncertainties re
 In the third approach (Std), we calculated at the standard deviation of independent measurements reported in the ThermoML extract, completely avoiding the author-reported uncertainties.
 Plot (a) compares the three uncertainty estimates.
 We see that author-reported uncertainties appear to be substantially smaller than the scatter between the observed measurements.
-A simple psychological explanation might be that because density measurements are more routine, the authors simply report the accuracy limit of their hardware (e.g. 0.0001 g / $cm^{3}$ for a Mettler Toledo DM40~\cite{mettlertoledo}).  
-However, this hardware limit is not achieved due to inconsistencies in sample preparation; see Appendix in Ref.~\cite{chirico2013improvement}.  
+A simple psychological explanation might be that because density measurements are more routine, the authors simply report the repeatability stated by the manufacturer (e.g. 0.0001 g / $cm^{3}$ for a Mettler Toledo DM40~\cite{mettlertoledo}).  
+However, this hardware limit is not achieved due to inconsistencies in sample preparation and experimental conditions; see Appendix in Ref.~\cite{chirico2013improvement}.  
 Panel (b) shows the same information as (a) but as a function of the measurement index, rather than as a scatter plot---because not all measurements have author-supplied uncertainties, panel (c) contains slightly more data points than (a, b).  
 %{\color{red}[JDC: Should discuss with Kenneth what kind of story to make out of this, and what to say in the main manuscript body.]}
 %KAB: I think the error analysis is now partially discussed in the density sections.

@@ -29,7 +29,7 @@ plt.legend(loc=0)
 
 plt.xlabel("Author Uncertainty")
 plt.ylabel("Standard Deviation of Measurements")
-plt.title("Error Estimates: Density [g / mL]")
+plt.title("Error Estimates: Density [g / cm^3]")
 
 plt.xscale('log')
 plt.yscale('log')
@@ -77,7 +77,7 @@ plt.plot(y, 'o', label="std()")
 
 plt.xlabel("Measurment Index")
 plt.ylabel("Error Estimate")
-plt.title("Error Estimates: Density [g / mL]")
+plt.title("Error Estimates: Density [g / cm^3]")
 plt.legend(loc=0)
 
 plt.yscale('log')
@@ -105,5 +105,3 @@ plt.legend(loc=0)
 plt.yscale('log')
 
 plt.savefig("./manuscript/figures/error_analysis_dielectric_index.pdf", bbox_inches="tight")
-
-

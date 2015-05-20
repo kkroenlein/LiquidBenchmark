@@ -54,7 +54,7 @@ relative_rms = (((x - y) / x)**2).mean()** 0.5
 cv = sklearn.cross_validation.Bootstrap(len(x), train_size=len(x) - 1, n_iter=100)
 relative_rms_grid = np.array([(((x[ind] - y[ind]) / x[ind])**2).mean()** 0.5 for ind, _ in cv])
 relative_rms_err = relative_rms_grid.std()
-plt.title("Density [g / mL] (relative rms: %.3f $\pm$ %.3f)" % (relative_rms, relative_rms_err))
+plt.title("Density [g / cm^3] (relative rms: %.3f $\pm$ %.3f)" % (relative_rms, relative_rms_err))
 plt.savefig("./manuscript/figures/densities_thermoml.pdf", bbox_inches="tight")
 
 
@@ -81,7 +81,7 @@ relative_rms = (((x - y) / x)**2).mean()** 0.5
 cv = sklearn.cross_validation.Bootstrap(len(x), train_size=len(x) - 1, n_iter=100)
 relative_rms_grid = np.array([(((x[ind] - y[ind]) / x[ind])**2).mean()** 0.5 for ind, _ in cv])
 relative_rms_err = relative_rms_grid.std()
-plt.title("Density [g / mL] (relative rms: %.3f $\pm$ %.3f)" % (relative_rms, relative_rms_err))
+plt.title("Density [g / cm^3] (relative rms: %.3f $\pm$ %.3f)" % (relative_rms, relative_rms_err))
 plt.savefig("./manuscript/figures/densities_differences_thermoml.pdf", bbox_inches="tight")
 
 
