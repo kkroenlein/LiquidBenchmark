@@ -4,8 +4,10 @@
 %\documentclass[journal=jacsat,manuscript=article]{achemso}
 
 % Single-spaced, two-column with PRL look and style (easy on the eyes)
-\documentclass[aps,pre,twocolumn,nofootinbib,superscriptaddress,linenumbers]{revtex4-1}
+%\documentclass[aps,pre,twocolumn,nofootinbib,superscriptaddress,linenumbers]{revtex4-1}
 
+\documentclass[aip, jcp, reprint]{revtex4-1}  % arxiv version
+\pdfoutput=1  % for arxiv
 
 % Double-spaced, one-column style (for submission/review/editing)
 %\documentclass[aps,preprint,prl,superscriptaddress,showpacs]{revtex4}
@@ -16,11 +18,9 @@
 
 % FONT
 %\usepackage{palatino}
-
-%\usepackage{palatino}
 % Change to a sans serif font.
-\usepackage{sourcesanspro}
-\renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
+%\usepackage{sourcesanspro}
+%\renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
 \usepackage[T1]{fontenc}
 %\usepackage[font=sf,justification=justified]{caption}
 \usepackage[font=sf]{floatrow}
@@ -44,10 +44,10 @@
 \usepackage{subfigure}
 \usepackage{listings}
 
-%\usepackage[colorlinks=true,citecolor=blue,linkcolor=blue]{hyperref}
+\usepackage[colorlinks=true,citecolor=blue,linkcolor=blue]{hyperref}
 
 % The figures are in a figures/ subdirectory.
-\graphicspath{{../figures/}}
+%\graphicspath{{../figures/}}
 
 %\bibliographystyle{apsrevlong}
 \bibliographystyle{apsrev}
@@ -100,20 +100,20 @@ Neat Liquid Densities and Static Dielectric Constants from the ThermoML Data Arc
 \affiliation{Computational Biology Program, Sloan Kettering Institute, Memorial Sloan Kettering Cancer Center, New York, NY}
 
 \author{Julie M. Behr$^+$}
-\email{julie.behr@choderalab.org}
+%\email{julie.behr@choderalab.org}
 \affiliation{Tri-Institutional Program in Computational Biology and Medicine, Weill Cornell Medical College, New York, NY}
 
 \author{Ari\"{e}n S. Rustenburg}
-\email{bas.rustenburg@choderalab.org}
+%\email{bas.rustenburg@choderalab.org}
 \affiliation{Graduate Program in Physiology, Biophysics, and Systems Biology, Weill Cornell Medical College, New York, NY}
  
  \author{Christopher I. Bayly}
- \email{bayly@eyesopen.com}
+% \email{bayly@eyesopen.com}
  \affiliation{OpenEye Scientific Software Inc., Santa Fe, NM}
  
  
  \author{Kenneth Kroenlein}
- \email{kenneth.kroenlein@nist.gov}
+% \email{kenneth.kroenlein@nist.gov}
  \affiliation{Thermodynamics Research Center, NIST, Boulder, CO}
  
  \author{John D. Chodera}
@@ -698,11 +698,11 @@ We find a 2~fs timestep leads to systematic biases in the density on the order o
 \begin{figure}
 
 \subfigure[]{
-\includegraphics[width=8cm]{./figures/error_analysis_density.pdf}
+\includegraphics[width=7.3cm]{./figures/error_analysis_density.pdf}
 }
 
 \subfigure[]{
-\includegraphics[width=8cm]{./figures/error_analysis_density_index.pdf}
+\includegraphics[width=7.3cm]{./figures/error_analysis_density_index.pdf}
 }
 
 \caption{{\bf Assessment of experimental error: Density}
@@ -711,7 +711,7 @@ In the first approach (Weighted), we computed the standard deviation of the opti
 This uncertainty estimator places the highest weights on measurements with small uncertainties and is therefore easily dominated by small outliers and uncertainty under-reporting.
 In the second approach (Median), we estimated the median of the uncertainties reported by authors; this statistic should be robust to small and large outliers of author-reported uncertainties.
 In the third approach (Std), we calculated at the standard deviation of independent measurements reported in the ThermoML extract, completely avoiding the author-reported uncertainties.
-Plot (a) compares the three uncertainty estimates.
+Plot (a) compares the three uncertai8nty estimates.
 We see that author-reported uncertainties appear to be substantially smaller than the scatter between the observed measurements.
 A simple psychological explanation might be that because density measurements are more routine, the authors simply report the repeatability stated by the manufacturer (e.g. 0.0001 g / $cm^{3}$ for a Mettler Toledo DM40~\cite{mettlertoledo}).  
 However, this hardware limit is not achieved due to inconsistencies in sample preparation and experimental conditions; see Appendix in Ref.~\cite{chirico2013improvement}.  
@@ -735,11 +735,11 @@ Panel (b) shows the same information as (a) but as a function of the measurement
 \begin{figure}
 
 \subfigure[]{
-\includegraphics[width=8cm]{./figures/error_analysis_dielectric.pdf}
+\includegraphics[width=7.3cm]{./figures/error_analysis_dielectric.pdf}
 }
 
 \subfigure[]{
-\includegraphics[width=8cm]{./figures/error_analysis_dielectric_index.pdf}
+\includegraphics[width=7.3cm]{./figures/error_analysis_dielectric_index.pdf}
 }
 
 \caption{{\bf Assessment of experimental error: Static Dielectric Constant}
