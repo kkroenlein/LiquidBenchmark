@@ -159,23 +159,23 @@ For example, a recent study found that modified hydroxyl nonbonded parameters le
 There are also outstanding questions of generalizability of these targeted perturbations; it is uncertain whether changes to the parameters for a specific chemical moiety will be compatible with seemingly unrelated improvements to other groups.
 Addressing these questions requires establishing community agreement upon shared benchmarks that can be easily replicated among laboratories to test proposed forcefield enhancements and expanded as the body of experimental data grows.
 
-A key barrier to establishing reproducible and extensible forcefield accuracy benchmarks is that many experimental datasets are heterogeneous, paywalled, and unavailable in machine-readable formats (although notable counterexamples exist, e.g.~the RCSB~\cite{Berman2000}, FreeSolv~\cite{freesolv}, and the BMRB~\cite{Ulrich2008}).  
-While this inconvenience is relatively minor for benchmarking forcefield accuracy for a single target system (e.g.~water), it becomes prohibitive for studies spanning the large relevant chemical spaces, such as forcefields intended to describe a large variety of druglike small organic molecules.  
+A key barrier to establishing reproducible and extensible forcefield accuracy benchmarks is that many experimental datasets are heterogeneous, paywalled, and unavailable in machine-readable formats (although notable counterexamples exist, e.g.~the PDB~\cite{Berman2000}, FreeSolv~\cite{freesolv}, and the BMRB~\cite{Ulrich2008}).  
+While this inconvenience is relatively minor for benchmarking forcefield accuracy for a single target system (e.g.~water), it becomes prohibitive for studies spanning relevant chemical spaces, such as forcefields intended to describe a large variety of druglike small organic molecules.  
 
 In addition to inconvenience, the number and kind of human-induced errors that can corrupt hand-compiled benchmarks are legion.
-A United States Geological Survey (USGS) case study examining the reporting and use of literature values of the aqueous solubility ($S_w$) and octanol-water partition coefficients ($K_{ow}$) for DDT and its persistent metabolite DDE provides incredible insight into a variety of common errors~\cite{usgs-ddt-report}.
+A United States Geological Survey (USGS) case study examining the reporting and use of literature values of the aqueous solubility ($S_w$) and octanol-water partition coefficients ($K_{ow}$) for DDT and its persistent metabolite DDE provides remarkable insight into a variety of common errors~\cite{usgs-ddt-report}.
 Secondary sources are often cited as primary sources---a phenomenon that occurred up to five levels deep in the case of DDT/DDE;
 citations for data are often incorrect, misattributed to unrelated publications, or omitted altogether;
 numerical data can be mistranscribed, transposed, or incorrectly converted among unit systems~\cite{usgs-ddt-report}.
-This occurs to such a degree that the authors note ``strings of erroneous data compose as much as 41--73 percent of the total data``~\cite{usgs-ddt-report}.
-Given the incredible importance of these properties for human health and the environment, the quality of physicochemical datasets of far lesser importance is highly suspect.
+In the case of DDT/DDE, these errors occur to such a degree that the authors note ``strings of erroneous data compose as much as 41--73 percent of the total data''~\cite{usgs-ddt-report}.
+Given the importance of these properties for human health and the environment, the quality of physicochemical datasets of lesser importance is highly suspect.
 
 To ameliorate problems of data archival, the NIST Thermodynamics Research Center (TRC) has developed an IUPAC standard XML-based format---ThermoML~\cite{frenkel2003thermoml, frenkel2006xml, chirico2013improvement}---for storing physicochemical measurements, uncertainties, and metadata.
 %{\color{red}[KK: The conjugation on "data archival" feels odd; are you sure that's correct.]}
 Manuscripts containing new experimental measurements submitted to several journals (J.~Chem.~Eng.~Data, J.~Chem.~Therm., Fluid Phase Equil., Therm.~Acta, and Int.~J.~Therm.) are guided through a data archival process that involves sanity checks, conversion to a standard machine-readable format, and archival at the TRC (\url{http://trc.nist.gov/ThermoML.html}).  
 
 Here, we examine the ThermoML archive as a potential source for a reproducible, extensible accuracy benchmark of biomolecular forcefields.
-In particular, we concentrate on two important physical property measurements easily computable in many simulation codes---neat liquid density and static dielectric constant measurements---with the goal of developing a standard benchmark for validating these properties in fixed-charge forcefields of drug-like molecules and biopolymer residue analogues.  
+As a proof of concept, we concentrate on two important physical property measurements easily computable in many simulation codes---neat liquid density and static dielectric constant measurements---with the goal of developing a standard benchmark for validating these properties in fixed-charge forcefields of drug-like molecules and biopolymer residue analogues.  
 These two properties provide sensitive tests of forcefield accuracy that are nonetheless straightforward to calculate.  
 Using these data, we evaluate the generalized Amber small molecule forcefield (GAFF)~\cite{gaff,gaff2} with the AM1-BCC charge model~\cite{am1bcc1,am1bcc2} and identify systematic biases to aid further forcefield refinement.
 
@@ -196,24 +196,25 @@ Using these data, we evaluate the generalized Amber small molecule forcefield (G
 % KAB: we can document this feature on the Github page.  
 
 A tarball archive snapshot of the ThermoML Archive was obtained from the the NIST TRC on 8 Apr. 2015.
-To explore the content of this archive, we created a Python (version 2.7.9) tool (ThermoPyL: \url{https://github.com/choderalab/ThermoPyL}) that formats the XML content into a spreadsheet-like format accessible via the Pandas (version 0.15.2) library.  
+{\color{red}[JDC: Should we shorten this to just ``A snapshot of the ThermoML Archive'' since there is now a way to retrieve up-to-date snapshots that is not necessarily through tarballs?  Also, should we mention here that this tool is available for other labs to perform their own retrieval?]}
+To explore the content of this archive, we created a Python (version 2.7.9) tool---ThermoPyL (\url{https://github.com/choderalab/ThermoPyL})---that formats the XML content into a spreadsheet-like format accessible via the Pandas (version 0.15.2) library.  
 First, we obtained the XML schema (\url{http://media.iupac.org/namespaces/ThermoML/ThermoML.xsd}) defining the layout of the data.
 This schema was converted into a Python object via PyXB 1.2.4 (\url{http://pyxb.sourceforge.net/}).
-Finally, this schema was used to extract the data into Pandas~\cite{pandas} dataframes, and the successive data filters described in Section~\ref{section:filtering-thermoml} were applied.  
+Finally, this schema was used to extract the data into Pandas~\cite{pandas} dataframes, and successive data filters described in Section~\ref{section:filtering-thermoml} were applied to explore the composition of the data.
 
 \subsection{Simulation}
 \label{section:simulation}
 
-To enable automated accuracy benchmarking of physicochemical properties of neat liquids such as mass density and dielectric constant, we developed a semi-automated pipeline for preparing simulations, running them on a standard computer cluster using a portable simulation package, and analyzing the resulting data.
+To enable automated accuracy benchmarking of physicochemical properties of neat liquids such as mass density and static dielectric constant, we developed a semi-automated pipeline for preparing simulations, running them on a standard computer cluster using a portable simulation package, and analyzing the resulting data.
 All code for this procedure is available at  \url{https://github.com/choderalab/LiquidBenchmark}.
 Below, we describe the operation of the various stages of this pipeline and their application to the benchmark reported here.
 
 \subsubsection{Preparation}
 \label{section:preparation}
 
-Chemical names were parsed from the ThermoML extract and converted to both CAS and smiles strings using cirpy \cite{swain2012cirpy}.  Smiles strings were converted into molecular structures using the OpenEye Python Toolkit version 2015-2-3 \cite{openeye}, as wrapped in openmoltools.  
+Chemical names were parsed from the ThermoML extract and converted to both CAS and SMILES strings using cirpy \cite{swain2012cirpy}.  Smiles strings were converted into molecular structures using the OpenEye Python Toolkit version 2015-2-3 \cite{openeye}, as wrapped in openmoltools.  
 
-Simulation boxes containing 1000 molecules were constructed using PackMol version 14-225~\cite{martinez2009packmol, packmolurl} wrapped in the Python automation library openmoltools.
+Simulation boxes containing 1~000 molecules were constructed using PackMol version 14-225~\cite{martinez2009packmol, packmolurl} wrapped in the Python automation library openmoltools  (\url{http://github.com/choderalab/openmoltools/}).
 In order to ensure stable automated equilibration, PackMol box volumes were chosen to accommodate twice volume of the enclosed atoms, with atomic radii estimated as 1.06 \AA\ and 1.53 \AA\ for hydrogens and nonhydrogens, respectively.  
 
 For this illustrative benchmark, we utilized the generalized Amber small molecule forcefield (GAFF)~\cite{gaff,gaff2} with the AM1-BCC charge model~\cite{am1bcc1,am1bcc2}, which we shall refer to as the GAFF/AM1-BCC forcefield.
@@ -229,25 +230,35 @@ Exact commands to install various dependencies can be found in Appendix~\ref{sec
 \subsubsection{Equilibration and production}
 \label{section:production}
 
-Simulation boxes were first minimized using the L-BFGS algorithm \cite{liu1989limited} and equilibrated for $10^7$ steps with an equilibration timestep of 0.4 fs and a collision rate of 5 ps$^{-1}$.  
-Production simulations were performed with OpenMM~6.3~\cite{eastman2012openmm} using a Langevin Leapfrog integrator~\cite{izaguirre-sweet-pande:psb:2010:langevin-leapfrog} (with collision rate 1 ps$^{-1}$) and a 1~fs timestep, as we found that timesteps of 2~fs timestep or greater led to a significant timestep dependence in computed equilibrium densities (Fig.~\ref{figure:timestep}).  
+All simulations were performed using OpenMM~6.3~\cite{eastman2012openmm}.
+Simulation boxes were first minimized using the L-BFGS algorithm~\cite{liu1989limited} using the {\tt LocalEnergyMinimizer} default parameters and subsequently equilibrated for $10^7$ steps with an equilibration timestep of 0.4 fs and a collision rate of 5 ps$^{-1}$.  
+Production simulations employed a Langevin Leapfrog integrator~\cite{izaguirre-sweet-pande:psb:2010:langevin-leapfrog} with collision rate 1 ps$^{-1}$ and a 1~fs timestep, as we found that timesteps of 2~fs or greater led to a significant timestep dependence in computed equilibrium densities (Fig.~\ref{figure:timestep}).  
 
-Equilibration and production simulations utilized a Monte Carlo barostat with a control pressure of 1 atm (101.325 kPa), utilizing molecular scaling and automated step size adjustment during equilibration, with volume moves attempted every 25 steps.  
-The particle mesh Ewald (PME) method with conducting boundary conditions~\cite{Darden1993} was used with a long-range cutoff of 0.95~nm and a long-range isotropic dispersion correction. 
-PME grid and spline parameters were automatically selected using the default settings in OpenMM 6.3 for the CUDA platform~\cite{eastman2012openmm}.
+Equilibration and production simulations utilized a Metropolis Monte Carlo barostat with a control pressure of 1 atm (101.325 kPa), utilizing molecular scaling and automated step size adjustment during equilibration, with volume moves attempted every 25 steps.  
+The particle mesh Ewald (PME) method with conducting boundary conditions~\cite{Darden1993} was used with a long-range cutoff of 0.95~nm, and a long-range isotropic dispersion correction was employed to correct for the truncation of Lennard-Jones interactions outside the 0.95~nm cutoff.
+PME grid and spline parameters were automatically selected using the default settings in OpenMM 6.3 for the CUDA platform~\cite{eastman2012openmm}, which was operated in default mixed-precision mode.
+Instantaneous densities were stored every 250~fs, while trajectory snapshots were stored every 5~ps.  
 
 {\bf Automatic termination criteria.}
-Production simulations were continued until automatic analysis showed standard errors in densities were less than $2 \times 10^{-4}$ g / $cm^{3}$.
-Automatic analysis of the production simulation data was run every 1 ns of simulation time, and utilized the {\tt detectEquilibration} method in the timeseries module of pymbar 2.1~\cite{shirts2008statistically} to automatically discard the initial portion of the production simulation containing strong far-from-equilibrium behavior by maximizing the number of effectively uncorrelated samples in the remainder of the production simulation as determined by autocorrelation analysis using the fast adaptive statistical inefficiency computation method as implemented in the {\tt timeseries.computeStatisticalInefficiency} method of pymbar 2.1 (where the algorithm is described in~\cite{chodera2007}).
+Production simulations were continued until automatic analysis showed standard errors in densities were less than 2$\times$10$^{-4}$ g / cm$^{3}$.
+Automatic analysis of the production simulation data was run every 1 ns of simulation time, and utilized the {\tt detectEquilibration} method in the timeseries module of pymbar 2.1~\cite{shirts2008statistically} to automatically discard the initial portion of the production simulation containing strong far-from-equilibrium configurations.
+This procedure selects the equilibration endpoint $T_\mathrm{eq}$ by maximizing the number of effectively uncorrelated samples in the remainder of the production simulation, $N_\mathrm{eff} = (T - T_\mathrm{equil}) / g$, with $T$ the total simulation length.
+The statistical inefficiency $g$ was determined by autocorrelation analysis using the fast adaptive statistical inefficiency computation method as implemented in the {\tt timeseries.computeStatisticalInefficiency} method of pymbar 2.1 (where the algorithm is described in~\cite{chodera2007}).
 This approach is essentially the same as the fixed-width procedure described by eq. 7.12 of ref. \cite{brooks2011handbook}, with $n^*$ equal to 4000 and the sequential testing correction ($n^{-1}$ term) ignored due to the large value of $n$.
-Statistical errors were computed by $\delta^2 \rho \approx \var{\rho} / N_\mathrm{eff}$, where $\var{\rho}$ is the sample variance of the density and $N_\mathrm{eff}$ is the number of effectively uncorrelated samples.  
-With this protocol, we found starting trajectory lengths of $12000$ $(8000, 16000)$ frames (250 fs each), discarded regions of $28$  $(0, 460)$, and statistical inefficiencies of $20$ $(15, 28)$; reported numbers indicate (median, (25\%, 75\%)).  
 
-Instantaneous densities were stored every 250~fs, while trajectory snapshots were stored every 5~ps.  
+Statistical errors in estimated average density $\left< \rho \right>$ were computed by the Markov chain standard error (MCSE)
+\begin{eqnarray}
+\delta \rho &\approx& \frac{\mathsf{std}(\rho)}{\sqrt{N_\mathrm{eff}}} \label{equation:density-standard-error}
+\end{eqnarray}
+where $\mathsf(\rho)$ is the sample standard deviation of the density and $N_\mathrm{eff}$ is the number of effectively uncorrelated samples.  
+
+Using this adaptive protocol, we found starting trajectory lengths of $12000$ $(8000, 16000)$ frames (250 fs each), discarded regions of $28$  $(0, 460)$ frames, and statistical inefficiencies of $20$ $(15, 28)$; reported numbers indicate (median, (25\% quartile, 75\% quartile)).  
+{\color{red}[JDC: By ``frames'', is this instantaneous densities or configuration snapshots?]}
 
 \subsection{Timings}
 
-The wall time required for a given simulation depends on the number of atoms (3,000 - 29,000), the GPU used (GTX 680 or GTX Titan), and the time required for automated termination.  For butyl acrylate (21,000 atoms) on a GTX Titan, the wall-clock performance is approximately 80 ns / day.  Using 80 ns / day with approximately 3 ns of production simulation corresponds to 1 hour for the production segment of the simulation and 3 hours for the fixed equilibration portion of $10^7$ steps.  
+The wall time required for a given simulation depends on the number of atoms in the simulation system (3~000--29~000 atoms), the GPU used (GTX 680 or GTX Titan), and the time required for automated termination.  
+For butyl acrylate (21~000 atoms) on a GTX Titan, the wall-clock performance is approximately 80 ns / day.  Using 80 ns / day with approximately 3 ns of production simulation corresponds to 1 hour for the production segment of the simulation and 3 hours for the fixed equilibration portion of $10^7$ steps.  
 
 \subsubsection{Data analysis and statistical error estimation}
 
@@ -271,7 +282,7 @@ where $\beta \equiv 1 / k_B T$ is the inverse temperature.
 Expectations were estimated by computing sample means over the production simulation after discarding the initial far-from-equilibrium portion to equilibration (as described in {\bf Automatic termination criteria} above).
 
 {\bf Statistical uncertainties.}
-For density uncertainties, the Markov chain standard error (MCSE) was estimated as $\frac{\sigma}{\sqrt{N_{eff}}}$, where $\sigma$ is the density standard deviation of the simulation not discarded to equilibration, $N_{eff} = \frac{N}{g}$ is the effective sample size, and $g$ is the statistical inefficiency as estimated from the density time series.
+For density uncertainties, the Markov chain standard error (MCSE) was estimated using Eq.~\ref{equation:density-standard-error}.
 For dielectric uncertainties, the portion of the production simulation not discarded to equilibration was used as input to a circular block bootstrapping procedure \cite{sheppard_2015_15681} with block sizes automatically selected to maximize the error \cite{flyvbjerg1989error}.
 
 \subsubsection{Code availability}
