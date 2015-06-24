@@ -283,13 +283,11 @@ Expectations were estimated by computing sample means over the production simula
 
 {\bf Statistical uncertainties.}
 For density uncertainties, the Markov chain standard error (MCSE) was estimated using Eq.~\ref{equation:density-standard-error}.
-For dielectric uncertainties, the portion of the production simulation not discarded to equilibration was used as input to a circular block bootstrapping procedure \cite{sheppard_2015_15681} with block sizes automatically selected to maximize the error \cite{flyvbjerg1989error}.
+For dielectric uncertainties, in order to avoid the complexities of computing and propagating correlated errors in Eq.~\ref{equation:dielectric_calculation}, a bootstrap procedure was employed: the portion of the production simulation not discarded to equilibration was used as input to a circular block bootstrapping procedure \cite{sheppard_2015_15681} with block sizes automatically selected to maximize the error \cite{flyvbjerg1989error}.
 
 \subsubsection{Code availability}
 
 Data analysis, all intermediate data (except configurational trajectories, due to their large size), and figure creation code for this work is available at \url{https://github.com/choderalab/LiquidBenchmark}.  
-%{\color{red}[JDC: Should we also give pointers to the various other domain-specific tools, like OpenMM, openmoltools, and MDTraj?  Or to the Appendix where you describe how to install everything?]}
-% I think what we have is fine.  Links to repositories might change over time (e.g. SimTK -> PandeGroup), but people can always use google.  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % RESULTS
@@ -483,9 +481,9 @@ From the computed molecular electronic polarizability $\alpha$, an additive corr
 \end{eqnarray}
 A similar polarization correction was used in the development of the TIP4P-Ew water model, where it had a minor effect~\cite{horn2004} because almost all the high static dielectric constant for water comes from the configurational response of its strong dipole.  
 However, the missing polarizability is a dominant contribution to the static dielectric constant of nonpolar organic molecules;   
-in the case of water, the empirical atomic polarizability model predicts a dielectric correction of 0.52, while 0.79 was used for the TIP4P-Ew model.  
-Averaging all liquids in the present work leads to polarizability corrections to the static dielectric of $0.74 \pm 0.08$.
-Taking the dataset as a whole, we find that the relative error in uncorrected dielectric is on the order of $-0.34 \pm 0.02$, as compared to $-0.25 \pm 0.02$ for the corrected dielectric.
+in the case of water, the empirical atomic polarizability model predicts a dielectric correction {\color{red}[JDC: Correction to $\epsilon$ or $1/\epsilon$?]} of 0.52, while 0.79 was used for the TIP4P-Ew model.  
+Averaging all liquids in the present work leads to polarizability corrections to the static dielectric of $0.74 \pm 0.08$. {\color{red}[JDC: I don't understand the previous sentence.  Do you mean this is the average dielectric correction over all liquids?  Or maybe more clearly phrased as ``averaging this dielectric correction over all liquids gives an average correction of XXX''?]}
+Taking the dataset as a whole, we find that the relative error in uncorrected dielectric is on the order of $-0.34 \pm 0.02$, as compared to $-0.25 \pm 0.02$ for the corrected dielectric. {\color{red}[JDC: Remind readers whether we are talking about $\epsilon$ or $1/\epsilon$.]} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FIGURE: DIELECTRIC COMPARISON
@@ -515,11 +513,11 @@ Plots of dielectric constant versus temperature grouped by chemical species are 
 
 Our simulations have indicated the presence of systematic density biases with magnitudes larger than the measurement error.  
 Correcting these errors may be a low-hanging fruit for future forcefield refinements.
-As an example of the feasibility of improved accuracy in densities, a recent three-point water model was able to recapitulate water density with errors of less than 0.005 g / $cm^{3}$ over temperature range [280 K, 320 K] \cite{wang2014building}.
+As an example of the feasibility of improved accuracy in densities, a recent three-point water model was able to recapitulate water density with errors of less than 0.005 g / cm$^{3}$ over the temperature range [280 K, 320 K] \cite{wang2014building}.
 This improved accuracy in density prediction was obtained alongside accurate predictions of other experimental observables, including static dielectric constant.  
 We suspect that such accuracy might be obtainable for GAFF-like forcefields across some portion of chemical space.  
 A key challenge for the field is to demarcate the fundamental limit of fixed-charge forcefields for predicting orthogonal classes of experimental observables.
-For example, is it possible to achieve a relative density error of $10^{-4}$ without sacrificing accuracy of other properties such as enthalpies?
+For example, is it possible to achieve a relative density error of $10^{-4}$ without sacrificing accuracy of other properties such as enthalpies of vaporization?
 In our opinion, the best way to answer such questions is to systematically build forcefields with the goal of predicting various properties to within their known experimental uncertainties, similar to what has been done for water \cite{horn2004, wang2014building}.
 
 
@@ -530,7 +528,13 @@ In our opinion, the best way to answer such questions is to systematically build
 \subsection{Dielectric constants in forcefield parameterization}
 
 
-A key feature of the static dielectric constant for a liquid is that, for forcefield purposes, it consists of two very different components, distinguished by the dependence on the fixed charges of the forcefield and dynamic motion of the molecule. One component, the high-frequency dielectric constant, arises from the almost-instantaneous electronic polarization in response to the external electric field: this contributes a small component, generally around $\epsilon = 2$, which can be dominant for non-polar liquids but is completely neglected by the non-polarizable forcefields in common use for biomolecular simulations. The other component arises from the dynamical response of the molecule, through nuclear motion, to allow its various molecular multipoles to respond to the external electric field: for polar liquids such as water, this contributes the majority of the dielectric constant. Thus for polar liquids, we expect the parameterized atomic charges to play a major role in the static dielectric.  
+A key feature of the static dielectric constant for a liquid is that, for forcefield purposes, it consists of two very different contributions, distinguished by the dependence on the fixed charges of the forcefield and dynamic motion of the molecule. 
+One component, the electronic polarizability (which can be separately quantified through the high-frequency dielectric constant), arises from the almost-instantaneous electronic polarization in response to the external electric field.
+Electronic polarizability contributes a small component, generally around $\epsilon = 2$, which can be dominant for non-polar liquids but is completely neglected by the non-polarizable forcefields in common use for biomolecular simulations. 
+
+The other component arises from the dynamical response of the molecule through reorientation or conformational relaxation via nuclear motion.
+For small polar liquids that lack significant internal degrees of freedom---such as water---reorientation of various molecular multipoles in response to the external electric field contributes the majority of the static dielectric constant. 
+As a result, for polar liquids, we expect the parameterized atomic charges to play a major role in the static dielectric.  
 
 Recent forcefield development has seen a resurgence of papers fitting dielectric constants during forcefield parameterization \cite{wang2014building, fennell2014fixed}.  
 However, a number of authors have pointed out potential challenges in constructing self-consistent fixed-charge forcefields \cite{fennell2012simple, leontyev2014polarizable}.  
@@ -572,7 +576,7 @@ Reported dielectric constants are at near-ambient temperatures.
 Suppose, for example, that one attempts to fit forcefield parameters to match the static dielectric constants of $\mathrm{CCl_4}$, $\mathrm{CHCl_3}$, $\mathrm{CH_2Cl_2}$, and $\mathrm{CH_3Cl}$.
 In moving from the tetrahedrally-symmetric $\mathrm{CCl_4}$ to the asymmetric $\mathrm{CHCl_3}$, it suddenly becomes possible to achieve the observed dielectric constant of 4.8 by an appropriate choice of point charges.
 However, the model for $\mathrm{CHCl_3}$ uses fixed point charges to account for \emph{both} the permanent dipole moment and the electronic polarizability, whereas the $\mathrm{CCl_4}$ model contains no treatment of polarizability.  
-We hypothesize that this inconsistency in parameterization may lead to strange mismatches, where symmetric molecules (e.g.~benzene and $\mathrm{CCl_4}$) have qualitatively different properties than closely related asymmetric molecules (e.g.~toluene and $\mathrm{CHCl_3}$).
+We hypothesize that this inconsistency in parameterization may lead to discontinuous jumps in physical properties in related molecular series, where symmetric molecules (e.g.~benzene and $\mathrm{CCl_4}$) have qualitatively different properties than closely related asymmetric molecules (e.g.~toluene and $\mathrm{CHCl_3}$).
 
 How important is this effect?
 We expect it to be important wherever we encounter the transfer of a polar molecule (such as a peptide, native ligand, or a pharmaceutical small molecule) from a polar environment (such as the cytosol, interstitial fluid, or blood) into a non-polar environment (such as a biological membrane or non-polar binding site of an enzyme or receptor). Thus we expect this to be implicated in biological processes ranging from ligand binding to absorption and distribution within the body. To understand this conceptually, consider the transfer of a polar small-molecule transfer from the non-polar interior of a lipid bilayer to the aqueous and hence very polar cytosol.
