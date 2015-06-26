@@ -195,9 +195,9 @@ Using these data, we evaluate the generalized Amber small molecule forcefield (G
 %{\color{red}[JDC: We should introduce this section by stating that, to facilitate automated benchmarking against available data, we first require an automated method for retrieving the data from the ThermoML Archive.  We first did this as described here, to explore the contents of the data, and then developed an automated tool to allow others to retrieve the dataset in an incremental and minimal-impact manner.]}
 % KAB: we can document this feature on the Github page.  
 
-A tarball archive snapshot of the ThermoML Archive was obtained from the the NIST TRC on 8 Apr. 2015.
-{\color{red}[JDC: Should we shorten this to just ``A snapshot of the ThermoML Archive'' since there is now a way to retrieve up-to-date snapshots that is not necessarily through tarballs?  Also, should we mention here that this tool is available for other labs to perform their own retrieval?]}
-To explore the content of this archive, we created a Python (version 2.7.9) tool---ThermoPyL (\url{https://github.com/choderalab/ThermoPyL})---that formats the XML content into a spreadsheet-like format accessible via the Pandas (version 0.15.2) library.  
+A snapshot of the ThermoML Archive was obtained from the the NIST TRC on 8 Apr. 2015.
+To explore the content of this archive, we created a Python (version 2.7.9) tool---ThermoPyL (\url{https://github.com/choderalab/ThermoPyL})---that formats the XML content into a spreadsheet-like format accessible via the Pandas (version 0.15.2) library.
+This tool also contains a preliminary version of scripts for maintaining an up-to-date version of the ThermoML archive.
 First, we obtained the XML schema (\url{http://media.iupac.org/namespaces/ThermoML/ThermoML.xsd}) defining the layout of the data.
 This schema was converted into a Python object via PyXB 1.2.4 (\url{http://pyxb.sourceforge.net/}).
 Finally, this schema was used to extract the data into Pandas~\cite{pandas} dataframes, and successive data filters described in Section~\ref{section:filtering-thermoml} were applied to explore the composition of the data.
@@ -252,8 +252,7 @@ Statistical errors in estimated average density $\left< \rho \right>$ were compu
 \end{eqnarray}
 where $\mathsf(\rho)$ is the sample standard deviation of the density and $N_\mathrm{eff}$ is the number of effectively uncorrelated samples.  
 
-Using this adaptive protocol, we found starting trajectory lengths of $12000$ $(8000, 16000)$ frames (250 fs each), discarded regions of $28$  $(0, 460)$ frames, and statistical inefficiencies of $20$ $(15, 28)$; reported numbers indicate (median, (25\% quartile, 75\% quartile)).  
-{\color{red}[JDC: By ``frames'', is this instantaneous densities or configuration snapshots?]}
+Using this adaptive protocol, we found starting trajectory lengths of $12000$ $(8000, 16000)$ density frames (250 fs each), discarded regions of $28$  $(0, 460)$ density frames, and statistical inefficiencies of $20$ $(15, 28)$ density frames; reported numbers indicate (median, (25\% quartile, 75\% quartile)).  
 
 \subsection{Timings}
 
@@ -481,8 +480,8 @@ From the computed molecular electronic polarizability $\alpha$, an additive corr
 \end{eqnarray}
 A similar polarization correction was used in the development of the TIP4P-Ew water model, where it had a minor effect~\cite{horn2004} because almost all the high static dielectric constant for water comes from the configurational response of its strong dipole.  
 However, the missing polarizability is a dominant contribution to the static dielectric constant of nonpolar organic molecules;   
-in the case of water, the empirical atomic polarizability model predicts a dielectric correction {\color{red}[JDC: Correction to $\epsilon$ or $1/\epsilon$?]} of 0.52, while 0.79 was used for the TIP4P-Ew model.  
-Averaging all liquids in the present work leads to polarizability corrections to the static dielectric of $0.74 \pm 0.08$. {\color{red}[JDC: I don't understand the previous sentence.  Do you mean this is the average dielectric correction over all liquids?  Or maybe more clearly phrased as ``averaging this dielectric correction over all liquids gives an average correction of XXX''?]}
+in the case of water, the empirical atomic polarizability model predicts a dielectric correction (to $\epsilon$) of 0.52, while 0.79 was used for the TIP4P-Ew model.  
+Averaging this dielectric constant over all liquids in the present work leads to average polarizability corrections (to $\epsilon$) of $0.74 \pm 0.08$. 
 Taking the dataset as a whole, we find that the relative error in uncorrected dielectric is on the order of $-0.34 \pm 0.02$, as compared to $-0.25 \pm 0.02$ for the corrected dielectric. {\color{red}[JDC: Remind readers whether we are talking about $\epsilon$ or $1/\epsilon$.]} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -695,7 +694,7 @@ To probe the systematic error from finite time-step integration, we examined the
 (b).  The relative error, as compared to the reference value, is shown for several choices of timestep.  
 Error bars represent standard errors of the mean, with the number of effective samples estimated using pymbar's statistical inefficiency routine \cite{shirts2008statistically}.  
 The reference value is estimated by linear extrapolation to 0 fs using the 0.5 fs and 1.0 fs data points; the linear extrapolation is shown as black lines.  
-We find a 2~fs timestep leads to systematic biases in the density on the order of 0.13\%, while 1 fs reduces the systematic bias to approximately 0.8\%---we therefore selected a 1~fs timestep for the present work, where we aimed to achieve three digits of accuracy in density predictions.
+We find a 2~fs timestep leads to systematic biases in the density on the order of 0.13\%, while 1 fs reduces the systematic bias to approximately 0.03\%---we therefore selected a 1~fs timestep for the present work, where we aimed to achieve three digits of accuracy in density predictions.
 }
 \label{figure:timestep}
 
@@ -730,7 +729,7 @@ In the first approach (Weighted), we computed the standard deviation of the opti
 This uncertainty estimator places the highest weights on measurements with small uncertainties and is therefore easily dominated by small outliers and uncertainty under-reporting.
 In the second approach (Median), we estimated the median of the uncertainties reported by authors; this statistic should be robust to small and large outliers of author-reported uncertainties.
 In the third approach (Std), we calculated at the standard deviation of independent measurements reported in the ThermoML extract, completely avoiding the author-reported uncertainties.
-Plot (a) compares the three uncertai8nty estimates.
+Plot (a) compares the three uncertainty estimates.
 We see that author-reported uncertainties appear to be substantially smaller than the scatter between the observed measurements.
 A simple psychological explanation might be that because density measurements are more routine, the authors simply report the repeatability stated by the manufacturer (e.g. 0.0001 g / $cm^{3}$ for a Mettler Toledo DM40~\cite{mettlertoledo}).  
 However, this hardware limit is not achieved due to inconsistencies in sample preparation and experimental conditions; see Appendix in Ref.~\cite{chirico2013improvement}.  
